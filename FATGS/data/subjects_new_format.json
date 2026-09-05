@@ -1,0 +1,288 @@
+[
+  {
+    "name": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "labs": [
+      { "code": "CS-217", "name": "Object Oriented Programming Lab", "credits": 1 },
+      { "code": "CS-218", "name": "Data Structures Lab", "credits": 1 },
+      { "code": "CS-219", "name": "Computational Tools and Workshop", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "MA-219", "name": "Probability and Applied Statistics", "credits": 3 },
+      { "code": "CS-212", "name": "Discrete Structures", "credits": 3 },
+      { "code": "CS-213", "name": "Object Oriented Programming", "credits": 3 },
+      { "code": "CS-214", "name": "Data Structures", "credits": 3 },
+      { "code": "CS-215", "name": "Computer Graphics", "credits": 3 },
+      { "code": "EC-219", "name": "Digital Electronics", "credits": 2 }
+    ],
+    "electives": []
+  },
+  {
+    "name": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "labs": [
+      { "code": "CS-217", "name": "Object Oriented Programming Lab", "credits": 1 },
+      { "code": "CS-218", "name": "Data Structures Lab", "credits": 1 },
+      { "code": "CS-219", "name": "Computational Tools and Workshop", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "MA-219", "name": "Probability and Applied Statistics", "credits": 3 },
+      { "code": "CS-212", "name": "Discrete Structures", "credits": 3 },
+      { "code": "CS-213", "name": "Object Oriented Programming", "credits": 3 },
+      { "code": "CS-214", "name": "Data Structures", "credits": 3 },
+      { "code": "CS-215", "name": "Computer Graphics", "credits": 3 },
+      { "code": "EC-219", "name": "Digital Electronics", "credits": 2 }
+    ],
+    "electives": []
+  },
+  {
+    "name": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "labs": [
+      { "code": "CS-225", "name": "Microprocessor & Interfacing Lab", "credits": 1 },
+      { "code": "CS-226", "name": "Operating Systems Lab", "credits": 1 },
+      { "code": "CS-227", "name": "Computer Organization & Architecture Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-221", "name": "Microprocessor & Interfacing", "credits": 3 },
+      { "code": "CS-222", "name": "Operating Systems", "credits": 3 },
+      { "code": "CS-223", "name": "Computer Organization and Architecture", "credits": 3 },
+      { "code": "CS-224", "name": "Theory of Computation", "credits": 4 },
+      { "code": "SA-201", "name": "LA/CA (NSS/NCC/Prayas etc.)", "credits": 1 }
+    ],
+    "electives": [
+      { "code": "CS-241", "name": "Data Communication", "credits": 3 },
+      { "code": "CS-242", "name": "Optimization Techniques", "credits": 3 },
+      { "code": "CS-243", "name": "Simulation & Modelling", "credits": 3 }
+    ]
+  },
+  {
+    "name": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "labs": [
+      { "code": "CS-225", "name": "Microprocessor & Interfacing Lab", "credits": 1 },
+      { "code": "CS-226", "name": "Operating Systems Lab", "credits": 1 },
+      { "code": "CS-227", "name": "Computer Organization & Architecture Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-221", "name": "Microprocessor & Interfacing", "credits": 3 },
+      { "code": "CS-222", "name": "Operating Systems", "credits": 3 },
+      { "code": "CS-223", "name": "Computer Organization and Architecture", "credits": 3 },
+      { "code": "CS-224", "name": "Theory of Computation", "credits": 4 },
+      { "code": "SA-201", "name": "LA/CA (NSS/NCC/Prayas etc.)", "credits": 1 }
+    ],
+    "electives": [
+      { "code": "CS-241", "name": "Data Communication", "credits": 3 },
+      { "code": "CS-242", "name": "Optimization Techniques", "credits": 3 },
+      { "code": "CS-243", "name": "Simulation & Modelling", "credits": 3 }
+    ]
+  },
+  {
+    "name": "CS3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "labs": [
+      { "code": "CS-315", "name": "Compiler Design Lab", "credits": 1 },
+      { "code": "CS-316", "name": "Computer Networks Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-311", "name": "Analysis & Design of Algorithm", "credits": 3 },
+      { "code": "CS-312", "name": "Compiler Design", "credits": 3 },
+      { "code": "CS-313", "name": "Computer Networks", "credits": 3 },
+      { "code": "CS-314", "name": "Artificial Intelligence", "credits": 3 }
+    ],
+    "electives": [
+      { "code": "CS-301", "name": "Data Structures", "credits": 3 },
+      { "code": "CS-302", "name": "Computer Networks", "credits": 3 },
+      { "code": "CS-303", "name": "Artificial Intelligence", "credits": 3 },
+      { "code": "CS-351", "name": "Advanced Operating System", "credits": 3 },
+      { "code": "CS-352", "name": "Graph Theory", "credits": 3 },
+      { "code": "CS-353", "name": "Information Retrieval", "credits": 3 }
+    ]
+  },
+  {
+    "name": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "labs": [
+      { "code": "CS-315", "name": "Compiler Design Lab", "credits": 1 },
+      { "code": "CS-316", "name": "Computer Networks Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-311", "name": "Analysis & Design of Algorithm", "credits": 3 },
+      { "code": "CS-312", "name": "Compiler Design", "credits": 3 },
+      { "code": "CS-313", "name": "Computer Networks", "credits": 3 },
+      { "code": "CS-314", "name": "Artificial Intelligence", "credits": 3 }
+    ],
+    "electives": [
+      { "code": "CS-301", "name": "Data Structures", "credits": 3 },
+      { "code": "CS-302", "name": "Computer Networks", "credits": 3 },
+      { "code": "CS-303", "name": "Artificial Intelligence", "credits": 3 },
+      { "code": "CS-351", "name": "Advanced Operating System", "credits": 3 },
+      { "code": "CS-352", "name": "Graph Theory", "credits": 3 },
+      { "code": "CS-353", "name": "Information Retrieval", "credits": 3 }
+    ]
+  },
+  {
+    "name": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "labs": [
+      { "code": "CS-324", "name": "Digital Image Processing Lab", "credits": 1 },
+      { "code": "CS-325", "name": "Database Management Systems Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-321", "name": "Digital Image Processing", "credits": 3 },
+      { "code": "CS-322", "name": "Database Management Systems", "credits": 3 },
+      { "code": "CS-323", "name": "Software Engineering", "credits": 2 },
+      { "code": "HS-321", "name": "Engineering Economics and Accountancy", "credits": 2 }
+    ],
+    "electives": [
+      { "code": "CS-341", "name": "Game Theory", "credits": 3 },
+      { "code": "CS-342", "name": "Computer Vision", "credits": 3 },
+      { "code": "CS-343", "name": "Natural Language Processing", "credits": 3 },
+      { "code": "CS-361", "name": "Cloud Computing", "credits": 3 },
+      { "code": "CS-362", "name": "Statistical Computing", "credits": 3 },
+      { "code": "CS-363", "name": "Neural Network", "credits": 3 },
+      { "code": "CS-381", "name": "Distributed Systems", "credits": 2 },
+      { "code": "CS-382", "name": "Machine Learning", "credits": 2 }
+    ]
+  },
+  {
+    "name": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "labs": [
+      { "code": "CS-324", "name": "Digital Image Processing Lab", "credits": 1 },
+      { "code": "CS-325", "name": "Database Management Systems Lab", "credits": 1 }
+    ],
+    "subjects": [
+      { "code": "CS-321", "name": "Digital Image Processing", "credits": 3 },
+      { "code": "CS-322", "name": "Database Management Systems", "credits": 3 },
+      { "code": "CS-323", "name": "Software Engineering", "credits": 2 },
+      { "code": "HS-321", "name": "Engineering Economics and Accountancy", "credits": 2 }
+    ],
+    "electives": [
+      { "code": "CS-341", "name": "Game Theory", "credits": 3 },
+      { "code": "CS-342", "name": "Computer Vision", "credits": 3 },
+      { "code": "CS-343", "name": "Natural Language Processing", "credits": 3 },
+      { "code": "CS-361", "name": "Cloud Computing", "credits": 3 },
+      { "code": "CS-362", "name": "Statistical Computing", "credits": 3 },
+      { "code": "CS-363", "name": "Neural Network", "credits": 3 },
+      { "code": "CS-381", "name": "Distributed Systems", "credits": 2 },
+      { "code": "CS-382", "name": "Machine Learning", "credits": 2 }
+    ]
+  },
+  {
+    "name": "MT1",
+    "year": "M.Tech 1st Year",
+    "semester": "1st Semester",
+    "labs": [
+      { "code": "CS-614", "name": "Computational Lab–I", "credits": 2 }
+    ],
+    "subjects": [
+      { "code": "CS-611", "name": "Advance Topics in Software Engineering", "credits": 4 },
+      { "code": "CS-612", "name": "Theoretical Computer Science", "credits": 4 },
+      { "code": "CS-613", "name": "Computer Systems", "credits": 4 }
+    ],
+    "electives": [
+      { "code": "CS-7MN-1", "name": "Programme Elective-I", "credits": 4 },
+      { "code": "CS-7MN-2", "name": "Programme Elective-II", "credits": 4 }
+    ]
+  },
+  {
+    "name": "MT1",
+    "year": "M.Tech 1st Year",
+    "semester": "2nd Semester",
+    "labs": [
+      { "code": "CS-624", "name": "Computational Lab–II", "credits": 2 }
+    ],
+    "subjects": [
+      { "code": "CS-621", "name": "Data Structures & Algorithms", "credits": 4 },
+      { "code": "CS-622", "name": "Network & Distributed Systems", "credits": 4 },
+      { "code": "CS-623", "name": "Advanced Database Management System", "credits": 4 }
+    ],
+    "electives": [
+      { "code": "CS-7MN-3", "name": "Programme Elective-III", "credits": 4 },
+      { "code": "CS-70X", "name": "Institute Elective", "credits": 4 }
+    ]
+  },
+  {
+    "name": "MT2",
+    "year": "M.Tech 2nd Year",
+    "semester": "3rd Semester",
+    "labs": [],
+    "subjects": [
+      { "code": "CS-798", "name": "M.Tech. Dissertation", "credits": 18 }
+    ],
+    "electives": []
+  },
+  {
+    "name": "MT2",
+    "year": "M.Tech 2nd Year",
+    "semester": "4th Semester",
+    "labs": [],
+    "subjects": [
+      { "code": "CS-799", "name": "M.Tech. Dissertation", "credits": 18 }
+    ],
+    "electives": []
+  },
+  {
+    "name": "MA1",
+    "year": "M.Tech 1st Year",
+    "semester": "1st Semester",
+    "labs": [
+      { "code": "CS-634", "name": "AI based Programming Lab", "credits": 2 }
+    ],
+    "subjects": [
+      { "code": "CS-631", "name": "Artificial Intelligence and Intelligent Systems", "credits": 4 },
+      { "code": "CS-632", "name": "Mathematics for Machine Learning", "credits": 4 },
+      { "code": "CS-633", "name": "Applied Optimization", "credits": 4 }
+    ],
+    "electives": [
+      { "code": "CS-7MN-A1", "name": "Programme Elective-I", "credits": 4 },
+      { "code": "CS-7MN-A2", "name": "Programme Elective-II", "credits": 4 }
+    ]
+  },
+  {
+    "name": "MA1",
+    "year": "M.Tech 1st Year",
+    "semester": "2nd Semester",
+    "labs": [
+      { "code": "CS-644", "name": "Deep Learning and Data Analytics Lab", "credits": 2 }
+    ],
+    "subjects": [
+      { "code": "CS-641", "name": "Deep Learning", "credits": 4 },
+      { "code": "CS-642", "name": "Natural Language Processing", "credits": 4 },
+      { "code": "CS-643", "name": "Reinforcement Learning", "credits": 4 }
+    ],
+    "electives": [
+      { "code": "CS-7MN-A3", "name": "Programme Elective-III", "credits": 4 },
+      { "code": "CS-70X-AI", "name": "Institute Elective", "credits": 4 }
+    ]
+  },
+  {
+    "name": "MA2",
+    "year": "M.Tech 2nd Year",
+    "semester": "3rd Semester",
+    "labs": [],
+    "subjects": [
+      { "code": "CS-798-AI", "name": "M.Tech. Dissertation", "credits": 18 }
+    ],
+    "electives": []
+  },
+  {
+    "name": "MA2",
+    "year": "M.Tech 2nd Year",
+    "semester": "4th Semester",
+    "labs": [],
+    "subjects": [
+      { "code": "CS-799-AI", "name": "M.Tech. Dissertation", "credits": 18 }
+    ],
+    "electives": []
+  }
+]

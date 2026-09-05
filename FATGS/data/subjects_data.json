@@ -1,0 +1,407 @@
+{
+  "institution": "NIT Hamirpur",
+  "department": "Computer Science & Engineering",
+  "sections": {
+    "2nd_year": ["CS2", "CD2"],
+    "3rd_year": ["CS3", "CD3"]
+  },
+  "programs": {
+    "btech_cse": {
+      "title": "B.Tech CSE",
+      "curriculum": [
+        {
+          "year": "2nd Year",
+          "sections": ["CS2", "CD2"],
+          "semesters": [
+            {
+              "semester": "3rd Semester",
+              "type": "Odd",
+              "totalCredits": 20,
+              "subjects": [
+                { "code": "MA-219", "name": "Probability and Applied Statistics", "type": "Theory", "credits": 3 },
+                { "code": "CS-212", "name": "Discrete Structures", "type": "Theory", "credits": 3 },
+                { "code": "CS-213", "name": "Object Oriented Programming", "type": "Theory", "credits": 3 },
+                { "code": "CS-214", "name": "Data Structures", "type": "Theory", "credits": 3 },
+                { "code": "CS-215", "name": "Computer Graphics", "type": "Theory", "credits": 3 },
+                { "code": "EC-219", "name": "Digital Electronics", "type": "Theory", "credits": 2 },
+                { "code": "CS-217", "name": "Object Oriented Programming Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-218", "name": "Data Structures Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-219", "name": "Computational Tools and Workshop", "type": "Lab", "credits": 1 }
+              ]
+            },
+            {
+              "semester": "4th Semester",
+              "type": "Even",
+              "totalCredits": 20,
+              "subjects": [
+                { "code": "CS-221", "name": "Microprocessor & Interfacing", "type": "Theory", "credits": 3 },
+                { "code": "CS-222", "name": "Operating Systems", "type": "Theory", "credits": 3 },
+                { "code": "CS-223", "name": "Computer Organization and Architecture", "type": "Theory", "credits": 3 },
+                { "code": "CS-224", "name": "Theory of Computation", "type": "Theory", "credits": 4 },
+                {
+                  "code": "DE-I",
+                  "name": "Discipline Elective - I",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-241", "name": "Data Communication" },
+                    { "code": "CS-242", "name": "Optimization Techniques" },
+                    { "code": "CS-243", "name": "Simulation & Modelling" }
+                  ]
+                },
+                { "code": "CS-225", "name": "Microprocessor & Interfacing Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-226", "name": "Operating Systems Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-227", "name": "Computer Organization & Architecture Lab", "type": "Lab", "credits": 1 },
+                { "code": "SA-201", "name": "LA/CA (NSS/NCC/Prayas etc.)", "type": "Activity", "credits": 1 }
+              ]
+            }
+          ]
+        },
+        {
+          "year": "3rd Year",
+          "sections": ["CS3", "CD3"],
+          "semesters": [
+            {
+              "semester": "5th Semester",
+              "type": "Odd",
+              "totalCredits": 20,
+              "subjects": [
+                {
+                  "code": "OE",
+                  "name": "Open Elective",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-301", "name": "Data Structures" },
+                    { "code": "CS-302", "name": "Computer Networks" },
+                    { "code": "CS-303", "name": "Artificial Intelligence" }
+                  ]
+                },
+                { "code": "CS-311", "name": "Analysis & Design of Algorithm", "type": "Theory", "credits": 3 },
+                { "code": "CS-312", "name": "Compiler Design", "type": "Theory", "credits": 3 },
+                { "code": "CS-313", "name": "Computer Networks", "type": "Theory", "credits": 3 },
+                { "code": "CS-314", "name": "Artificial Intelligence", "type": "Theory", "credits": 3 },
+                {
+                  "code": "DE-II",
+                  "name": "Discipline Elective - II",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-351", "name": "Advanced Operating System" },
+                    { "code": "CS-352", "name": "Graph Theory" },
+                    { "code": "CS-353", "name": "Information Retrieval" }
+                  ]
+                },
+                { "code": "CS-315", "name": "Compiler Design Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-316", "name": "Computer Networks Lab", "type": "Lab", "credits": 1 }
+              ]
+            },
+            {
+              "semester": "6th Semester",
+              "type": "Even",
+              "totalCredits": 20,
+              "subjects": [
+                { "code": "CS-321", "name": "Digital Image Processing", "type": "Theory", "credits": 3 },
+                { "code": "CS-322", "name": "Database Management Systems", "type": "Theory", "credits": 3 },
+                { "code": "CS-323", "name": "Software Engineering", "type": "Theory", "credits": 2 },
+                {
+                  "code": "DE-III",
+                  "name": "Discipline Elective - III",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-341", "name": "Game Theory" },
+                    { "code": "CS-342", "name": "Computer Vision" },
+                    { "code": "CS-343", "name": "Natural Language Processing" }
+                  ]
+                },
+                {
+                  "code": "DE-IV",
+                  "name": "Discipline Elective - IV",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-361", "name": "Cloud Computing" },
+                    { "code": "CS-362", "name": "Statistical Computing" },
+                    { "code": "CS-363", "name": "Neural Network" }
+                  ]
+                },
+                {
+                  "code": "SC-I",
+                  "name": "Stream Core - I",
+                  "type": "Elective",
+                  "credits": 2,
+                  "options": [
+                    { "code": "CS-381", "name": "Distributed Systems" },
+                    { "code": "CS-382", "name": "Machine Learning" }
+                  ]
+                },
+                { "code": "HS-321", "name": "Engineering Economics and Accountancy", "type": "Theory", "credits": 2 },
+                { "code": "CS-324", "name": "Digital Image Processing Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-325", "name": "Database Management Systems Lab", "type": "Lab", "credits": 1 }
+              ]
+            }
+          ]
+        },
+        {
+          "year": "4th Year",
+          "semesters": [
+            {
+              "semester": "7th Semester",
+              "type": "Odd",
+              "totalCredits": 20,
+              "subjects": [
+                { "code": "CS-411", "name": "Advance Computer Architecture", "type": "Theory", "credits": 3 },
+                { "code": "CS-412", "name": "Information Security & Privacy", "type": "Theory", "credits": 3 },
+                { "code": "CS-413", "name": "Data Warehousing & Data Mining", "type": "Theory", "credits": 3 },
+                {
+                  "code": "DE-V",
+                  "name": "Discipline Elective - V",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-431", "name": "Information Theory and Coding" },
+                    { "code": "CS-432", "name": "Soft Computing" },
+                    { "code": "CS-433", "name": "Big Data Analytics" }
+                  ]
+                },
+                {
+                  "code": "SC-II",
+                  "name": "Stream Core - II",
+                  "type": "Elective",
+                  "credits": 2,
+                  "options": [
+                    { "code": "CS-451", "name": "Advance Mobile Communication" },
+                    { "code": "CS-452", "name": "Deep Learning" }
+                  ]
+                },
+                {
+                  "code": "SC-III",
+                  "name": "Stream Core - III",
+                  "type": "Elective",
+                  "credits": 2,
+                  "options": [
+                    { "code": "CS-471", "name": "Internet of Things" },
+                    { "code": "CS-472", "name": "Pattern Recognition" }
+                  ]
+                },
+                { "code": "CS-414", "name": "Information Security & Privacy Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-415", "name": "Data Warehousing & Data Mining Lab", "type": "Lab", "credits": 1 },
+                { "code": "CS-416", "name": "Summer Training", "type": "Training", "credits": 2 }
+              ]
+            },
+            {
+              "semester": "8th Semester",
+              "type": "Even",
+              "totalCredits": 20,
+              "subjects": [
+                {
+                  "code": "SE-I",
+                  "name": "Stream Elective - I",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-461", "name": "Reinforcement Learning" },
+                    { "code": "CS-462", "name": "Cyber Security" },
+                    { "code": "CS-463", "name": "Quantum Computing" },
+                    { "code": "CS-464", "name": "Networked Wireless Systems" }
+                  ]
+                },
+                {
+                  "code": "SE-II",
+                  "name": "Stream Elective - II",
+                  "type": "Elective",
+                  "credits": 3,
+                  "options": [
+                    { "code": "CS-481", "name": "Blockchain Technology" },
+                    { "code": "CS-482", "name": "Approximation Algorithms" },
+                    { "code": "CS-483", "name": "Parallel Computing" },
+                    { "code": "CS-484", "name": "Topics in Theoretical Computer Science" }
+                  ]
+                },
+                { "code": "CS-498", "name": "General Proficiency", "type": "Core", "credits": 2 },
+                { "code": "CS-499", "name": "UG Project", "type": "Project", "credits": 12 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "cse_dual_degree": {
+      "title": "Dual Degree (B.Tech + M.Tech in CSE)",
+      "curriculum": [
+        {
+          "year": "4th Year",
+          "semesters": [
+            {
+              "semester": "7th Semester",
+              "type": "Odd",
+              "totalCredits": 29,
+              "subjects": [
+                { "code": "HS-404", "name": "Engineering Economics and Accountancy", "type": "Theory", "credits": 3 },
+                { "code": "CS-411", "name": "Artificial Intelligence", "type": "Theory", "credits": 3 },
+                { "code": "DET#", "name": "PG Elective-I", "type": "Elective", "credits": 4 },
+                { "code": "DET#", "name": "PG Elective-II", "type": "Elective", "credits": 4 },
+                { "code": "CS-613#", "name": "Architecture of Large Systems", "type": "Theory", "credits": 4 },
+                { "code": "CS-652#", "name": "Machine Learning", "type": "Theory", "credits": 4 },
+                { "code": "CS-418", "name": "Industrial Training Presentation", "type": "Presentation", "credits": 1 },
+                { "code": "CS-419", "name": "Major Project (Stage-I)", "type": "Project", "credits": 6 }
+              ]
+            },
+            {
+              "semester": "8th Semester",
+              "type": "Even",
+              "totalCredits": 29,
+              "subjects": [
+                { "code": "CS-421", "name": "Dataware Housing and Data Mining", "type": "Theory", "credits": 3 },
+                { "code": "CS-422", "name": "Information Security", "type": "Theory", "credits": 3 },
+                { "code": "DET#", "name": "PG Elective-III", "type": "Elective", "credits": 4 },
+                { "code": "DET#", "name": "PG Elective-IV", "type": "Elective", "credits": 4 },
+                { "code": "CS-623#", "name": "Advances in DBMS", "type": "Theory", "credits": 4 },
+                { "code": "CS-661#", "name": "Deep Learning", "type": "Theory", "credits": 4 },
+                { "code": "CS-428", "name": "General Proficiency", "type": "Core", "credits": 1 },
+                { "code": "CS-429", "name": "Major Project (Stage-II)", "type": "Project", "credits": 6 }
+              ]
+            }
+          ]
+        },
+        {
+          "year": "5th Year",
+          "semesters": [
+            {
+              "semester": "9th Semester",
+              "type": "Odd",
+              "totalCredits": 24,
+              "subjects": [
+                { "code": "CS-611#", "name": "Topics in Computer Networks", "type": "Theory", "credits": 4 },
+                { "code": "CS-800#", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 20 }
+              ]
+            },
+            {
+              "semester": "10th Semester",
+              "type": "Even",
+              "totalCredits": 20,
+              "subjects": [
+                { "code": "CS-800#", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 20 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "mtech_cse": {
+      "title": "M.Tech in CSE (Regular 2-Year)",
+      "curriculum": [
+        {
+          "year": "M.Tech 1st Year",
+          "semesters": [
+            {
+              "semester": "1st Semester",
+              "type": "Odd",
+              "totalCredits": 22,
+              "subjects": [
+                { "code": "CS-611", "name": "Advance Topics in Software Engineering", "type": "Theory", "credits": 4 },
+                { "code": "CS-612", "name": "Theoretical Computer Science", "type": "Theory", "credits": 4 },
+                { "code": "CS-613", "name": "Computer Systems", "type": "Theory", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-I", "type": "Elective", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-II", "type": "Elective", "credits": 4 },
+                { "code": "CS-614", "name": "Computational Lab–I", "type": "Lab", "credits": 2 }
+              ]
+            },
+            {
+              "semester": "2nd Semester",
+              "type": "Even",
+              "totalCredits": 22,
+              "subjects": [
+                { "code": "CS-621", "name": "Data Structures & Algorithms", "type": "Theory", "credits": 4 },
+                { "code": "CS-622", "name": "Network & Distributed Systems", "type": "Theory", "credits": 4 },
+                { "code": "CS-623", "name": "Advanced Database Management System", "type": "Theory", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-III", "type": "Elective", "credits": 4 },
+                { "code": "CS-70X", "name": "Institute Elective", "type": "Elective", "credits": 4 },
+                { "code": "CS-624", "name": "Computational Lab–II", "type": "Lab", "credits": 2 }
+              ]
+            }
+          ]
+        },
+        {
+          "year": "M.Tech 2nd Year",
+          "semesters": [
+            {
+              "semester": "3rd Semester",
+              "type": "Odd",
+              "totalCredits": 18,
+              "subjects": [
+                { "code": "CS-798", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 18 }
+              ]
+            },
+            {
+              "semester": "4th Semester",
+              "type": "Even",
+              "totalCredits": 18,
+              "subjects": [
+                { "code": "CS-799", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 18 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "mtech_cse_ai": {
+      "title": "M.Tech in CSE [Artificial Intelligence] (Regular 2-Year)",
+      "curriculum": [
+        {
+          "year": "M.Tech 1st Year",
+          "semesters": [
+            {
+              "semester": "1st Semester",
+              "type": "Odd",
+              "totalCredits": 22,
+              "subjects": [
+                { "code": "CS-631", "name": "Artificial Intelligence and Intelligent Systems", "type": "Theory", "credits": 4 },
+                { "code": "CS-632", "name": "Mathematics for Machine Learning", "type": "Theory", "credits": 4 },
+                { "code": "CS-633", "name": "Applied Optimization", "type": "Theory", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-I", "type": "Elective", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-II", "type": "Elective", "credits": 4 },
+                { "code": "CS-634", "name": "AI based Programming Lab", "type": "Lab", "credits": 2 }
+              ]
+            },
+            {
+              "semester": "2nd Semester",
+              "type": "Even",
+              "totalCredits": 22,
+              "subjects": [
+                { "code": "CS-641", "name": "Deep Learning", "type": "Theory", "credits": 4 },
+                { "code": "CS-642", "name": "Natural Language Processing", "type": "Theory", "credits": 4 },
+                { "code": "CS-643", "name": "Reinforcement Learning", "type": "Theory", "credits": 4 },
+                { "code": "CS-7MN", "name": "Programme Elective-III", "type": "Elective", "credits": 4 },
+                { "code": "CS-70X", "name": "Institute Elective", "type": "Elective", "credits": 4 },
+                { "code": "CS-644", "name": "Deep Learning and Data Analytics Lab", "type": "Lab", "credits": 2 }
+              ]
+            }
+          ]
+        },
+        {
+          "year": "M.Tech 2nd Year",
+          "semesters": [
+            {
+              "semester": "3rd Semester",
+              "type": "Odd",
+              "totalCredits": 18,
+              "subjects": [
+                { "code": "CS-798", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 18 }
+              ]
+            },
+            {
+              "semester": "4th Semester",
+              "type": "Even",
+              "totalCredits": 18,
+              "subjects": [
+                { "code": "CS-799", "name": "M.Tech. Dissertation", "type": "Dissertation", "credits": 18 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
