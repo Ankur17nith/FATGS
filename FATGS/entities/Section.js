@@ -33,7 +33,21 @@ class Section {
             { start: '15:00', end: '16:00', isLunch: false },
             { start: '16:00', end: '17:00', isLunch: false }
         ];
+
+        this.slots = this.days.map(day => 
+        this.timeIntervals.map(interval => ({
+           day: day,
+           time: `${interval.start} - ${interval.end}`,
+           isLunch: interval.isLunch,
+           booked: false, 
+           subject: null,
+           faculty:null
+  }))
+);
+
     }
+        
 }
+
 
 module.exports={Section};

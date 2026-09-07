@@ -7,6 +7,7 @@ class Room{
         //place holder
         this.table= new Map();
     }
+    
 }
 
 module.exports=Room;

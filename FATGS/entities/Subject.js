@@ -12,6 +12,7 @@ class Subject{
         this.name=name;
         this.credit=credit;
         this.type=type;
+        this.faculty;
     }
 }
 
