@@ -6,41 +6,8 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-218",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Monday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-218",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Monday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-215",
-    "faculty": "Faculty L",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Monday",
-    "start": "12:00",
-    "end": "13:00",
     "subjectCode": "EC-219",
-    "faculty": "Faculty M",
+    "faculty": "Faculty G",
     "room": "B1"
   },
   {
@@ -48,186 +15,197 @@
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Monday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty I",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Tuesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "MA-219",
-    "faculty": "Faculty N",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Tuesday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "EC-219",
-    "faculty": "Faculty M",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Tuesday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-213",
-    "faculty": "Faculty J",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Tuesday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty D",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Wednesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty D",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Wednesday",
     "start": "10:00",
     "end": "11:00",
     "subjectCode": "CS-215",
-    "faculty": "Faculty L",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Wednesday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "MA-219",
-    "faculty": "Faculty N",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Wednesday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-213",
-    "faculty": "Faculty J",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Wednesday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty I",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-213",
-    "faculty": "Faculty J",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-215",
-    "faculty": "Faculty L",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty I",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "MA-219",
-    "faculty": "Faculty N",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty D",
-    "room": "B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Friday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-217",
     "faculty": "Faculty C",
-    "room": "LAB B1"
+    "room": "B1"
   },
   {
     "section": "CS2",
     "year": "2nd Year",
     "semester": "3rd Semester",
-    "day": "Friday",
+    "day": "Monday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-214",
+    "faculty": "Faculty B",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Monday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-217",
+    "subjectCode": "MA-219",
+    "faculty": "Faculty N",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Monday",
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty H",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-212",
+    "faculty": "Faculty I",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty H",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-215",
     "faculty": "Faculty C",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "EC-219",
+    "faculty": "Faculty G",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "CS-214",
+    "faculty": "Faculty B",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-218",
+    "faculty": "Faculty O",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-218",
+    "faculty": "Faculty O",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty H",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-212",
+    "faculty": "Faculty I",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "MA-219",
+    "faculty": "Faculty N",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Thursday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-217",
+    "faculty": "Faculty E",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Thursday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-217",
+    "faculty": "Faculty E",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Thursday",
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "CS-219",
+    "faculty": "Faculty J",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Thursday",
+    "start": "15:00",
+    "end": "16:00",
+    "subjectCode": "CS-219",
+    "faculty": "Faculty J",
     "room": "LAB B1"
   },
   {
@@ -235,22 +213,44 @@
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Friday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-219",
-    "faculty": "Faculty D",
-    "room": "LAB B1"
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-215",
+    "faculty": "Faculty C",
+    "room": "B1"
   },
   {
     "section": "CS2",
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Friday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-219",
-    "faculty": "Faculty D",
-    "room": "LAB B1"
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-212",
+    "faculty": "Faculty I",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Friday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "MA-219",
+    "faculty": "Faculty N",
+    "room": "B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Friday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-214",
+    "faculty": "Faculty B",
+    "room": "B1"
   },
   {
     "section": "CD2",
@@ -259,8 +259,8 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-215",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-214",
+    "faculty": "Faculty J",
     "room": "B2"
   },
   {
@@ -270,8 +270,8 @@
     "day": "Monday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-213",
-    "faculty": "Faculty J",
+    "subjectCode": "CS-215",
+    "faculty": "Faculty N",
     "room": "B2"
   },
   {
@@ -281,8 +281,8 @@
     "day": "Monday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty B",
+    "subjectCode": "EC-219",
+    "faculty": "Faculty I",
     "room": "B2"
   },
   {
@@ -292,8 +292,8 @@
     "day": "Monday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty L",
+    "subjectCode": "MA-219",
+    "faculty": "Faculty E",
     "room": "B2"
   },
   {
@@ -303,19 +303,8 @@
     "day": "Monday",
     "start": "14:00",
     "end": "15:00",
-    "subjectCode": "MA-219",
+    "subjectCode": "CS-212",
     "faculty": "Faculty G",
-    "room": "B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Monday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "EC-219",
-    "faculty": "Faculty D",
     "room": "B2"
   },
   {
@@ -325,9 +314,9 @@
     "day": "Tuesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-213",
-    "faculty": "Faculty J",
-    "room": "B2"
+    "subjectCode": "CS-219",
+    "faculty": "Faculty L",
+    "room": "LAB B1"
   },
   {
     "section": "CD2",
@@ -336,9 +325,9 @@
     "day": "Tuesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty B",
-    "room": "B2"
+    "subjectCode": "CS-219",
+    "faculty": "Faculty L",
+    "room": "LAB B1"
   },
   {
     "section": "CD2",
@@ -348,7 +337,18 @@
     "start": "11:00",
     "end": "12:00",
     "subjectCode": "MA-219",
-    "faculty": "Faculty G",
+    "faculty": "Faculty E",
+    "room": "B2"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Tuesday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty L",
     "room": "B2"
   },
   {
@@ -358,20 +358,9 @@
     "day": "Tuesday",
     "start": "14:00",
     "end": "15:00",
-    "subjectCode": "CS-219",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Tuesday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-219",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
+    "subjectCode": "EC-219",
+    "faculty": "Faculty I",
+    "room": "B2"
   },
   {
     "section": "CD2",
@@ -380,9 +369,9 @@
     "day": "Wednesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-217",
-    "faculty": "Faculty H",
-    "room": "LAB B1"
+    "subjectCode": "CS-218",
+    "faculty": "Faculty B",
+    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -391,9 +380,9 @@
     "day": "Wednesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-217",
-    "faculty": "Faculty H",
-    "room": "LAB B1"
+    "subjectCode": "CS-218",
+    "faculty": "Faculty B",
+    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -402,8 +391,8 @@
     "day": "Wednesday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "EC-219",
-    "faculty": "Faculty D",
+    "subjectCode": "CS-215",
+    "faculty": "Faculty N",
     "room": "B2"
   },
   {
@@ -411,9 +400,31 @@
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Wednesday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "MA-219",
+    "start": "15:00",
+    "end": "16:00",
+    "subjectCode": "CS-217",
+    "faculty": "Faculty F",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Wednesday",
+    "start": "16:00",
+    "end": "17:00",
+    "subjectCode": "CS-217",
+    "faculty": "Faculty F",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Thursday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-212",
     "faculty": "Faculty G",
     "room": "B2"
   },
@@ -422,21 +433,10 @@
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Thursday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty L",
-    "room": "B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Thursday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-214",
-    "faculty": "Faculty B",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty L",
     "room": "B2"
   },
   {
@@ -446,8 +446,8 @@
     "day": "Thursday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-215",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-214",
+    "faculty": "Faculty J",
     "room": "B2"
   },
   {
@@ -457,7 +457,40 @@
     "day": "Thursday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-213",
+    "subjectCode": "CS-215",
+    "faculty": "Faculty N",
+    "room": "B2"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Friday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-212",
+    "faculty": "Faculty G",
+    "room": "B2"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Friday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "MA-219",
+    "faculty": "Faculty E",
+    "room": "B2"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "3rd Semester",
+    "day": "Friday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-214",
     "faculty": "Faculty J",
     "room": "B2"
   },
@@ -466,43 +499,10 @@
     "year": "2nd Year",
     "semester": "3rd Semester",
     "day": "Friday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-218",
-    "faculty": "Faculty D",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Friday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-218",
-    "faculty": "Faculty D",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Friday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-212",
-    "faculty": "Faculty L",
-    "room": "B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "3rd Semester",
-    "day": "Friday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-215",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-213",
+    "faculty": "Faculty L",
     "room": "B2"
   },
   {
@@ -513,7 +513,7 @@
     "start": "09:00",
     "end": "10:00",
     "subjectCode": "CS-221",
-    "faculty": "Faculty G",
+    "faculty": "Faculty C",
     "room": "B4"
   },
   {
@@ -524,7 +524,7 @@
     "start": "10:00",
     "end": "11:00",
     "subjectCode": "CS-224",
-    "faculty": "Faculty L",
+    "faculty": "Faculty A",
     "room": "B4"
   },
   {
@@ -534,8 +534,8 @@
     "day": "Monday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-223",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-222",
+    "faculty": "Faculty M",
     "room": "B4"
   },
   {
@@ -543,9 +543,108 @@
     "year": "2nd Year",
     "semester": "4th Semester",
     "day": "Monday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-223",
+    "faculty": "Faculty I",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-224",
+    "faculty": "Faculty A",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-221",
+    "faculty": "Faculty C",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-223",
+    "faculty": "Faculty I",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
     "start": "12:00",
     "end": "13:00",
     "subjectCode": "SA-201",
+    "faculty": "Faculty E",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Wednesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-227",
+    "faculty": "Faculty F",
+    "room": "P1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Wednesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-227",
+    "faculty": "Faculty F",
+    "room": "P1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Wednesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-225",
+    "faculty": "Faculty E",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Wednesday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-225",
+    "faculty": "Faculty E",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Thursday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-223",
     "faculty": "Faculty I",
     "room": "B4"
   },
@@ -553,177 +652,78 @@
     "section": "CS2",
     "year": "2nd Year",
     "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-221",
-    "faculty": "Faculty G",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-223",
-    "faculty": "Faculty E",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-227",
-    "faculty": "Faculty H",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-227",
-    "faculty": "Faculty H",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-224",
-    "faculty": "Faculty L",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Wednesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-221",
-    "faculty": "Faculty G",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Wednesday",
+    "day": "Thursday",
     "start": "10:00",
     "end": "11:00",
     "subjectCode": "CS-222",
-    "faculty": "Faculty B",
+    "faculty": "Faculty M",
     "room": "B4"
   },
   {
     "section": "CS2",
     "year": "2nd Year",
     "semester": "4th Semester",
-    "day": "Wednesday",
+    "day": "Thursday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-221",
+    "faculty": "Faculty C",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Thursday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-224",
+    "faculty": "Faculty A",
+    "room": "B4"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Friday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-226",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Friday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-226",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Friday",
     "start": "11:00",
     "end": "12:00",
     "subjectCode": "CS-224",
-    "faculty": "Faculty L",
+    "faculty": "Faculty A",
     "room": "B4"
   },
   {
     "section": "CS2",
     "year": "2nd Year",
     "semester": "4th Semester",
-    "day": "Wednesday",
+    "day": "Friday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-223",
-    "faculty": "Faculty E",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Thursday",
-    "start": "09:00",
-    "end": "10:00",
     "subjectCode": "CS-222",
-    "faculty": "Faculty B",
+    "faculty": "Faculty M",
     "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Thursday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-225",
-    "faculty": "Faculty L",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Thursday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-225",
-    "faculty": "Faculty L",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Friday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-224",
-    "faculty": "Faculty L",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Friday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-222",
-    "faculty": "Faculty B",
-    "room": "B4"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Friday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-226",
-    "faculty": "Faculty B",
-    "room": "LAB B2"
-  },
-  {
-    "section": "CS2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Friday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-226",
-    "faculty": "Faculty B",
-    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -732,7 +732,7 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-223",
+    "subjectCode": "CS-222",
     "faculty": "Faculty H",
     "room": "G5"
   },
@@ -743,8 +743,8 @@
     "day": "Monday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-222",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-221",
+    "faculty": "Faculty I",
     "room": "G5"
   },
   {
@@ -754,19 +754,41 @@
     "day": "Monday",
     "start": "11:00",
     "end": "12:00",
+    "subjectCode": "CS-224",
+    "faculty": "Faculty L",
+    "room": "G5"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Monday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-223",
+    "faculty": "Faculty F",
+    "room": "G5"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-222",
+    "faculty": "Faculty H",
+    "room": "G5"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Tuesday",
+    "start": "10:00",
+    "end": "11:00",
     "subjectCode": "SA-201",
-    "faculty": "Faculty A",
-    "room": "G5"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Monday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-224",
-    "faculty": "Faculty N",
+    "faculty": "Faculty M",
     "room": "G5"
   },
   {
@@ -774,9 +796,20 @@
     "year": "2nd Year",
     "semester": "4th Semester",
     "day": "Tuesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-223",
+    "faculty": "Faculty F",
+    "room": "G5"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Wednesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-221",
+    "subjectCode": "CS-224",
     "faculty": "Faculty L",
     "room": "G5"
   },
@@ -784,56 +817,12 @@
     "section": "CD2",
     "year": "2nd Year",
     "semester": "4th Semester",
-    "day": "Tuesday",
+    "day": "Wednesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-224",
-    "faculty": "Faculty N",
+    "subjectCode": "CS-221",
+    "faculty": "Faculty I",
     "room": "G5"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-227",
-    "faculty": "Faculty O",
-    "room": "LAB B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Tuesday",
-    "start": "16:00",
-    "end": "17:00",
-    "subjectCode": "CS-227",
-    "faculty": "Faculty O",
-    "room": "LAB B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Wednesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-225",
-    "faculty": "Faculty E",
-    "room": "LAB B2"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Wednesday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-225",
-    "faculty": "Faculty E",
-    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -843,7 +832,7 @@
     "start": "11:00",
     "end": "12:00",
     "subjectCode": "CS-223",
-    "faculty": "Faculty H",
+    "faculty": "Faculty F",
     "room": "G5"
   },
   {
@@ -853,19 +842,8 @@
     "day": "Wednesday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-221",
-    "faculty": "Faculty L",
-    "room": "G5"
-  },
-  {
-    "section": "CD2",
-    "year": "2nd Year",
-    "semester": "4th Semester",
-    "day": "Wednesday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-224",
-    "faculty": "Faculty N",
+    "subjectCode": "CS-222",
+    "faculty": "Faculty H",
     "room": "G5"
   },
   {
@@ -875,9 +853,9 @@
     "day": "Thursday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-222",
-    "faculty": "Faculty E",
-    "room": "G5"
+    "subjectCode": "CS-227",
+    "faculty": "Faculty N",
+    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -886,9 +864,9 @@
     "day": "Thursday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-224",
+    "subjectCode": "CS-227",
     "faculty": "Faculty N",
-    "room": "G5"
+    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -897,9 +875,31 @@
     "day": "Thursday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-221",
+    "subjectCode": "CS-224",
     "faculty": "Faculty L",
     "room": "G5"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Thursday",
+    "start": "15:00",
+    "end": "16:00",
+    "subjectCode": "CS-225",
+    "faculty": "Faculty E",
+    "room": "LAB B2"
+  },
+  {
+    "section": "CD2",
+    "year": "2nd Year",
+    "semester": "4th Semester",
+    "day": "Thursday",
+    "start": "16:00",
+    "end": "17:00",
+    "subjectCode": "CS-225",
+    "faculty": "Faculty E",
+    "room": "LAB B2"
   },
   {
     "section": "CD2",
@@ -908,8 +908,8 @@
     "day": "Friday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-223",
-    "faculty": "Faculty H",
+    "subjectCode": "CS-221",
+    "faculty": "Faculty I",
     "room": "G5"
   },
   {
@@ -919,8 +919,8 @@
     "day": "Friday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-222",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-224",
+    "faculty": "Faculty L",
     "room": "G5"
   },
   {
@@ -928,22 +928,22 @@
     "year": "2nd Year",
     "semester": "4th Semester",
     "day": "Friday",
-    "start": "15:00",
-    "end": "16:00",
+    "start": "11:00",
+    "end": "12:00",
     "subjectCode": "CS-226",
     "faculty": "Faculty F",
-    "room": "P1"
+    "room": "LAB B1"
   },
   {
     "section": "CD2",
     "year": "2nd Year",
     "semester": "4th Semester",
     "day": "Friday",
-    "start": "16:00",
-    "end": "17:00",
+    "start": "12:00",
+    "end": "13:00",
     "subjectCode": "CS-226",
     "faculty": "Faculty F",
-    "room": "P1"
+    "room": "LAB B1"
   },
   {
     "section": "CS3",
@@ -952,8 +952,8 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-311",
-    "faculty": "Faculty C",
+    "subjectCode": "CS-314",
+    "faculty": "Faculty L",
     "room": "F4"
   },
   {
@@ -964,7 +964,7 @@
     "start": "10:00",
     "end": "11:00",
     "subjectCode": "CS-313",
-    "faculty": "Faculty G",
+    "faculty": "Faculty H",
     "room": "F4"
   },
   {
@@ -972,11 +972,22 @@
     "year": "3rd Year",
     "semester": "5th Semester",
     "day": "Monday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty D",
-    "room": "F4"
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "CS-316",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Monday",
+    "start": "15:00",
+    "end": "16:00",
+    "subjectCode": "CS-316",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
   },
   {
     "section": "CS3",
@@ -986,7 +997,7 @@
     "start": "09:00",
     "end": "10:00",
     "subjectCode": "CS-311",
-    "faculty": "Faculty C",
+    "faculty": "Faculty N",
     "room": "F4"
   },
   {
@@ -996,8 +1007,8 @@
     "day": "Tuesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty D",
+    "subjectCode": "CS-312",
+    "faculty": "Faculty E",
     "room": "F4"
   },
   {
@@ -1007,8 +1018,8 @@
     "day": "Tuesday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-312",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-314",
+    "faculty": "Faculty L",
     "room": "F4"
   },
   {
@@ -1018,8 +1029,8 @@
     "day": "Tuesday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-313",
-    "faculty": "Faculty G",
+    "subjectCode": "CS-311",
+    "faculty": "Faculty N",
     "room": "F4"
   },
   {
@@ -1029,8 +1040,8 @@
     "day": "Wednesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-311",
-    "faculty": "Faculty C",
+    "subjectCode": "CS-313",
+    "faculty": "Faculty H",
     "room": "F4"
   },
   {
@@ -1040,17 +1051,6 @@
     "day": "Wednesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty D",
-    "room": "F4"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Wednesday",
-    "start": "11:00",
-    "end": "12:00",
     "subjectCode": "CS-312",
     "faculty": "Faculty E",
     "room": "F4"
@@ -1062,9 +1062,9 @@
     "day": "Thursday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-316",
-    "faculty": "Faculty H",
-    "room": "LAB B1"
+    "subjectCode": "CS-314",
+    "faculty": "Faculty L",
+    "room": "F4"
   },
   {
     "section": "CS3",
@@ -1073,9 +1073,9 @@
     "day": "Thursday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-316",
+    "subjectCode": "CS-313",
     "faculty": "Faculty H",
-    "room": "LAB B1"
+    "room": "F4"
   },
   {
     "section": "CS3",
@@ -1084,8 +1084,8 @@
     "day": "Thursday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-313",
-    "faculty": "Faculty G",
+    "subjectCode": "CS-312",
+    "faculty": "Faculty E",
     "room": "F4"
   },
   {
@@ -1095,8 +1095,8 @@
     "day": "Friday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-312",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-311",
+    "faculty": "Faculty N",
     "room": "F4"
   },
   {
@@ -1107,8 +1107,8 @@
     "start": "15:00",
     "end": "16:00",
     "subjectCode": "CS-315",
-    "faculty": "Faculty K",
-    "room": "P4"
+    "faculty": "Faculty A",
+    "room": "LAB B1"
   },
   {
     "section": "CS3",
@@ -1118,8 +1118,8 @@
     "start": "16:00",
     "end": "17:00",
     "subjectCode": "CS-315",
-    "faculty": "Faculty K",
-    "room": "P4"
+    "faculty": "Faculty A",
+    "room": "LAB B1"
   },
   {
     "section": "CD3",
@@ -1128,9 +1128,9 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-315",
-    "faculty": "Faculty B",
-    "room": "LAB B2"
+    "subjectCode": "CS-313",
+    "faculty": "Faculty K",
+    "room": "F6"
   },
   {
     "section": "CD3",
@@ -1139,163 +1139,152 @@
     "day": "Monday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-315",
-    "faculty": "Faculty B",
-    "room": "LAB B2"
+    "subjectCode": "CS-311",
+    "faculty": "Faculty D",
+    "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Monday",
+    "day": "Tuesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-313",
+    "faculty": "Faculty K",
+    "room": "F6"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Tuesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-311",
+    "faculty": "Faculty D",
+    "room": "F6"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Wednesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-312",
+    "faculty": "Faculty I",
+    "room": "F6"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Wednesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-314",
+    "faculty": "Faculty M",
+    "room": "F6"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Wednesday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-312",
-    "faculty": "Faculty H",
+    "subjectCode": "CS-314",
+    "faculty": "Faculty M",
     "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Monday",
+    "day": "Wednesday",
     "start": "12:00",
     "end": "13:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty E",
+    "subjectCode": "CS-311",
+    "faculty": "Faculty D",
     "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Monday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty E",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Tuesday",
+    "day": "Thursday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-312",
-    "faculty": "Faculty H",
+    "subjectCode": "CS-314",
+    "faculty": "Faculty M",
     "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Tuesday",
+    "day": "Thursday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-313",
-    "faculty": "Faculty A",
+    "subjectCode": "CS-312",
+    "faculty": "Faculty I",
     "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Tuesday",
-    "start": "14:00",
-    "end": "15:00",
-    "subjectCode": "CS-316",
-    "faculty": "Faculty I",
-    "room": "P1"
+    "day": "Thursday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-313",
+    "faculty": "Faculty K",
+    "room": "F6"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
-    "day": "Tuesday",
+    "day": "Friday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-315",
+    "faculty": "Faculty K",
+    "room": "LAB B2"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Friday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-315",
+    "faculty": "Faculty K",
+    "room": "LAB B2"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "5th Semester",
+    "day": "Friday",
     "start": "15:00",
     "end": "16:00",
     "subjectCode": "CS-316",
-    "faculty": "Faculty I",
-    "room": "P1"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Wednesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-311",
-    "faculty": "Faculty M",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Wednesday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-313",
-    "faculty": "Faculty A",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Thursday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-311",
-    "faculty": "Faculty M",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Thursday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-314",
-    "faculty": "Faculty E",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Thursday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-312",
-    "faculty": "Faculty H",
-    "room": "F6"
+    "faculty": "Faculty L",
+    "room": "LAB B2"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "5th Semester",
     "day": "Friday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-311",
-    "faculty": "Faculty M",
-    "room": "F6"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "5th Semester",
-    "day": "Friday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-313",
-    "faculty": "Faculty A",
-    "room": "F6"
+    "start": "16:00",
+    "end": "17:00",
+    "subjectCode": "CS-316",
+    "faculty": "Faculty L",
+    "room": "LAB B2"
   },
   {
     "section": "CS3",
@@ -1304,7 +1293,18 @@
     "day": "Monday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-322",
+    "subjectCode": "CS-323",
+    "faculty": "Faculty N",
+    "room": "S2"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Monday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-321",
     "faculty": "Faculty J",
     "room": "S2"
   },
@@ -1312,33 +1312,11 @@
     "section": "CS3",
     "year": "3rd Year",
     "semester": "6th Semester",
-    "day": "Monday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-325",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Monday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-325",
-    "faculty": "Faculty F",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
     "day": "Tuesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-323",
-    "faculty": "Faculty K",
+    "subjectCode": "CS-321",
+    "faculty": "Faculty J",
     "room": "S2"
   },
   {
@@ -1346,9 +1324,42 @@
     "year": "3rd Year",
     "semester": "6th Semester",
     "day": "Tuesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-324",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Tuesday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-324",
+    "faculty": "Faculty M",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Wednesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-323",
+    "faculty": "Faculty N",
+    "room": "S2"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Wednesday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-321",
+    "subjectCode": "CS-322",
     "faculty": "Faculty H",
     "room": "S2"
   },
@@ -1356,7 +1367,7 @@
     "section": "CS3",
     "year": "3rd Year",
     "semester": "6th Semester",
-    "day": "Tuesday",
+    "day": "Wednesday",
     "start": "11:00",
     "end": "12:00",
     "subjectCode": "HS-321",
@@ -1367,34 +1378,34 @@
     "section": "CS3",
     "year": "3rd Year",
     "semester": "6th Semester",
-    "day": "Tuesday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-322",
-    "faculty": "Faculty J",
-    "room": "S2"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Wednesday",
+    "day": "Thursday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-323",
-    "faculty": "Faculty K",
+    "subjectCode": "CS-322",
+    "faculty": "Faculty H",
     "room": "S2"
   },
   {
     "section": "CS3",
     "year": "3rd Year",
     "semester": "6th Semester",
-    "day": "Wednesday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-322",
-    "faculty": "Faculty J",
-    "room": "S2"
+    "day": "Thursday",
+    "start": "14:00",
+    "end": "15:00",
+    "subjectCode": "CS-325",
+    "faculty": "Faculty D",
+    "room": "P1"
+  },
+  {
+    "section": "CS3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Thursday",
+    "start": "15:00",
+    "end": "16:00",
+    "subjectCode": "CS-325",
+    "faculty": "Faculty D",
+    "room": "P1"
   },
   {
     "section": "CS3",
@@ -1403,9 +1414,9 @@
     "day": "Friday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-324",
-    "faculty": "Faculty J",
-    "room": "LAB B2"
+    "subjectCode": "CS-322",
+    "faculty": "Faculty H",
+    "room": "S2"
   },
   {
     "section": "CS3",
@@ -1414,9 +1425,9 @@
     "day": "Friday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-324",
+    "subjectCode": "CS-321",
     "faculty": "Faculty J",
-    "room": "LAB B2"
+    "room": "S2"
   },
   {
     "section": "CS3",
@@ -1425,28 +1436,6 @@
     "day": "Friday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-321",
-    "faculty": "Faculty H",
-    "room": "S2"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Friday",
-    "start": "12:00",
-    "end": "13:00",
-    "subjectCode": "CS-321",
-    "faculty": "Faculty H",
-    "room": "S2"
-  },
-  {
-    "section": "CS3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Friday",
-    "start": "14:00",
-    "end": "15:00",
     "subjectCode": "HS-321",
     "faculty": "Faculty L",
     "room": "S2"
@@ -1459,7 +1448,7 @@
     "start": "09:00",
     "end": "10:00",
     "subjectCode": "CS-321",
-    "faculty": "Faculty K",
+    "faculty": "Faculty D",
     "room": "CSE-III"
   },
   {
@@ -1469,8 +1458,8 @@
     "day": "Monday",
     "start": "10:00",
     "end": "11:00",
-    "subjectCode": "CS-322",
-    "faculty": "Faculty I",
+    "subjectCode": "CS-323",
+    "faculty": "Faculty K",
     "room": "CSE-III"
   },
   {
@@ -1480,8 +1469,8 @@
     "day": "Monday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "HS-321",
-    "faculty": "Faculty G",
+    "subjectCode": "CS-322",
+    "faculty": "Faculty J",
     "room": "CSE-III"
   },
   {
@@ -1491,8 +1480,19 @@
     "day": "Tuesday",
     "start": "09:00",
     "end": "10:00",
-    "subjectCode": "CS-323",
-    "faculty": "Faculty E",
+    "subjectCode": "HS-321",
+    "faculty": "Faculty B",
+    "room": "CSE-III"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Tuesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-322",
+    "faculty": "Faculty J",
     "room": "CSE-III"
   },
   {
@@ -1502,107 +1502,96 @@
     "day": "Tuesday",
     "start": "11:00",
     "end": "12:00",
-    "subjectCode": "CS-324",
-    "faculty": "Faculty I",
-    "room": "LAB B2"
+    "subjectCode": "CS-321",
+    "faculty": "Faculty D",
+    "room": "CSE-III"
   },
   {
     "section": "CD3",
     "year": "3rd Year",
     "semester": "6th Semester",
-    "day": "Tuesday",
+    "day": "Wednesday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-322",
+    "faculty": "Faculty J",
+    "room": "CSE-III"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Wednesday",
+    "start": "10:00",
+    "end": "11:00",
+    "subjectCode": "CS-323",
+    "faculty": "Faculty K",
+    "room": "CSE-III"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Wednesday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "HS-321",
+    "faculty": "Faculty B",
+    "room": "CSE-III"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Thursday",
+    "start": "09:00",
+    "end": "10:00",
+    "subjectCode": "CS-321",
+    "faculty": "Faculty D",
+    "room": "CSE-III"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Thursday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-325",
+    "faculty": "Faculty F",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Thursday",
+    "start": "12:00",
+    "end": "13:00",
+    "subjectCode": "CS-325",
+    "faculty": "Faculty F",
+    "room": "LAB B1"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Friday",
+    "start": "11:00",
+    "end": "12:00",
+    "subjectCode": "CS-324",
+    "faculty": "Faculty G",
+    "room": "P1"
+  },
+  {
+    "section": "CD3",
+    "year": "3rd Year",
+    "semester": "6th Semester",
+    "day": "Friday",
     "start": "12:00",
     "end": "13:00",
     "subjectCode": "CS-324",
-    "faculty": "Faculty I",
-    "room": "LAB B2"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Wednesday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-322",
-    "faculty": "Faculty I",
-    "room": "CSE-III"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Wednesday",
-    "start": "15:00",
-    "end": "16:00",
-    "subjectCode": "CS-325",
-    "faculty": "Faculty A",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Wednesday",
-    "start": "16:00",
-    "end": "17:00",
-    "subjectCode": "CS-325",
-    "faculty": "Faculty A",
-    "room": "LAB B1"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Thursday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-321",
-    "faculty": "Faculty K",
-    "room": "CSE-III"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Thursday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "HS-321",
     "faculty": "Faculty G",
-    "room": "CSE-III"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Friday",
-    "start": "09:00",
-    "end": "10:00",
-    "subjectCode": "CS-322",
-    "faculty": "Faculty I",
-    "room": "CSE-III"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Friday",
-    "start": "10:00",
-    "end": "11:00",
-    "subjectCode": "CS-321",
-    "faculty": "Faculty K",
-    "room": "CSE-III"
-  },
-  {
-    "section": "CD3",
-    "year": "3rd Year",
-    "semester": "6th Semester",
-    "day": "Friday",
-    "start": "11:00",
-    "end": "12:00",
-    "subjectCode": "CS-323",
-    "faculty": "Faculty E",
-    "room": "CSE-III"
+    "room": "P1"
   }
 ]
