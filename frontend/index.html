@@ -11,7 +11,7 @@
   <style>
     /* ============================================================
        FATGS DESIGN SYSTEM — Institutional Academic Framework
-       Inspired by NIT Hamirpur visual identity
+       Visual language matching TT_TRACKER reference
        ============================================================ */
     :root {
       --institutional-navy: #002147;
@@ -35,10 +35,17 @@
       --radius-lg: 8px;
       --radius-pill: 9999px;
       --shadow-card: 0 1px 3px rgba(0, 33, 71, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 33, 71, 0.08);
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-900: #0f172a;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body { max-width: 100%; overflow-x: hidden; }
 
     body {
@@ -56,7 +63,7 @@
     }
 
     /* ============================================================
-       HEADER — Two-Tier Institutional
+       HEADER — Two-Tier Institutional (TT_TRACKER style)
        ============================================================ */
     header.institutional-header {
       width: 100%;
@@ -81,15 +88,31 @@
       gap: 16px;
     }
 
-    .brand-container {
+    .nith-brand-container {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
     }
 
-    .brand-logo {
-      width: 56px;
-      height: 56px;
+    .nith-logo-wrapper {
+      width: 68px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nith-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nith-logo-fallback {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       background: var(--institutional-navy);
       color: var(--nit-gold);
@@ -97,29 +120,36 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 13px;
-      flex-shrink: 0;
-      letter-spacing: 0.02em;
+      font-size: 14px;
     }
 
-    .brand-titles {
+    .nith-titles-stack {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      justify-content: center;
+      gap: 2px;
     }
 
-    .brand-institution {
-      font-size: 1.15rem;
+    .nith-hindi-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .nith-english-title {
+      font-size: 1.3rem;
       font-weight: 800;
       color: #000;
       line-height: 1.2;
       letter-spacing: -0.015em;
     }
 
-    .brand-department {
+    .nith-tagline {
       font-size: 0.82rem;
       font-weight: 400;
-      color: #475569;
+      color: var(--slate-600);
       line-height: 1.3;
     }
 
@@ -150,7 +180,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 44px;
+      height: 46px;
       padding: 0 24px;
     }
 
@@ -159,7 +189,12 @@
       align-items: center;
       gap: 20px;
       height: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+
+    .nav-links::-webkit-scrollbar { display: none; }
 
     .nav-item {
       color: rgba(255, 255, 255, 0.8);
@@ -172,14 +207,18 @@
       align-items: center;
       transition: color 0.15s ease;
       white-space: nowrap;
-      cursor: default;
+      cursor: pointer;
     }
+
+    .nav-item:hover { color: #fff; }
 
     .nav-item.active {
       color: var(--nit-gold);
       border-bottom: 3px solid var(--nit-gold);
       font-weight: 700;
     }
+
+    a.nav-item { cursor: pointer; }
 
     .nav-status {
       margin-left: auto;
@@ -197,7 +236,7 @@
       text-transform: uppercase;
     }
 
-    .badge-local { background: #008543; color: #fff; }
+    .badge-local { background: var(--success-emerald); color: #fff; }
 
     /* ============================================================
        MAIN CONTENT CANVAS
@@ -206,11 +245,11 @@
       flex-grow: 1;
       width: 100%;
       max-width: var(--container-max);
-      margin: 20px auto;
+      margin: 24px auto;
       padding: 0 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
     }
 
     /* Toolbar Card */
@@ -218,11 +257,11 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 16px 20px;
+      padding: 18px 22px;
       box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
 
     .toolbar-row-top {
@@ -231,8 +270,8 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 12px;
+      border-bottom: 1px solid var(--slate-200);
+      padding-bottom: 14px;
     }
 
     .page-heading h1 {
@@ -280,22 +319,24 @@
     }
 
     .control-label {
-      font-weight: 600;
+      font-weight: 700;
       color: var(--institutional-navy);
       white-space: nowrap;
-      font-size: 13px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     select.form-control {
-      background: #fff;
-      border: 1px solid var(--border-subtle);
-      padding: 7px 12px;
-      border-radius: var(--radius-sm);
+      background: var(--slate-50);
+      border: 1.5px solid var(--slate-300);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-main);
       outline: none;
-      min-width: 140px;
+      min-width: 150px;
       max-width: 200px;
       transition: border-color 0.15s ease;
       cursor: pointer;
@@ -304,13 +345,14 @@
 
     select.form-control:focus {
       border-color: var(--institutional-navy);
-      box-shadow: 0 0 0 2px rgba(0, 33, 71, 0.1);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.1);
     }
 
     /* Buttons */
     .btn {
       border: 1px solid transparent;
-      padding: 8px 16px;
+      padding: 9px 18px;
       border-radius: var(--radius-sm);
       font-size: 13px;
       font-weight: 600;
@@ -333,7 +375,10 @@
       border-color: var(--institutional-navy);
     }
 
-    .btn-primary:hover { background: var(--institutional-navy-hover); }
+    .btn-primary:hover {
+      background: var(--institutional-navy-hover);
+      transform: translateY(-1px);
+    }
 
     .btn-success {
       background: var(--success-emerald);
@@ -341,7 +386,10 @@
       border-color: var(--success-emerald);
     }
 
-    .btn-success:hover { background: #006d36; }
+    .btn-success:hover {
+      background: #006d36;
+      transform: translateY(-1px);
+    }
 
     /* ============================================================
        PANEL CARDS
@@ -356,7 +404,7 @@
 
     .panel-header {
       padding: 14px 20px;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--slate-200);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -396,20 +444,20 @@
     }
 
     .alloc-table th {
-      background: #f8f9fa;
+      background: var(--slate-50);
       color: var(--institutional-navy);
       font-weight: 700;
-      padding: 10px 14px;
+      padding: 12px 14px;
       text-align: left;
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       border-bottom: 2px solid var(--border-subtle);
     }
 
     .alloc-table td {
       padding: 10px 14px;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--slate-200);
       vertical-align: middle;
     }
 
@@ -417,12 +465,12 @@
     .alloc-table tbody tr:last-child td { border-bottom: none; }
 
     .alloc-table select {
-      background: #fff;
-      border: 1px solid var(--border-subtle);
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
+      background: var(--slate-50);
+      border: 1.5px solid var(--slate-300);
+      padding: 7px 12px;
+      border-radius: var(--radius-md);
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-main);
       outline: none;
       width: 100%;
@@ -433,26 +481,25 @@
 
     .alloc-table select:focus {
       border-color: var(--institutional-navy);
-      box-shadow: 0 0 0 2px rgba(0, 33, 71, 0.1);
+      box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.1);
     }
 
     .type-badge {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: var(--radius-sm);
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .type-badge-theory { background: var(--institutional-navy); color: #fff; }
     .type-badge-lab { background: var(--success-emerald); color: #fff; }
-
-    .code-cell { font-weight: 700; color: var(--institutional-navy); }
+    .code-cell { font-weight: 800; color: var(--institutional-navy); letter-spacing: -0.01em; }
 
     /* ============================================================
-       TIMETABLE GRID
+       TIMETABLE GRID — TT_TRACKER Visual Language
        ============================================================ */
     .timetable-container {
       overflow-x: auto;
@@ -466,46 +513,60 @@
       min-width: 900px;
     }
 
-    table.timetable-grid th,
-    table.timetable-grid td {
-      border: 1px solid var(--border-subtle);
-      padding: 4px;
+    /* Navy header row */
+    table.timetable-grid thead th {
+      background: var(--institutional-navy);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 14px 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       text-align: center;
-      font-size: 12px;
-      vertical-align: top;
     }
 
-    table.timetable-grid th {
-      background: #f8f9fa;
+    /* Day/Time corner header */
+    table.timetable-grid thead th.day-header-col {
+      width: 130px;
+      background: var(--institutional-navy-hover);
+      color: var(--nit-gold);
+      border-right: 2px solid var(--nit-gold);
+    }
+
+    /* Day column cells */
+    table.timetable-grid tbody th.day-header-col {
+      background: var(--slate-50);
       color: var(--institutional-navy);
-      font-weight: 700;
-      padding: 10px 6px;
+      font-weight: 800;
+      font-size: 13px;
+      text-align: center;
+      padding: 14px 8px;
+      border: 1px solid var(--slate-200);
+      border-right: 2px solid var(--institutional-navy);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      vertical-align: middle;
+    }
+
+    /* Regular cells */
+    table.timetable-grid td {
+      border: 1px solid var(--slate-200);
+      padding: 8px 6px;
+      text-align: center;
+      vertical-align: middle;
       font-size: 12px;
-      border-bottom: 2px solid var(--border-subtle);
-    }
-
-    .day-header-col {
-      width: 90px;
-      background: #edf2f7 !important;
-      font-weight: 700;
-      color: var(--institutional-navy);
-      vertical-align: middle !important;
-      font-size: 13px !important;
-    }
-
-    .cell-slot {
-      height: 94px;
-      min-height: 94px;
-      background: #ffffff;
+      min-height: 90px;
+      height: 90px;
       transition: background 0.15s ease;
-      padding: 4px;
-      position: relative;
     }
 
+    .cell-slot { background: #ffffff; }
     .cell-slot:hover { background: var(--bg-cell-highlight); }
 
     .cell-empty {
-      color: #ccc;
+      color: var(--slate-300);
+      font-weight: 500;
       font-size: 16px;
       display: flex;
       align-items: center;
@@ -513,77 +574,88 @@
       height: 100%;
     }
 
+    /* Lunch: diagonal stripe pattern */
     .cell-lunch {
-      background: #f8f9fa;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 12px;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--slate-100),
+        var(--slate-100) 10px,
+        var(--slate-200) 10px,
+        var(--slate-200) 20px
+      );
+      color: var(--slate-600);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100%;
     }
 
-    /* Class Card inside cell */
+    /* Class Card inside cell — TT_TRACKER style */
     .card-class {
       background: #ffffff;
-      border: 1px solid var(--border-subtle);
-      border-top: 3px solid var(--institutional-navy);
-      border-radius: var(--radius-sm);
-      padding: 6px 8px;
-      font-size: 11px;
-      text-align: left;
+      border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 8px 6px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: all 0.15s ease;
       height: 100%;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      border-left: 4px solid var(--institutional-navy);
     }
 
     .card-class:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 6px rgba(0, 33, 71, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 33, 71, 0.1);
+      border-color: var(--institutional-navy);
     }
 
     .card-class.is-lab {
-      border-top-color: var(--success-emerald);
+      border-left-color: var(--success-emerald);
+      background: #fbfdfc;
     }
 
     .card-code {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--institutional-navy);
-      font-size: 12px;
+      font-size: 13px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-faculty {
+      color: var(--slate-700);
+      font-size: 11px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
     }
 
-    .card-meta {
+    .room-pill {
       font-size: 10px;
-      color: var(--text-muted);
-      line-height: 1.35;
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-tags {
-      display: flex;
-      gap: 3px;
-      margin-bottom: 2px;
-    }
-
-    .tag-badge {
-      font-size: 9px;
       font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 2px;
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.02em;
     }
 
-    .tag-lab { background: var(--success-bg); color: var(--success-emerald); }
-    .tag-theory { background: #e8edf4; color: var(--institutional-navy); }
+    .room-pill.theory-room {
+      background: rgba(0, 33, 71, 0.08);
+      color: var(--institutional-navy);
+    }
+
+    .room-pill.lab-room {
+      background: var(--success-bg);
+      color: var(--success-emerald);
+    }
 
     /* ============================================================
        TOAST NOTIFICATION
@@ -600,7 +672,7 @@
       border-radius: var(--radius-md);
       font-size: 13px;
       line-height: 1.5;
-      box-shadow: var(--shadow-card);
+      box-shadow: var(--shadow-md);
       animation: toast-in 0.3s ease;
     }
 
@@ -616,13 +688,13 @@
     }
 
     /* ============================================================
-       FOOTER
+       FOOTER — TT_TRACKER 3-Column Institutional
        ============================================================ */
     footer.institutional-footer {
-      background: #0f172a;
+      background: var(--slate-900);
       color: #e2e8f0;
       border-top: 3px solid var(--nit-gold);
-      padding: 32px 0 20px 0;
+      padding: 40px 0 0 0;
       margin-top: auto;
     }
 
@@ -630,35 +702,90 @@
       max-width: var(--container-max);
       margin: 0 auto;
       padding: 0 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
     }
 
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-      flex-wrap: wrap;
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr 0.8fr;
+      gap: 40px;
+      padding-bottom: 28px;
     }
+
+    .footer-col {}
 
     .footer-brand-title {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
 
     .footer-subtext {
       font-size: 0.82rem;
       color: #94a3b8;
-      line-height: 1.5;
+      line-height: 1.6;
+    }
+
+    .footer-heading {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--nit-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .footer-link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-link-list a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.15s ease;
+    }
+
+    .footer-link-list a:hover { color: #fff; }
+
+    .dev-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .dev-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .footer-source-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .footer-source-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
     }
 
     .footer-bottom-strip {
       border-top: 1px solid #1e293b;
-      padding-top: 16px;
+      padding: 16px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -678,80 +805,81 @@
 
     @media (max-width: 991px) {
       .header-top-tier { padding: 10px 16px; }
-
-      .brand-institution { font-size: 1rem; }
-      .brand-department { font-size: 0.76rem; }
-
+      .nith-logo-wrapper { width: 54px; height: 54px; }
+      .nith-english-title { font-size: 1.1rem; }
+      .nith-hindi-title { font-size: 0.95rem; }
+      .nith-tagline { font-size: 0.75rem; }
       .app-title-badge { font-size: 0.92rem; padding-left: 12px; }
-
-      .header-nav-content { padding: 0 16px; height: 42px; }
+      .header-nav-content { padding: 0 16px; }
       .nav-item { font-size: 12px; padding: 0 4px; }
-
       .toolbar-row-top { flex-direction: column; align-items: flex-start; gap: 12px; }
       .toolbar-row-bottom { flex-direction: column; align-items: stretch; gap: 14px; }
       .toolbar-controls-left { width: 100%; }
       .toolbar-controls-right { width: 100%; justify-content: space-between; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
     }
 
     @media (max-width: 767px) {
       .header-top-content { flex-direction: column; align-items: flex-start; gap: 10px; }
-
-      .brand-logo { width: 48px; height: 48px; font-size: 11px; }
-      .brand-institution { font-size: 0.95rem; }
-      .brand-department { font-size: 0.7rem; }
-
+      .nith-logo-wrapper { width: 48px; height: 48px; }
+      .nith-english-title { font-size: 1rem; }
+      .nith-hindi-title { font-size: 0.88rem; }
+      .nith-tagline { font-size: 0.7rem; }
       .header-right-meta {
         width: 100%;
-        border-top: 1px solid #f1f5f9;
-        padding-top: 6px;
+        border-top: 1px solid var(--slate-200);
+        padding-top: 8px;
       }
-
       .app-title-badge { border-left: none; padding-left: 0; font-size: 0.88rem; }
-
-      .header-nav-content { padding: 0 12px; height: 40px; }
+      .header-nav-content { padding: 0 12px; height: 42px; }
       .nav-links { gap: 12px; }
-
-      main.studio-canvas { margin: 12px auto; padding: 0 10px; gap: 12px; }
-
-      .toolbar-card { padding: 12px; gap: 12px; }
+      main.studio-canvas { margin: 14px auto; padding: 0 10px; gap: 14px; }
+      .toolbar-card { padding: 14px; gap: 12px; }
       .page-heading h1 { font-size: 1.15rem; }
-
       .toolbar-controls-left { flex-direction: column; align-items: stretch; gap: 10px; }
       .control-field { width: 100%; justify-content: space-between; }
-
-      select.form-control { width: 100%; max-width: 100%; min-width: 0; flex: 1; padding: 8px 10px; }
-
+      select.form-control { width: 100%; max-width: 100%; min-width: 0; flex: 1; }
       .panel-header { padding: 12px 14px; }
       .alloc-table th, .alloc-table td { padding: 8px 10px; font-size: 12px; }
-
-      .footer-top { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom-strip { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
 
     @media (max-width: 479px) {
-      .brand-logo { width: 40px; height: 40px; font-size: 10px; }
-      .brand-institution { font-size: 0.88rem; }
-      .brand-department { font-size: 0.65rem; }
+      .nith-logo-wrapper { width: 40px; height: 40px; }
+      .nith-english-title { font-size: 0.9rem; }
+      .nith-hindi-title { font-size: 0.82rem; }
+      .nith-tagline { font-size: 0.65rem; }
     }
   </style>
 </head>
 <body>
 
 <!-- ============================================================
-     HEADER
+     HEADER — Two-Tier Institutional (TT_TRACKER style)
      ============================================================ -->
 <header class="institutional-header">
   <div class="header-top-tier">
     <div class="header-top-content">
-      <div class="brand-container">
-        <div class="brand-logo" aria-hidden="true">NITH</div>
-        <div class="brand-titles">
-          <div class="brand-institution">National Institute of Technology, Hamirpur</div>
-          <div class="brand-department">Department of Computer Science &amp; Engineering</div>
+      <div class="nith-brand-container">
+        <div class="nith-logo-wrapper" id="logoWrapper">
+          <img
+            src="nith-logo.png"
+            alt="National Institute of Technology Hamirpur"
+            class="nith-logo-img"
+            id="nithLogo"
+            onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';"
+          >
+          <div class="nith-logo-fallback" id="logoFallback" style="display: none;">NITH</div>
+        </div>
+        <div class="nith-titles-stack">
+          <div class="nith-hindi-title">राष्ट्रीय प्रौद्योगिकी संस्थान हमीरपुर</div>
+          <div class="nith-english-title">National Institute of Technology, Hamirpur</div>
+          <div class="nith-tagline">Department of Computer Science &amp; Engineering</div>
         </div>
       </div>
       <div class="header-right-meta">
-        <span class="app-title-badge">Timetable Studio</span>
+        <span class="app-title-badge">FATGS — Timetable Studio</span>
       </div>
     </div>
   </div>
@@ -759,8 +887,7 @@
     <div class="header-nav-content">
       <div class="nav-links">
         <span class="nav-item active">Schedule Builder</span>
-        <span class="nav-item">Faculty Allocation</span>
-        <span class="nav-item">Room Management</span>
+        <a href="viewer.html" class="nav-item">Timetable Viewer</a>
       </div>
       <div class="nav-status">
         <span class="badge-status badge-local">Local Mode</span>
@@ -842,22 +969,46 @@
 </main>
 
 <!-- ============================================================
-     FOOTER
+     FOOTER — TT_TRACKER 3-Column Institutional
      ============================================================ -->
 <footer class="institutional-footer">
   <div class="footer-content">
-    <div class="footer-top">
-      <div>
-        <div class="footer-brand-title">FATGS — Faculty Allocation &amp; Timetable Generation System</div>
-        <p class="footer-subtext">Department of Computer Science &amp; Engineering, NIT Hamirpur (HP) — 177005</p>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand-title">National Institute of Technology Hamirpur</div>
+        <p class="footer-subtext">
+          Academic Timetable Studio — Real-time scheduling,
+          conflict prevention, and dynamic lecture hall orchestrator.
+        </p>
+        <p class="footer-subtext" style="margin-top: 8px; color: #94a3b8;">
+          Hamirpur, Himachal Pradesh, India — 177005
+        </p>
       </div>
-      <div>
-        <p class="footer-subtext">Constraint-based scheduling with real-time conflict detection for academic timetable generation.</p>
+      <div class="footer-col">
+        <h4 class="footer-heading">Quick Links</h4>
+        <div class="footer-link-list">
+          <a href="#">Faculty Schedules</a>
+          <a href="#">Section Matrices</a>
+          <a href="#">Room Occupancy</a>
+          <a href="#">Academic Guidelines</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Developers</h4>
+        <div class="dev-list">
+          <span class="dev-name">Ankur Gupta</span>
+          <span class="dev-name">Aditya Sharma</span>
+          <span class="dev-name">Akarsh</span>
+        </div>
+        <a href="https://github.com/Ankur17nith/FATGS" target="_blank" rel="noopener noreferrer" class="footer-source-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub / Source Code
+        </a>
       </div>
     </div>
     <div class="footer-bottom-strip">
-      <span>© 2025 NIT Hamirpur — Internal Academic Tool</span>
-      <span>FATGS v1.0</span>
+      <span>© 2026 National Institute of Technology Hamirpur. All Rights Reserved.</span>
+      <span>An Institute of National Importance · Ministry of Education</span>
     </div>
   </div>
 </footer>
@@ -867,7 +1018,7 @@
 
 <!-- ============================================================
      APPLICATION LOGIC
-     (Preserved from original final.html — all functionality intact)
+     (Preserved from original — all functionality intact)
      ============================================================ -->
 <script>
   const FACULTY_ROSTER = [
@@ -1315,9 +1466,9 @@
     gridCard.style.display = 'block';
     gridLabel.textContent = `— ${currentSection.name} · ${currentSection.year} (${currentSection.semester})`;
 
-    let html = '<thead><tr><th class="day-header-col">Day</th>';
+    let html = '<thead><tr><th class="day-header-col">DAY / TIME</th>';
     INTERVALS.forEach(interval => {
-      html += `<th>${interval.start}–${interval.end}</th>`;
+      html += `<th>${interval.start} – ${interval.end}</th>`;
     });
     html += '</tr></thead><tbody>';
 
@@ -1326,26 +1477,20 @@
 
       INTERVALS.forEach((interval, pIdx) => {
         if (interval.isLunch) {
-          html += '<td class="cell-slot"><div class="cell-lunch">Lunch Break</div></td>';
+          html += '<td class="cell-slot"><div class="cell-lunch">LUNCH</div></td>';
           return;
         }
 
         const cell = grid[dIdx][pIdx];
         if (cell) {
           const lab = isLabCode(cell.code);
+          const roomClass = lab ? 'room-pill lab-room' : 'room-pill theory-room';
           html += `
             <td class="cell-slot">
               <div class="card-class ${lab ? 'is-lab' : ''}">
-                <div>
-                  <div class="card-tags">
-                    <span class="tag-badge ${lab ? 'tag-lab' : 'tag-theory'}">${lab ? 'LAB' : 'LEC'}</span>
-                  </div>
-                  <div class="card-code">${cell.code}</div>
-                </div>
-                <div>
-                  <div class="card-meta">${cell.faculty || ''}</div>
-                  <div class="card-meta" style="color: var(--success-emerald); font-weight: 600;">📍 ${cell.room}</div>
-                </div>
+                <div class="card-code">${cell.code}</div>
+                <div class="card-faculty">${cell.faculty || '—'}</div>
+                <span class="${roomClass}">${cell.room}</span>
               </div>
             </td>`;
         } else {
