@@ -1,0 +1,266 @@
+/* ============================================================
+   TT_TRACKER TIMETABLE DESIGN SYSTEM
+   Exact replication of the visual reference:
+   - Clean, light, academic aesthetic
+   - White grid with light gray borders
+   - Top header: DAY / TIME and intervals in bold navy
+   - Left column: MONDAY - FRIDAY in bold navy uppercase on slate-50
+   - Timetable Cards: White bg, 3px top border (Navy theory / Green lab)
+   - Distinct badges (LAB, G1/G2), bold code, people/pin icons
+   - Clean subtle lunch break and uncluttered empty slots
+   ============================================================ */
+
+.tt-grid-wrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.tt-grid-scroll-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tt-grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 1080px;
+  background: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   Header Row
+   ------------------------------------------------------------ */
+.tt-grid-table thead tr {
+  background: #ffffff;
+}
+
+.tt-th-day-corner {
+  background: #f8fafc;
+  color: #002147;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 14px 12px;
+  border: 1px solid #e2e8f0;
+  width: 115px;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.tt-th-interval {
+  background: #ffffff;
+  color: #002147;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 14px 8px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   Day Column (Left)
+   ------------------------------------------------------------ */
+.tt-th-day-label {
+  background: #f8fafc;
+  color: #002147;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 12px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  width: 115px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------
+   Grid Slots
+   ------------------------------------------------------------ */
+.tt-td-slot {
+  border: 1px solid #f1f5f9;
+  padding: 6px;
+  vertical-align: top;
+  height: 105px;
+  background: #ffffff;
+  transition: background-color 0.15s ease;
+}
+
+.tt-td-slot:hover {
+  background-color: #fafbfc;
+}
+
+.tt-empty-cell {
+  width: 100%;
+  height: 100%;
+  min-height: 85px;
+}
+
+/* ------------------------------------------------------------
+   Lunch Break Slot (13:00 - 14:00)
+   ------------------------------------------------------------ */
+.tt-td-lunch {
+  border: 1px solid #f1f5f9;
+  padding: 0;
+  background-color: #f8fafc;
+  vertical-align: middle;
+  text-align: center;
+  width: 100px;
+}
+
+.tt-lunch-stripes {
+  width: 100%;
+  height: 100%;
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(226, 232, 240, 0.45) 10px,
+    rgba(226, 232, 240, 0.45) 20px
+  );
+}
+
+.tt-lunch-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------
+   Timetable Cards (TT_TRACKER Reference Match)
+   ------------------------------------------------------------ */
+.tt-class-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+  min-height: 88px;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.tt-class-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 33, 71, 0.08);
+}
+
+/* Top Accent Line */
+.tt-card-theory {
+  border-top: 3.5px solid #002147; /* Navy Theory */
+}
+
+.tt-card-lab {
+  border-top: 3.5px solid #16a34a; /* Emerald Lab */
+}
+
+/* Search Highlight */
+.tt-card-highlight {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.35), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Badges Row */
+.tt-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 1px;
+}
+
+.tt-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 1.5px 5px;
+  border-radius: 3px;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tt-badge-lab {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.tt-badge-group {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+/* Course Code */
+.tt-course-code {
+  font-size: 13.5px;
+  font-weight: 750;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+/* Meta Rows (Section with people icon, Room/Faculty with pin icon) */
+.tt-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.tt-meta-icon {
+  width: 12.5px;
+  height: 12.5px;
+  flex-shrink: 0;
+}
+
+.tt-icon-people {
+  color: #6366f1; /* Purple / indigo as seen in screenshot */
+}
+
+.tt-icon-pin {
+  color: #e11d48; /* Rose / pink location pin */
+}
+
+.tt-meta-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-faculty-inline {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Empty State */
+.tt-empty-state {
+  padding: 36px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13.5px;
+  background: #fafbfc;
+}
