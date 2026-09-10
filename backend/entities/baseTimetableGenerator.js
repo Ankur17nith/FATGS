@@ -336,8 +336,8 @@ module.exports = { generateBaseTimetable, toFlatSlotList };
 
 if (require.main === module) {
     const [, , subjectsArg, roomsArg, outDirArg] = process.argv;
-    const subjectsJsonPath = subjectsArg || path.join(__dirname, '../data/subjects_new_format.json');
-    const roomsJsonPath = roomsArg || path.join(__dirname, '../data/rooms_data.json');
+    const subjectsJsonPath = subjectsArg || path.join(__dirname, '../data/subjects.json');
+    const roomsJsonPath = roomsArg || path.join(__dirname, '../data/rooms.json');
     const outDir = outDirArg || path.join(__dirname, '../output');
 
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });

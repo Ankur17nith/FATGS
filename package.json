@@ -1,10 +1,13 @@
 {
-  "name": "FATGS",
+  "name": "fatgs",
   "version": "1.0.0",
-  "description": "",
-  "main": "FATGS/index.js",
+  "description": "Faculty Allocation & Timetable Generation System — NIT Hamirpur CSE Department",
+  "main": "backend/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/index.js",
+    "generate": "node backend/entities/baseTimetableGenerator.js",
+    "dev": "npx nodemon backend/index.js",
+    "serve": "node serve.js"
   },
   "private": true,
   "dependencies": {
