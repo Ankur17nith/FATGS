@@ -10,7 +10,7 @@ import React from 'react';
  * - Section line with purple users icon
  * - Room / Faculty line with rose location pin icon
  */
-export default function TimetableCard({ cell, isHighlighted = false }) {
+export default function TimetableCard({ cell }) {
   if (!cell) return null;
 
   const isLab = Boolean(
@@ -28,9 +28,7 @@ export default function TimetableCard({ cell, isHighlighted = false }) {
 
   return (
     <div
-      className={`tt-class-card ${isLab ? 'tt-card-lab' : 'tt-card-theory'} ${
-        isHighlighted ? 'tt-card-highlight' : ''
-      }`}
+      className={`tt-class-card ${isLab ? 'tt-card-lab' : 'tt-card-theory'}`}
       title={`${subjectCode} | ${faculty} | Room: ${room}`}
     >
       {/* Top badges for lab */}

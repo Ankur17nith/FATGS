@@ -152,13 +152,6 @@ export const INTERVALS = [
 
 export const ORDERED_PERIODS = [0, 1, 2, 3, 5, 6, 7];
 
-export function isLabCode(code) {
-  if (!code) return false;
-  const labCodes = new Set();
-  RAW_SECTIONS.forEach(s => s.labs.forEach(l => labCodes.add(l.code)));
-  return labCodes.has(code) || code.endsWith('7') || code.endsWith('8') || code.endsWith('9');
-}
-
 export function shuffle(arr) {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {

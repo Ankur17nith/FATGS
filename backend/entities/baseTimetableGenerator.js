@@ -249,89 +249,6 @@ function toFlatSlotList(sections) {
     return out;
 }
 
-// Built-in transposed viewer template (Rows: Days, Columns: Time)
-function getTransposedViewerHtml(flatData) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Base Timetable — Transposed Viewer</title>
-    <style>
-        body { font-family: system-ui, sans-serif; margin: 20px; background: #0f172a; color: #f8fafc; }
-        h1 { margin-bottom: 4px; font-size: 20px; }
-        .note { color: #94a3b8; font-size: 13px; margin-bottom: 16px; }
-        select { background: #1e293b; color: white; border: 1px solid #475569; padding: 6px 12px; font-size: 14px; border-radius: 6px; margin-bottom: 16px; }
-        table { border-collapse: collapse; width: 100%; background: #1e293b; border-radius: 8px; overflow: hidden; }
-        th, td { border: 1px solid #334155; padding: 10px; text-align: center; font-size: 12px; }
-        th { background: #0b1120; color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-        th.day-col { width: 110px; background: #111c2e; color: #38bdf8; font-weight: bold; font-size: 13px; }
-        td.lunch { background: #141f33; color: #64748b; font-weight: 600; }
-        td.empty { color: #475569; }
-        td.booked { background: #1e3a5f; }
-        .code { font-weight: bold; color: #60a5fa; }
-        .fac { color: #cbd5e1; font-size: 11px; margin-top: 2px; }
-        .room { color: #34d399; font-size: 11px; margin-top: 2px; }
-    </style>
-</head>
-<body>
-<h1>Base Timetable (Transposed View)</h1>
-<div class="note">Monday–Friday 5-Day Academic Week. Saturday is OFF.</div>
-<label>Select Section: <select id="sectionPicker"></select></label>
-<div id="grid"></div>
-
-<script>
-    const DATA = ${JSON.stringify(flatData)};
-    const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-    const TIMES = [
-        '09:00 - 10:00','10:00 - 11:00','11:00 - 12:00','12:00 - 13:00',
-        '13:00 - 14:00','14:00 - 15:00','15:00 - 16:00','16:00 - 17:00'
-    ];
-
-    const sectionKeys = [...new Set(DATA.map(d => \`\${d.section} — Y\${d.year} S\${d.semester}\`))].sort();
-    const picker = document.getElementById('sectionPicker');
-    sectionKeys.forEach(k => {
-        const opt = document.createElement('option');
-        opt.value = k; opt.textContent = k;
-        picker.appendChild(opt);
-    });
-
-    function render(sectionKey) {
-        const rows = DATA.filter(d => \`\${d.section} — Y\${d.year} S\${d.semester}\` === sectionKey);
-        const map = {};
-        rows.forEach(r => { map[\`\${r.day}_\${r.start} - \${r.end}\`] = r; });
-
-        let html = '<table><thead><tr><th class="day-col">Day</th>';
-        TIMES.forEach(t => { html += \`<th>\${t}</th>\`; });
-        html += '</tr></thead><tbody>';
-
-        DAYS.forEach(day => {
-            html += \`<tr><th class="day-col">\${day}</th>\`;
-            TIMES.forEach(time => {
-                if (time === '13:00 - 14:00') {
-                    html += '<td class="lunch">Lunch</td>';
-                    return;
-                }
-                const cell = map[\`\${day}_\${time}\`];
-                if (!cell) {
-                    html += '<td class="empty">—</td>';
-                } else {
-                    html += \`<td class="booked"><div class="code">\${cell.subjectCode}</div><div class="fac">\${cell.faculty || ''}</div><div class="room">\${cell.room}</div></td>\`;
-                }
-            });
-            html += '</tr>';
-        });
-
-        html += '</tbody></table>';
-        document.getElementById('grid').innerHTML = html;
-    }
-
-    picker.addEventListener('change', () => render(picker.value));
-    if (sectionKeys.length) { picker.value = sectionKeys[0]; render(sectionKeys[0]); }
-</script>
-</body>
-</html>`;
-}
-
 module.exports = { generateBaseTimetable, toFlatSlotList };
 
 if (require.main === module) {
@@ -354,8 +271,4 @@ if (require.main === module) {
 
     fs.writeFileSync(path.join(outDir, 'base_timetable.json'), JSON.stringify(flat, null, 2));
     console.log(`Wrote ${flat.length} scheduled sessions to ${path.join(outDir, 'base_timetable.json')}`);
-
-    const htmlOutput = getTransposedViewerHtml(flat);
-    fs.writeFileSync(path.join(outDir, 'viewer.html'), htmlOutput);
-    console.log(`Wrote transposed viewer to ${path.join(outDir, 'viewer.html')}`);
 }

@@ -275,7 +275,7 @@ main.container {
 /* ============================================================
    TOOLBAR & CONTROLS CARDS
    ============================================================ */
-.toolbar-card, .controls-card {
+.toolbar-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -407,145 +407,10 @@ select.form-control-sm {
   border-color: var(--institutional-navy);
 }
 
-/* Section Picker & Quick Pills in Viewer */
-.controls-card {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 20px;
-}
-
-.section-selector-group {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.picker-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--institutional-navy);
-  white-space: nowrap;
-}
-
-.quick-pills-container {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.pill-btn {
-  background: var(--slate-100);
-  color: var(--slate-700);
-  border: 1px solid var(--slate-200);
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: inherit;
-}
-
-.pill-btn:hover {
-  background: var(--slate-200);
-  color: var(--institutional-navy);
-}
-
-.pill-btn.active {
-  background: var(--institutional-navy);
-  color: #ffffff;
-  border-color: var(--institutional-navy);
-}
-
-/* Search Box */
-.search-box-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-width: 270px;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.search-input {
-  font-family: inherit;
-  font-size: 13px;
-  padding: 8px 32px 8px 36px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  width: 100%;
-  background: #ffffff;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--institutional-navy);
-  box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.1);
-}
-
-.search-clear-btn {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
 /* ============================================================
-   STATS BAR
+   PANEL CARDS (ALLOCATION & SCHEDULE GRID)
    ============================================================ */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  box-shadow: var(--shadow-card);
-  text-align: center;
-}
-
-.stat-val {
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1.1;
-}
-
-.stat-val-total { color: var(--institutional-navy); }
-.stat-val-theory { color: var(--institutional-navy); }
-.stat-val-lab { color: var(--success-emerald); }
-.stat-val-fac { color: var(--slate-700); }
-
-.stat-lbl {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 4px;
-}
-
-/* ============================================================
-   PANEL CARDS (ALLOCATION & MATRIX)
-   ============================================================ */
-.panel-card, .matrix-grid-card {
+.panel-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -553,7 +418,7 @@ select.form-control-sm {
   overflow: hidden;
 }
 
-.panel-header, .matrix-card-header {
+.panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -562,7 +427,7 @@ select.form-control-sm {
   background: var(--slate-50);
 }
 
-.panel-header-left, .matrix-header-title {
+.panel-header-left {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -579,21 +444,6 @@ select.form-control-sm {
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--slate-200);
-}
-
-.matrix-sec-highlight {
-  color: var(--institutional-navy);
-  font-weight: 800;
-}
-
-.matrix-header-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--institutional-navy);
-  background: #ffffff;
-  border: 1px solid var(--border-subtle);
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
 }
 
 .badge-generated-status {
@@ -620,7 +470,7 @@ select.form-control-sm {
   overflow-x: auto;
 }
 
-.panel-grid-body, .matrix-table-container {
+.panel-grid-body {
   padding: 16px;
   background: var(--bg-surface);
 }
@@ -692,40 +542,7 @@ select.form-control-sm {
 /* ============================================================
    LEGEND BAR & FOOTER NOTE
    ============================================================ */
-.legend-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 24px;
-  padding: 12px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  color: var(--text-muted);
-}
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-}
-
-.legend-indicator {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-}
-
-.footer-note {
-  text-align: center;
-  font-size: 11.5px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-top: 4px;
-}
 
 /* ============================================================
    FOOTER
@@ -878,7 +695,6 @@ footer.institutional-footer {
   .header-top-tier { padding: 10px 16px; }
   .nith-logo-wrapper { width: 52px; height: 52px; }
   .nith-english-title { font-size: 1.1rem; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 
@@ -886,7 +702,4 @@ footer.institutional-footer {
   .header-top-content { flex-direction: column; align-items: flex-start; gap: 10px; }
   .app-title-badge { border-left: none; padding-left: 0; }
   .header-nav-content { padding: 0 16px; }
-  .controls-card { flex-direction: column; align-items: stretch; }
-  .search-box-wrapper { min-width: 100%; }
-  .stats-row { grid-template-columns: 1fr; }
 }

@@ -22,8 +22,8 @@ export default function Footer() {
             <h4 className="footer-heading">System Modules</h4>
             <div className="footer-link-list">
               <a href="#builder">Interactive Schedule Builder</a>
-              <a href="#viewer">Transposed Matrix Viewer</a>
-              <a href="#faculty">Faculty Workload Distribution</a>
+              <a href="#generation">Conflict-Free Timetable Generator</a>
+              <a href="#faculty">Faculty Allocation Engine</a>
               <a href="#rooms">Laboratory &amp; Classroom Registry</a>
             </div>
           </div>

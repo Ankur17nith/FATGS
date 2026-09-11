@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Header({ activeTab, onTabChange }) {
+export default function Header() {
   return (
     <header className="institutional-header">
       {/* Top Tier: Institutional Identity */}
@@ -35,32 +35,21 @@ export default function Header({ activeTab, onTabChange }) {
         </div>
       </div>
 
-      {/* Nav Tier: Primary Tab Navigation */}
-      <nav className="header-nav-tier" aria-label="Application navigation">
+      {/* Sub Tier: Module Context and Status */}
+      <div className="header-nav-tier">
         <div className="header-nav-content">
           <div className="nav-links">
-            <button
-              type="button"
-              className={`nav-item ${activeTab === 'builder' ? 'active' : ''}`}
-              onClick={() => onTabChange('builder')}
-            >
-              Schedule Builder
-            </button>
-            <button
-              type="button"
-              className={`nav-item ${activeTab === 'viewer' ? 'active' : ''}`}
-              onClick={() => onTabChange('viewer')}
-            >
-              Timetable Viewer
-            </button>
+            <span className="nav-item active">
+              Academic Schedule Builder
+            </span>
           </div>
           <div className="nav-status">
             <span className="badge-status badge-local">
-              {activeTab === 'builder' ? 'Live Generation Engine' : 'Base Schedule Matrix'}
+              Live Generation Engine
             </span>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }

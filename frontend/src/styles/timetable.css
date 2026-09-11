@@ -177,11 +177,7 @@
   border-top: 3.5px solid #16a34a; /* Emerald Lab */
 }
 
-/* Search Highlight */
-.tt-card-highlight {
-  border-color: #D4AF37 !important;
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.35), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
-}
+
 
 /* Badges Row */
 .tt-badge-row {
