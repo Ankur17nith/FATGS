@@ -12,7 +12,7 @@
     "backend": "node backend/server.js",
     "backend:dev": "npx nodemon backend/server.js",
     "server": "node backend/server.js",
-    "test": "node backend/tests/test_cs301_open_elective.js && node backend/tests/test_elective_rotation_and_slots.js && node backend/tests/test_year_specific_lunch.js && node backend/tests/validate_timetable.js && node backend/tests/verify_final_requirements.js && node frontend/tests/verify_frontend_ui.js && node backend/tests/test_handoff_packaging.js && node backend/tests/test_handoff_server.js",
+    "test": "node backend/tests/test_cs301_open_elective.js && node backend/tests/test_elective_rotation_and_slots.js && node backend/tests/test_year_specific_lunch.js && node backend/tests/validate_timetable.js && node backend/tests/verify_final_requirements.js && node frontend/tests/verify_frontend_ui.js && node backend/tests/test_handoff_packaging.js && node backend/tests/test_handoff_server.js && node backend/tests/test_generation_completeness.js",
     "validate": "node backend/tests/validate_timetable.js"
   },
   "private": true,

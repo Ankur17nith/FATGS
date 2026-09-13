@@ -37,6 +37,11 @@ module.exports = {
   server,
   startServer: server.startServer,
   createServer: server.createServer,
+  getRequiredSections: server.getRequiredSections,
+  getGenerationStatus: server.getGenerationStatus,
+  recordSectionGeneration: server.recordSectionGeneration,
+  resetGeneration: server.resetGeneration,
+  exportTimetable: server.exportTimetable,
   validateSemesterPackage: server.validateSemesterPackage,
   handoffToTTTracker: server.handoffToTTTracker
 };

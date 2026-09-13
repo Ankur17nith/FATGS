@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   FACULTY_ROSTER,
   CANDIDATE_THEORY_ROOMS,
@@ -63,6 +63,10 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [exportedSections] = useState(() => new Map());
   const [exportVersion, setExportVersion] = useState(0);
 
+  // Backend generation completeness state (authoritative source of truth)
+  const [backendStatus, setBackendStatus] = useState(null);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+
   // Semester handoff state
   const [targetSemester, setTargetSemester] = useState('Odd Semester');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -72,6 +76,26 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [globalRoomBookings] = useState(() => new Set());
   const [cohortElectiveBookings] = useState(() => new Map());
   const [currentGrid, setCurrentGrid] = useState(null);
+
+  // Fetch generation status from authoritative backend
+  const fetchBackendStatus = async (semester = targetSemester) => {
+    try {
+      setIsLoadingStatus(true);
+      const res = await fetch(`/api/timetable/generation-status?semester=${encodeURIComponent(semester)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setBackendStatus(data);
+      }
+    } catch (err) {
+      console.error('[FATGS] Failed to fetch backend generation status:', err);
+    } finally {
+      setIsLoadingStatus(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBackendStatus(targetSemester);
+  }, [targetSemester]);
 
   // Derived options directly from authoritative store
   const years = useMemo(() => [...new Set(store.map(s => s.year))], [store]);
@@ -194,8 +218,8 @@ export default function ScheduleBuilder({ onShowToast }) {
     );
   };
 
-  // Run generation algorithm
-  const handleGenerate = () => {
+  // Run generation algorithm and persist to backend source of truth
+  const handleGenerate = async () => {
     if (!currentSection) {
       if (onShowToast) {
         onShowToast('Please select Year, Semester, and Section first.');
@@ -203,67 +227,113 @@ export default function ScheduleBuilder({ onShowToast }) {
       return;
     }
 
-    const grid = generateTimetableForSection({
-      section: currentSection,
-      selectedTheoryRooms: selectedRooms,
-      globalFacBookings,
-      globalRoomBookings,
-      persistedGrids,
-      cohortElectiveBookings
-    });
-
-    // Track generation instance for staleness detection
-    const secKey = `${currentSection.name}_${currentSection.year}_${currentSection.semester}`;
-    const genId = `gen_${secKey}_${Date.now()}`;
-    gridGenerationIds.set(secKey, genId);
-    setExportVersion(v => v + 1);
-
-    setCurrentGrid([...grid]);
-    if (onShowToast) {
-      onShowToast(`Timetable successfully generated for ${currentSection.name} (${currentSection.semester})`);
-    }
-  };
-
-  // Export JSON with all required metadata (preserves existing behavior and updates export tracking)
-  const handleExportJson = () => {
-    const flatData = [];
-
-    persistedGrids.forEach((grid, secKey) => {
-      const [name, year, semester] = secKey.split('_');
-      const secSlots = extractSlotsFromGrid(grid, name, year, semester);
-      flatData.push(...secSlots);
-
-      const curGenId = gridGenerationIds.get(secKey) || `gen_${secKey}_${Date.now()}`;
-      gridGenerationIds.set(secKey, curGenId);
-      exportedSections.set(secKey, {
-        secKey,
-        name,
-        year,
-        semester,
-        generationId: curGenId,
-        exportedAt: new Date().toISOString(),
-        slots: secSlots
+    let grid;
+    try {
+      grid = generateTimetableForSection({
+        section: currentSection,
+        selectedTheoryRooms: selectedRooms,
+        globalFacBookings,
+        globalRoomBookings,
+        persistedGrids,
+        cohortElectiveBookings
       });
-    });
-
-    setExportVersion(v => v + 1);
-
-    if (flatData.length === 0) {
+    } catch (err) {
       if (onShowToast) {
-        onShowToast('No timetables have been generated yet to export.');
+        onShowToast(`Timetable generation failed for ${currentSection.name}: ${err.message}`);
       }
       return;
     }
 
-    const blob = new Blob([JSON.stringify(flatData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'base_timetable.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    if (onShowToast) {
-      onShowToast(`Exported ${flatData.length} timetable entries as base_timetable.json`);
+    if (!grid || !Array.isArray(grid)) {
+      if (onShowToast) {
+        onShowToast(`Timetable generation failed for ${currentSection.name}: Invalid grid produced.`);
+      }
+      return;
+    }
+
+    const secKey = `${currentSection.name}_${currentSection.year}_${currentSection.semester}`;
+    const genId = `gen_${secKey}_${Date.now()}`;
+    const secSlots = extractSlotsFromGrid(grid, currentSection.name, currentSection.year, currentSection.semester);
+
+    if (secSlots.length === 0) {
+      if (onShowToast) {
+        onShowToast(`Generation produced 0 scheduled classes for ${currentSection.name}.`);
+      }
+      return;
+    }
+
+    // Track generation instance locally
+    gridGenerationIds.set(secKey, genId);
+    persistedGrids.set(secKey, grid);
+    setExportVersion(v => v + 1);
+    setCurrentGrid([...grid]);
+
+    // Save generation record to backend source of truth
+    try {
+      const res = await fetch('/api/timetable/record-generation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          section: currentSection.name,
+          year: currentSection.year,
+          semester: currentSection.semester,
+          generationId: genId,
+          slots: secSlots
+        })
+      });
+
+      const recData = await res.json();
+      if (res.ok && recData.success) {
+        await fetchBackendStatus(targetSemester);
+        if (onShowToast) {
+          onShowToast(`✓ Base timetable successfully generated & recorded for ${currentSection.name} (${currentSection.semester})`);
+        }
+      } else {
+        if (onShowToast) {
+          onShowToast(`Generated locally, but backend recording failed: ${recData.error || 'Server error'}`);
+        }
+      }
+    } catch (netErr) {
+      if (onShowToast) {
+        onShowToast(`Base timetable generated locally. Backend sync note: ${netErr.message}`);
+      }
+    }
+  };
+
+  // Export JSON using existing generated base timetable data (no re-running generator)
+  const handleExportJson = async () => {
+    if (!isExportAllowed) {
+      if (onShowToast) {
+        onShowToast('Export JSON unavailable: All required sections with classes must first be generated.');
+      }
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}`);
+      const exportData = await res.json();
+
+      if (!res.ok || !exportData.timetable) {
+        if (onShowToast) {
+          onShowToast(`Export rejected: ${exportData.error || 'Unknown error'}`);
+        }
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(exportData.timetable, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `base_timetable_${targetSemester.replace(/\s+/g, '_').toLowerCase()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      if (onShowToast) {
+        onShowToast(`Exported ${exportData.totalSlots} scheduled slots for ${targetSemester} (${exportData.sections.length} sections)`);
+      }
+    } catch (err) {
+      if (onShowToast) {
+        onShowToast(`Export error: ${err.message}`);
+      }
     }
   };
 
@@ -305,10 +375,9 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Dynamically determine required sections for selected semester cycle
+  // Dynamically determine fallback required sections for selected semester cycle
   const requiredSections = useMemo(() => {
     return store.filter(sec => {
-      // M.Tech sections are not part of the standard undergraduate term package
       const isMTech = sec.year && sec.year.includes('M.Tech');
       if (isMTech && (targetSemester === 'Odd Semester' || targetSemester === 'Even Semester')) {
         return false;
@@ -328,7 +397,7 @@ export default function ScheduleBuilder({ onShowToast }) {
         if (sec.semester !== targetSemester) return false;
       }
 
-      // Check if section actually has classes (Section 7: sections without classes do not block)
+      // Sections with zero classes do not block
       const totalClasses = (sec.subjects?.length || 0) + (sec.labs?.length || 0) + (sec.electives?.length || 0);
       return totalClasses > 0;
     }).map(sec => ({
@@ -337,69 +406,63 @@ export default function ScheduleBuilder({ onShowToast }) {
     }));
   }, [store, targetSemester]);
 
-  // Evaluate export status for each required section
-  const sectionExportStatuses = useMemo(() => {
-    return requiredSections.map(sec => {
-      const isExported = exportedSections.has(sec.secKey);
-      const currentGenId = gridGenerationIds.get(sec.secKey);
-      const exportRecord = exportedSections.get(sec.secKey);
-      const isStale = Boolean(isExported && currentGenId && exportRecord && currentGenId !== exportRecord.generationId);
-      const isFresh = Boolean(isExported && !isStale);
+  // Authoritative status from backend (source of truth)
+  const isExportAllowed = Boolean(backendStatus && backendStatus.exportAllowed);
 
-      return {
-        section: sec,
-        isExported,
-        isStale,
-        isFresh,
-        slotCount: exportRecord?.slots?.length || 0
-      };
-    });
-  }, [requiredSections, exportedSections, gridGenerationIds, exportVersion]);
+  const displayedSections = useMemo(() => {
+    if (backendStatus && Array.isArray(backendStatus.sections) && backendStatus.sections.length > 0) {
+      return backendStatus.sections;
+    }
+    return requiredSections.map(s => ({
+      ...s,
+      section: s.name,
+      hasClasses: true,
+      generated: false,
+      required: true
+    }));
+  }, [backendStatus, requiredSections]);
 
   const missingSections = useMemo(() => {
-    return sectionExportStatuses.filter(s => !s.isExported);
-  }, [sectionExportStatuses]);
+    return displayedSections.filter(s => s.hasClasses && !s.generated);
+  }, [displayedSections]);
 
-  const staleSections = useMemo(() => {
-    return sectionExportStatuses.filter(s => s.isStale);
-  }, [sectionExportStatuses]);
+  const isReadyForHandoff = isExportAllowed;
 
-  const isReadyForHandoff = requiredSections.length > 0 &&
-                           missingSections.length === 0 &&
-                           staleSections.length === 0;
-
-  // Handoff timetable package to TT_TRACKER backend
+  // Handoff timetable package to TT_TRACKER backend using verified generated data
   const handleGenerateTimetableHandoff = async () => {
     if (!isReadyForHandoff) {
       if (onShowToast) {
-        onShowToast('Cannot generate timetable: Not all required sections have fresh exports.');
+        onShowToast('Cannot generate timetable: Not all required sections have generated base timetables.');
       }
       return;
     }
 
     setIsHandoffLoading(true);
 
-    const allSlots = [];
-    requiredSections.forEach(s => {
-      const record = exportedSections.get(s.secKey);
-      if (record && Array.isArray(record.slots)) {
-        allSlots.push(...record.slots);
-      }
-    });
-
-    const completePackage = {
-      schemaVersion: '1.0.0',
-      source: 'FATGS',
-      semester: targetSemester,
-      academicYear: '2025-2026',
-      exportedAt: new Date().toISOString(),
-      generationId: `pkg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      sections: requiredSections.map(s => s.name),
-      totalSlots: allSlots.length,
-      timetable: allSlots
-    };
-
     try {
+      const exportRes = await fetch(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}`);
+      const exportData = await exportRes.json();
+
+      if (!exportRes.ok || !exportData.timetable) {
+        setIsHandoffLoading(false);
+        if (onShowToast) {
+          onShowToast(`Handoff blocked: ${exportData.error || 'Failed to retrieve complete timetable package'}`);
+        }
+        return;
+      }
+
+      const completePackage = {
+        schemaVersion: '1.0.0',
+        source: 'FATGS',
+        semester: targetSemester,
+        academicYear: exportData.academicYear || '2025-2026',
+        exportedAt: exportData.exportedAt || new Date().toISOString(),
+        generationId: `pkg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        sections: exportData.sections,
+        totalSlots: exportData.totalSlots,
+        timetable: exportData.timetable
+      };
+
       const res = await fetch('/api/handoff-timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -467,20 +530,24 @@ export default function ScheduleBuilder({ onShowToast }) {
             </p>
           </div>
           <div className="toolbar-actions">
-            {persistedGrids.size > 0 && (
-              <button
-                type="button"
-                className="btn-studio btn-export"
-                onClick={handleExportJson}
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                Export JSON ({persistedGrids.size} Sections)
-              </button>
-            )}
+            <button
+              type="button"
+              className="btn-studio btn-export"
+              disabled={!isExportAllowed}
+              onClick={handleExportJson}
+              title={
+                isExportAllowed
+                  ? `Export JSON for ${targetSemester}`
+                  : `Export JSON is disabled: All required sections for ${targetSemester} must generate base timetables first.`
+              }
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export JSON {isExportAllowed ? `(${backendStatus?.totalRequired || 0} Sections)` : ''}
+            </button>
           </div>
         </div>
 
@@ -547,28 +614,57 @@ export default function ScheduleBuilder({ onShowToast }) {
             </div>
           </div>
 
-          {/* Shared 4 Theory Rooms Selector Panel */}
-          <div className="shared-rooms-panel">
-            <div className="shared-rooms-title">
-              Configured Shared Theory Rooms (Sections CS2, CD2, CS3, CD3, CS4, CD4 share these 4 classrooms):
+          {/* Shared 4 Theory Rooms Selector Panel (Task 2 Redesign) */}
+          <div className="shared-rooms-panel" aria-label="Configured Shared Theory Rooms">
+            <div className="shared-rooms-header">
+              <div className="shared-rooms-header-top">
+                <span className="shared-rooms-title">Shared Theory Rooms</span>
+                <span className="shared-rooms-cohort-tag">CS2 &bull; CD2 &bull; CS3 &bull; CD3 &bull; CS4 &bull; CD4</span>
+              </div>
+              <p className="shared-rooms-desc">
+                Four classrooms are shared by these undergraduate sections.
+              </p>
             </div>
-            <div className="shared-rooms-slots">
-              {[0, 1, 2, 3].map(slotIdx => (
-                <div key={slotIdx} className="shared-room-slot">
-                  <span className="shared-room-label">Room {slotIdx + 1}:</span>
-                  <select
-                    className="form-control form-control-sm shared-room-select"
-                    value={selectedRooms[slotIdx]}
-                    onChange={(e) => handleRoomSlotChange(slotIdx, e.target.value)}
-                  >
-                    {CANDIDATE_THEORY_ROOMS.map(r => (
-                      <option key={r} value={r} disabled={selectedRooms.includes(r) && selectedRooms[slotIdx] !== r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ))}
+
+            <div className="shared-rooms-grid">
+              {[0, 1, 2, 3].map(slotIdx => {
+                const roomNum = slotIdx + 1;
+                const selectId = `sharedTheoryRoomSelect${roomNum}`;
+                return (
+                  <div key={slotIdx} className="shared-room-slot-card">
+                    <label htmlFor={selectId} className="shared-room-slot-header">
+                      ROOM {roomNum}
+                    </label>
+                    <div className="shared-room-input-container">
+                      <select
+                        id={selectId}
+                        className="shared-room-dropdown"
+                        value={selectedRooms[slotIdx]}
+                        onChange={(e) => handleRoomSlotChange(slotIdx, e.target.value)}
+                        aria-label={`Shared Theory Room ${roomNum}`}
+                      >
+                        {CANDIDATE_THEORY_ROOMS.map(r => (
+                          <option
+                            key={r}
+                            value={r}
+                            disabled={selectedRooms.includes(r) && selectedRooms[slotIdx] !== r}
+                          >
+                            {r}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="shared-room-dropdown-icon" aria-hidden="true">▼</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="shared-rooms-meta-row">
+              <span className="shared-rooms-count-indicator">
+                <span className="shared-rooms-indicator-dot"></span>
+                4 rooms configured
+              </span>
             </div>
           </div>
         </div>
@@ -598,43 +694,78 @@ export default function ScheduleBuilder({ onShowToast }) {
 
         {/* Status Grid of participating sections */}
         <div className="handoff-grid">
-          {sectionExportStatuses.map(({ section: s, isExported, isStale, isFresh, slotCount }) => (
-            <div
-              key={s.secKey}
-              className={`handoff-item ${isFresh ? 'item-exported' : isStale ? 'item-stale' : 'item-missing'}`}
-            >
-              <span className="handoff-sec-name">{s.name} ({s.semester.replace(' Semester', '')})</span>
-              <span className={`handoff-status-tag ${isFresh ? 'status-exported' : isStale ? 'status-stale' : 'status-missing'}`}>
-                {isFresh ? `✓ Exported (${slotCount})` : isStale ? '⚠️ Stale' : '✗ Not Exported'}
-              </span>
-            </div>
-          ))}
+          {displayedSections.map(s => {
+            const isGenerated = Boolean(s.generated);
+            const semDisplay = s.semester ? s.semester.replace(' Semester', '') : '';
+            return (
+              <div
+                key={s.secKey || `${s.name || s.section}_${s.year}_${s.semester}`}
+                className={`handoff-item ${isGenerated ? 'item-generated' : 'item-missing'}`}
+              >
+                <div className="handoff-sec-header">
+                  <span className="handoff-sec-name">{s.name || s.section}</span>
+                  <span className="handoff-sec-sem">{semDisplay} Semester</span>
+                </div>
+                <span className={`handoff-status-tag ${isGenerated ? 'status-generated' : 'status-missing'}`}>
+                  {isGenerated ? '✓ Base Timetable Generated' : '× Base Timetable Not Generated'}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         <div className="handoff-footer">
-          <div className={`handoff-summary ${isReadyForHandoff ? 'summary-ready' : 'summary-incomplete'}`}>
-            {isReadyForHandoff ? (
-              <span>✓ All required sections exported ({requiredSections.length}/{requiredSections.length} sections ready).</span>
+          <div className={`handoff-summary ${isExportAllowed ? 'summary-ready' : 'summary-incomplete'}`}>
+            {isExportAllowed ? (
+              <span>✓ All required sections generated ({backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections ready for Export JSON &amp; TT_TRACKER handoff).</span>
             ) : (
               <span>
-                Cannot generate timetable. Missing: {missingSections.map(s => s.name).join(', ') || 'None'}
-                {staleSections.length > 0 && ` | Stale (Regenerated — re-export required): ${staleSections.map(s => s.name).join(', ')}`}
+                Generation Incomplete: {backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections generated.
+                {missingSections.length > 0 && (
+                  <span> Missing: {missingSections.map(s => s.name || s.section).join(', ')}</span>
+                )}
               </span>
             )}
           </div>
 
-          <button
-            type="button"
-            className="btn-generate-timetable"
-            disabled={!isReadyForHandoff || isHandoffLoading}
-            onClick={() => setIsConfirmModalOpen(true)}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-            Generate Timetable
-          </button>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button
+              type="button"
+              className="btn-studio btn-export"
+              disabled={!isExportAllowed}
+              onClick={handleExportJson}
+              title={
+                isExportAllowed
+                  ? `Export JSON for ${targetSemester}`
+                  : `Export JSON is disabled: All required sections for ${targetSemester} must generate base timetables first.`
+              }
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export JSON
+            </button>
+
+            <button
+              type="button"
+              className="btn-generate-timetable"
+              disabled={!isReadyForHandoff || isHandoffLoading}
+              onClick={() => setIsConfirmModalOpen(true)}
+              title={
+                isReadyForHandoff
+                  ? 'Initiate timetable handoff to TT_TRACKER'
+                  : 'Handoff disabled until all required sections have generated base timetables.'
+              }
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+              Generate Timetable
+            </button>
+          </div>
         </div>
       </section>
 

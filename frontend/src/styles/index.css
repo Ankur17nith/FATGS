@@ -53,10 +53,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image:
-    linear-gradient(to right, #f0f0f0 1px, transparent 1px),
-    linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
-  background-size: 28px 28px;
 }
 
 #root {
@@ -373,42 +369,160 @@ select.form-control-sm {
   box-sizing: border-box;
 }
 
-/* Shared Theory Rooms Panel */
+/* ============================================================
+   SHARED THEORY ROOMS PANEL (TASK 2 REDESIGN - NO GRADIENTS)
+   ============================================================ */
 .shared-rooms-panel {
-  background: var(--slate-50);
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 14px;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.shared-rooms-header {
+  margin-bottom: 12px;
+}
+
+.shared-rooms-header-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
 .shared-rooms-title {
-  font-size: 0.8rem;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.shared-rooms-cohort-tag {
+  font-size: 11px;
   font-weight: 600;
-  color: var(--slate-700);
-  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.shared-rooms-slots {
-  display: flex;
+.shared-rooms-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.shared-rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
-.shared-room-slot {
+.shared-room-slot-card {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.shared-room-slot-card:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.shared-room-slot-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  cursor: pointer;
+}
+
+.shared-room-input-container {
+  position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+.shared-room-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 6px 28px 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #002147;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.shared-room-dropdown:focus {
+  outline: none;
+  border-color: #002147;
+  box-shadow: 0 0 0 2px rgba(0, 33, 71, 0.15);
+}
+
+.shared-room-dropdown-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 9px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.shared-rooms-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+}
+
+.shared-rooms-count-indicator {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
 }
 
-.shared-room-label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.shared-rooms-indicator-dot {
+  width: 7px;
+  height: 7px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.shared-room-select {
-  width: 85px;
-  font-weight: 600;
+@media (max-width: 900px) {
+  .shared-rooms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .shared-rooms-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Allocation Table Column Utilities */
@@ -936,7 +1050,7 @@ footer.institutional-footer {
 
 .handoff-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
   gap: 10px;
   margin-bottom: 16px;
 }
@@ -951,6 +1065,12 @@ footer.institutional-footer {
   border-radius: var(--radius-md);
   background: var(--slate-50);
   transition: all 0.15s ease;
+  text-align: center;
+}
+
+.handoff-item.item-generated {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
 }
 
 .handoff-item.item-exported {
@@ -968,21 +1088,44 @@ footer.institutional-footer {
   border-color: #fde68a;
 }
 
+.handoff-sec-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 .handoff-sec-name {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.handoff-sec-sem {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 1px;
 }
 
 .handoff-status-tag {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 4px;
-  border-radius: var(--radius-pill);
-  padding: 2px 6px;
+  border-radius: 4px;
+  padding: 3px 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.status-generated {
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
 }
 
 .status-exported {
@@ -993,11 +1136,13 @@ footer.institutional-footer {
 .status-missing {
   color: #dc2626;
   background: #fee2e2;
+  border: 1px solid #fecaca;
 }
 
 .status-stale {
   color: #d97706;
   background: #fef3c7;
+  border: 1px solid #fde68a;
 }
 
 .handoff-footer {
