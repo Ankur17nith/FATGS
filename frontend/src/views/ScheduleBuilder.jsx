@@ -378,11 +378,6 @@ export default function ScheduleBuilder({ onShowToast }) {
   // Dynamically determine fallback required sections for selected semester cycle
   const requiredSections = useMemo(() => {
     return store.filter(sec => {
-      const isMTech = sec.year && sec.year.includes('M.Tech');
-      if (isMTech && (targetSemester === 'Odd Semester' || targetSemester === 'Even Semester')) {
-        return false;
-      }
-
       if (targetSemester === 'Odd Semester') {
         const isOdd = sec.semester.includes('1st') || sec.semester.includes('3rd') ||
                       sec.semester.includes('5th') || sec.semester.includes('7th') ||
@@ -684,9 +679,14 @@ export default function ScheduleBuilder({ onShowToast }) {
               id="targetSemSelect"
               className="handoff-semester-select"
               value={targetSemester}
-              onChange={(e) => setTargetSemester(e.target.value)}
+              onChange={(e) => {
+                const newSem = e.target.value;
+                setTargetSemester(newSem);
+                setBackendStatus(null);
+                fetchBackendStatus(newSem);
+              }}
             >
-              <option value="Odd Semester">Odd Semester (3rd, 5th, 7th, 9th Sem)</option>
+              <option value="Odd Semester">Odd Semester (1st, 3rd, 5th, 7th, 9th Sem)</option>
               <option value="Even Semester">Even Semester (4th, 6th, 8th Sem)</option>
             </select>
           </div>
@@ -697,13 +697,19 @@ export default function ScheduleBuilder({ onShowToast }) {
           {displayedSections.map(s => {
             const isGenerated = Boolean(s.generated);
             const semDisplay = s.semester ? s.semester.replace(' Semester', '') : '';
+            const secIdentifier = s.name || s.section;
+            let displaySecName = secIdentifier;
+            if (secIdentifier === 'MT1') displaySecName = 'MT1 (M.Tech CSE)';
+            else if (secIdentifier === 'MA1') displaySecName = 'MA1 (M.Tech AI)';
+            else if (secIdentifier === 'CD5') displaySecName = 'CD5 (Dual Degree)';
+
             return (
               <div
-                key={s.secKey || `${s.name || s.section}_${s.year}_${s.semester}`}
+                key={s.secKey || `${secIdentifier}_${s.year}_${s.semester}`}
                 className={`handoff-item ${isGenerated ? 'item-generated' : 'item-missing'}`}
               >
                 <div className="handoff-sec-header">
-                  <span className="handoff-sec-name">{s.name || s.section}</span>
+                  <span className="handoff-sec-name">{displaySecName}</span>
                   <span className="handoff-sec-sem">{semDisplay} Semester</span>
                 </div>
                 <span className={`handoff-status-tag ${isGenerated ? 'status-generated' : 'status-missing'}`}>
@@ -722,7 +728,16 @@ export default function ScheduleBuilder({ onShowToast }) {
               <span>
                 Generation Incomplete: {backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections generated.
                 {missingSections.length > 0 && (
-                  <span> Missing: {missingSections.map(s => s.name || s.section).join(', ')}</span>
+                  <span>
+                    {' '}Missing:{' '}
+                    {missingSections.map(s => {
+                      const id = s.name || s.section;
+                      if (id === 'MT1') return 'MT1 (M.Tech CSE)';
+                      if (id === 'MA1') return 'MA1 (M.Tech AI)';
+                      if (id === 'CD5') return 'CD5 (Dual Degree)';
+                      return id;
+                    }).join(', ')}
+                  </span>
                 )}
               </span>
             )}

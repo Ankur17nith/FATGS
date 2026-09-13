@@ -62,21 +62,18 @@ function getSubjectsData(customPath) {
 }
 
 /**
- * Resolves required undergraduate/dual-degree sections for a given semester cycle.
+ * Resolves required academic sections (B.Tech, Dual Degree, and M.Tech) for a given semester cycle.
  * Dynamically evaluates whether each section actually has classes scheduled.
  */
 function getRequiredSections(semesterTerm = 'Odd Semester', subjectsData = null) {
   const subjects = subjectsData || getSubjectsData();
   const filtered = subjects.filter(sec => {
-    const isMTech = sec.year && sec.year.includes('M.Tech');
     if (semesterTerm === 'Odd Semester') {
-      if (isMTech) return false;
       const isOdd = sec.semester.includes('1st') || sec.semester.includes('3rd') ||
                     sec.semester.includes('5th') || sec.semester.includes('7th') ||
                     sec.semester.includes('9th');
       if (!isOdd) return false;
     } else if (semesterTerm === 'Even Semester') {
-      if (isMTech) return false;
       const isEven = sec.semester.includes('2nd') || sec.semester.includes('4th') ||
                      sec.semester.includes('6th') || sec.semester.includes('8th') ||
                      sec.semester.includes('10th');
@@ -87,18 +84,24 @@ function getRequiredSections(semesterTerm = 'Odd Semester', subjectsData = null)
     return true;
   });
 
-  return filtered.map(sec => {
+  const seenKeys = new Set();
+  const result = [];
+  for (const sec of filtered) {
+    const secKey = `${sec.name}_${sec.year}_${sec.semester}`;
+    if (seenKeys.has(secKey)) continue;
+    seenKeys.add(secKey);
     const totalClasses = (sec.subjects?.length || 0) + (sec.labs?.length || 0) + (sec.electives?.length || 0);
     const hasClasses = totalClasses > 0;
-    return {
+    result.push({
       name: sec.name,
       year: sec.year,
       semester: sec.semester,
-      secKey: `${sec.name}_${sec.year}_${sec.semester}`,
+      secKey,
       hasClasses,
       totalClasses
-    };
-  });
+    });
+  }
+  return result;
 }
 
 /**
@@ -223,6 +226,9 @@ function recordSectionGeneration(payload, customOptions = {}) {
   const state = loadGenerationState(customOptions.statePath);
   if (!state.records) state.records = {};
 
+  const academicYr = payload.academicYear || state.academicYear || '2025-2026';
+  state.academicYear = academicYr;
+
   const secKey = `${section}_${year}_${semester}`;
   const genId = generationId || `gen_${secKey}_${Date.now()}`;
 
@@ -230,6 +236,7 @@ function recordSectionGeneration(payload, customOptions = {}) {
     section,
     year,
     semester,
+    academicYear: academicYr,
     secKey,
     generationId: genId,
     generated: true,

@@ -25,8 +25,6 @@ console.log('===============================================================');
 // --- TEST 1: Required Section Detection for Odd Semester ---
 console.log('\n--- 1. AUDITING REQUIRED SECTIONS (ODD SEMESTER) ---');
 const oddSections = sections.filter(sec => {
-  const isMTech = sec.year && sec.year.includes('M.Tech');
-  if (isMTech) return false;
   const isOdd = sec.semester.includes('1st') || sec.semester.includes('3rd') ||
                 sec.semester.includes('5th') || sec.semester.includes('7th') ||
                 sec.semester.includes('9th');
@@ -39,16 +37,14 @@ const oddNames = oddSections.map(s => s.name);
 console.log('Detected Odd Semester Required Sections:', oddNames);
 assert.deepStrictEqual(
   oddNames.sort(),
-  ['CD2', 'CD3', 'CD4', 'CD5', 'CS2', 'CS3', 'CS4'].sort(),
-  'Odd Semester must require exactly CS2, CD2, CS3, CD3, CS4, CD4, CD5'
+  ['CD2', 'CD3', 'CD4', 'CD5', 'CS2', 'CS3', 'CS4', 'MA1', 'MT1'].sort(),
+  'Odd Semester must require CS2, CD2, CS3, CD3, CS4, CD4, CD5, MT1, MA1'
 );
-console.log('[PASS] TEST 1: Odd Semester required sections exactly match institutional curriculum (7 sections).');
+console.log('[PASS] TEST 1: Odd Semester required sections include all B.Tech and M.Tech sections (9 sections).');
 
 // --- TEST 2: Required Section Detection for Even Semester ---
 console.log('\n--- 2. AUDITING REQUIRED SECTIONS (EVEN SEMESTER) ---');
 const evenSections = sections.filter(sec => {
-  const isMTech = sec.year && sec.year.includes('M.Tech');
-  if (isMTech) return false;
   const isEven = sec.semester.includes('2nd') || sec.semester.includes('4th') ||
                  sec.semester.includes('6th') || sec.semester.includes('8th') ||
                  sec.semester.includes('10th');
@@ -78,7 +74,7 @@ const missing = oddSections.filter(s => {
   const key = `${s.name}_${s.year}_${s.semester}`;
   return !mockExportedSections.has(key);
 });
-assert.strictEqual(missing.length, 5, 'Must detect 5 missing sections');
+assert.strictEqual(missing.length, 7, 'Must detect 7 missing sections');
 const isReady = missing.length === 0;
 assert.strictEqual(isReady, false, 'Readiness must be false when required sections are missing');
 console.log('[PASS] TEST 3: Incomplete exports properly block handoff readiness.');

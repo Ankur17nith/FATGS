@@ -1041,7 +1041,8 @@ if (require.main === module) {
     const sections = generateBaseTimetable(
         subjectsJsonPath,
         roomsJsonPath,
-        s => !s.year.includes('M.Tech')
+        null,
+        { includeMTech: true }
     );
 
     const flat = toFlatSlotList(sections);
