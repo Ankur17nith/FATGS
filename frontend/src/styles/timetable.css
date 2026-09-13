@@ -1,21 +1,19 @@
 /* ============================================================
-   TT_TRACKER TIMETABLE DESIGN SYSTEM
-   Exact replication of the visual reference:
-   - Clean, light, academic aesthetic
-   - White grid with light gray borders
-   - Top header: DAY / TIME and intervals in bold navy
-   - Left column: MONDAY - FRIDAY in bold navy uppercase on slate-50
-   - Timetable Cards: White bg, 3px top border (Navy theory / Green lab)
-   - Distinct badges (LAB, G1/G2), bold code, people/pin icons
-   - Clean subtle lunch break and uncluttered empty slots
+   TT_TRACKER TIMETABLE DESIGN SYSTEM — COMPACT ACADEMIC GRID
+   - Crisp institutional table with solid 1px borders
+   - Top header: DAY / TIME and 8 time intervals in bold navy
+   - Left column: MONDAY - FRIDAY in bold navy uppercase
+   - High information density with minimal vertical padding
+   - Ultra-compact cell height (~52px-56px) so all 5 days fit in viewport
+   - Clear distinction for institutional Lunch break
    ============================================================ */
 
 .tt-grid-wrapper {
   background: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .tt-grid-scroll-container {
@@ -27,236 +25,289 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  min-width: 1080px;
+  min-width: 960px;
   background: #ffffff;
 }
 
 /* ------------------------------------------------------------
-   Header Row
+   Header Row (DAY / TIME and Time Intervals)
    ------------------------------------------------------------ */
 .tt-grid-table thead tr {
-  background: #ffffff;
+  background: #f8fafc;
 }
 
 .tt-th-day-corner {
-  background: #f8fafc;
+  background: #f1f5f9;
   color: #002147;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 14px 12px;
-  border: 1px solid #e2e8f0;
-  width: 115px;
+  letter-spacing: 0.05em;
+  padding: 6px 4px;
+  border: 1px solid #cbd5e1;
+  width: 92px;
   text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.tt-th-interval {
+  background: #f8fafc;
+  color: #002147;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 2px;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  white-space: nowrap;
+}
+
+.tt-th-time {
+  display: block;
+  letter-spacing: -0.01em;
+}
+
+.tt-th-lunch-col {
+  background: #f1f5f9;
+}
+
+/* ------------------------------------------------------------
+   Day Column (Left: MONDAY - FRIDAY)
+   ------------------------------------------------------------ */
+.tt-th-day-label {
+  background: #f8fafc;
+  color: #002147;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 6px;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  width: 92px;
   position: sticky;
   left: 0;
   z-index: 2;
 }
 
-.tt-th-interval {
-  background: #ffffff;
-  color: #002147;
-  font-size: 12.5px;
-  font-weight: 700;
-  padding: 14px 8px;
-  text-align: center;
-  border: 1px solid #e2e8f0;
-  white-space: nowrap;
-}
-
 /* ------------------------------------------------------------
-   Day Column (Left)
-   ------------------------------------------------------------ */
-.tt-th-day-label {
-  background: #f8fafc;
-  color: #002147;
-  font-size: 12.5px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 14px 12px;
-  text-align: center;
-  border: 1px solid #e2e8f0;
-  width: 115px;
-  position: sticky;
-  left: 0;
-  z-index: 1;
-}
-
-/* ------------------------------------------------------------
-   Grid Slots
+   Timetable Grid Slots / Cells
    ------------------------------------------------------------ */
 .tt-td-slot {
-  border: 1px solid #f1f5f9;
-  padding: 6px;
+  border: 1px solid #cbd5e1;
+  padding: 2px 3px;
   vertical-align: top;
-  height: 105px;
+  height: 52px;
+  min-height: 48px;
   background: #ffffff;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.1s ease;
 }
 
 .tt-td-slot:hover {
-  background-color: #fafbfc;
+  background-color: #f8fafc;
 }
 
 .tt-empty-cell {
   width: 100%;
   height: 100%;
-  min-height: 85px;
+  min-height: 46px;
 }
 
 /* ------------------------------------------------------------
-   Lunch Break Slot (13:00 - 14:00)
+   Lunch Break Slot (Section-Specific)
    ------------------------------------------------------------ */
 .tt-td-lunch {
-  border: 1px solid #f1f5f9;
+  border: 1px solid #cbd5e1;
   padding: 0;
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   vertical-align: middle;
   text-align: center;
-  width: 100px;
+  width: 95px;
 }
 
-.tt-lunch-stripes {
+.tt-lunch-cell {
   width: 100%;
   height: 100%;
-  min-height: 95px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-image: repeating-linear-gradient(
-    45deg,
+    -45deg,
     transparent,
-    transparent 10px,
-    rgba(226, 232, 240, 0.45) 10px,
-    rgba(226, 232, 240, 0.45) 20px
+    transparent 6px,
+    rgba(203, 213, 225, 0.4) 6px,
+    rgba(203, 213, 225, 0.4) 12px
   );
 }
 
 .tt-lunch-text {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   letter-spacing: 0.12em;
-  color: #94a3b8;
+  color: #64748b;
   text-transform: uppercase;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 4px;
+  padding: 1.5px 5px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #cbd5e1;
+  border-radius: 2px;
 }
 
 /* ------------------------------------------------------------
-   Timetable Cards (TT_TRACKER Reference Match)
+   Compact Academic Cell Entry (No bulky cards or bounce)
    ------------------------------------------------------------ */
-.tt-class-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  padding: 8px 10px;
+.tt-entry {
   display: flex;
   flex-direction: column;
-  gap: 3.5px;
-  min-height: 88px;
+  justify-content: center;
+  gap: 0.5px;
+  padding: 1.5px 3.5px;
+  border-left: 3px solid #002147;
+  background: #ffffff;
+  min-height: 44px;
   text-align: left;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  position: relative;
 }
 
-.tt-class-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 33, 71, 0.08);
+.tt-type-theory {
+  border-left-color: #002147; /* Navy Accent for Theory */
 }
 
-/* Top Accent Line */
-.tt-card-theory {
-  border-top: 3.5px solid #002147; /* Navy Theory */
+.tt-type-lab {
+  border-left-color: #16a34a; /* Emerald Accent for Lab */
+  background: #f0fdf4;
 }
 
-.tt-card-lab {
-  border-top: 3.5px solid #16a34a; /* Emerald Lab */
+.tt-type-de {
+  border-left-color: #4f46e5; /* Indigo Accent for Discipline Elective */
+  background: #f5f3ff;
 }
 
+.tt-type-oe {
+  border-left-color: #d97706; /* Amber Accent for Open Elective */
+  background: #fffbeb;
+}
 
+.tt-entry-reserved {
+  border-left-color: #9333ea;
+  background: #faf5ff;
+}
 
-/* Badges Row */
-.tt-badge-row {
+/* When multiple parallel activities run simultaneously (e.g. G1/G2 labs or parallel DEs) */
+.tt-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+  width: 100%;
+}
+
+.tt-stack-divider {
+  border-top: 1px dashed #cbd5e1;
+  margin: 0.5px 0;
+}
+
+.tt-entry-compact {
+  min-height: 24px;
+  padding: 1px 3px;
+  border-left-width: 2.5px;
+}
+
+/* Badges / Indicator Tags */
+.tt-tag-row {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 1px;
+  gap: 2.5px;
+  line-height: 1;
+  margin-bottom: 0.5px;
 }
 
-.tt-badge {
-  font-size: 9.5px;
+.tt-tag {
+  font-size: 8px;
   font-weight: 800;
-  padding: 1.5px 5px;
-  border-radius: 3px;
-  line-height: 1.15;
+  padding: 0.5px 3px;
+  border-radius: 2px;
+  line-height: 1.1;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
-.tt-badge-lab {
+.tt-tag-lab {
   background: #dcfce7;
   color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
-.tt-badge-group {
+.tt-tag-grp {
   background: #ffedd5;
   color: #c2410c;
+  border: 1px solid #fed7aa;
 }
 
-/* Course Code */
-.tt-course-code {
-  font-size: 13.5px;
+.tt-tag-de {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.tt-tag-oe {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.tt-tag-reserved {
+  background: #ede9fe;
+  color: #6b21a8;
+  border: 1px solid #ddd6fe;
+}
+
+/* Course Code (Clean, Bold, Primary Focus) */
+.tt-entry-code {
+  font-size: 12px;
   font-weight: 750;
   color: #0f172a;
   letter-spacing: -0.01em;
-  line-height: 1.25;
-}
-
-/* Meta Rows (Section with people icon, Room/Faculty with pin icon) */
-.tt-meta-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: #64748b;
-  font-weight: 500;
-  line-height: 1.3;
-}
-
-.tt-meta-icon {
-  width: 12.5px;
-  height: 12.5px;
-  flex-shrink: 0;
-}
-
-.tt-icon-people {
-  color: #6366f1; /* Purple / indigo as seen in screenshot */
-}
-
-.tt-icon-pin {
-  color: #e11d48; /* Rose / pink location pin */
-}
-
-.tt-meta-text {
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tt-faculty-inline {
-  color: #94a3b8;
-  font-weight: 400;
+.tt-entry-compact .tt-entry-code {
+  font-size: 10.5px;
+}
+
+/* Room & Faculty Code Line (e.g. "B4 • SS") */
+.tt-entry-meta {
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-entry-compact .tt-entry-meta {
+  font-size: 9px;
+}
+
+.tt-meta-room {
+  color: #334155;
+  font-weight: 700;
+}
+
+.tt-meta-faculty {
+  margin-left: 3px;
+  color: #475569;
+  font-weight: 600;
 }
 
 /* Empty State */
 .tt-empty-state {
-  padding: 36px 16px;
+  padding: 24px 16px;
   text-align: center;
   color: #64748b;
-  font-size: 13.5px;
-  background: #fafbfc;
+  font-size: 13px;
+  background: #f8fafc;
 }

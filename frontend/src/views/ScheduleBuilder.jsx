@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import {
   RAW_SECTIONS,
   FACULTY_ROSTER,
+  CANDIDATE_THEORY_ROOMS,
+  DEFAULT_THEORY_ROOMS,
   DAYS,
   INTERVALS,
   createInitialStore,
@@ -15,13 +17,17 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [selectedSem, setSelectedSem] = useState('');
   const [selectedSec, setSelectedSec] = useState('');
 
+  // 4 Shared Theory Rooms configuration (user selectable from 22 candidates)
+  const [selectedRooms, setSelectedRooms] = useState(DEFAULT_THEORY_ROOMS);
+
   // Persisted state across generations
   const [persistedGrids] = useState(() => new Map());
   const [globalFacBookings] = useState(() => new Set());
   const [globalRoomBookings] = useState(() => new Set());
+  const [cohortElectiveBookings] = useState(() => new Map());
   const [currentGrid, setCurrentGrid] = useState(null);
 
-  // Derived options
+  // Derived options directly from authoritative store
   const years = useMemo(() => [...new Set(store.map(s => s.year))], [store]);
 
   const semesters = useMemo(() => {
@@ -71,12 +77,49 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Faculty Allocation updates
-  const handleFacultyChange = (courseCode, isLab, facultyName) => {
+  // Handle theory room selection (exactly 4 rooms, no duplicates)
+  const handleRoomSlotChange = (index, newRoom) => {
+    if (selectedRooms.includes(newRoom) && selectedRooms[index] !== newRoom) {
+      alert(`Room ${newRoom} is already selected in another slot. Duplicate room selection is not allowed.`);
+      return;
+    }
+    const updated = [...selectedRooms];
+    updated[index] = newRoom;
+    setSelectedRooms(updated);
+    if (onShowToast) {
+      onShowToast(`Active Shared Theory Rooms updated: ${updated.join(', ')}`);
+    }
+  };
+
+  // Faculty Allocation updates (store faculty code internally, user sees full name)
+  const handleFacultyChange = (courseCode, isLab, facultyCode, isElective = false) => {
     if (!currentSection) return;
+
+    // Clear cohort elective bookings cache if an elective was changed so fresh slots are computed
+    const cohortKey = `${currentSection.year}_${currentSection.semester}`;
+    if (isElective && cohortElectiveBookings.has(cohortKey)) {
+      cohortElectiveBookings.delete(cohortKey);
+    }
 
     setStore(prevStore =>
       prevStore.map(sec => {
+        // ELECTIVE RULE: Elective configuration applies to ALL paired sections of the same cohort (e.g. CS3 + CD3)
+        if (isElective || (sec.electives && sec.electives.some(e => e.code === courseCode))) {
+          if (
+            sec.year === currentSection.year &&
+            sec.semester === currentSection.semester
+          ) {
+            return {
+              ...sec,
+              electives: (sec.electives || []).map(e =>
+                e.code === courseCode ? { ...e, faculty: facultyCode || null } : e
+              )
+            };
+          }
+          return sec;
+        }
+
+        // NON-ELECTIVES (Standard Theory & Labs): Specific to the selected section
         if (
           sec.name === currentSection.name &&
           sec.year === currentSection.year &&
@@ -85,15 +128,15 @@ export default function ScheduleBuilder({ onShowToast }) {
           if (isLab) {
             return {
               ...sec,
-              labs: sec.labs.map(l =>
-                l.code === courseCode ? { ...l, faculty: facultyName || null } : l
+              labs: (sec.labs || []).map(l =>
+                l.code === courseCode ? { ...l, faculty: facultyCode || null } : l
               )
             };
           } else {
             return {
               ...sec,
-              subjects: sec.subjects.map(s =>
-                s.code === courseCode ? { ...s, faculty: facultyName || null } : s
+              subjects: (sec.subjects || []).map(s =>
+                s.code === courseCode ? { ...s, faculty: facultyCode || null } : s
               )
             };
           }
@@ -112,9 +155,11 @@ export default function ScheduleBuilder({ onShowToast }) {
 
     const grid = generateTimetableForSection({
       section: currentSection,
+      selectedTheoryRooms: selectedRooms,
       globalFacBookings,
       globalRoomBookings,
-      persistedGrids
+      persistedGrids,
+      cohortElectiveBookings
     });
 
     setCurrentGrid([...grid]);
@@ -123,7 +168,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Export JSON
+  // Export JSON with all required metadata
   const handleExportJson = () => {
     const flatData = [];
 
@@ -135,16 +180,27 @@ export default function ScheduleBuilder({ onShowToast }) {
           const cell = grid[dIdx][pIdx];
           if (!cell) return;
 
-          flatData.push({
-            section: name,
-            year: year,
-            semester: semester,
-            day: dayName,
-            start: interval.start,
-            end: interval.end,
-            subjectCode: cell.code,
-            faculty: cell.faculty,
-            room: cell.room
+          const entries = Array.isArray(cell) ? cell : [cell];
+          entries.forEach(item => {
+            flatData.push({
+              section: name,
+              year: year,
+              semester: semester,
+              day: dayName,
+              start: interval.start,
+              end: interval.end,
+              subjectCode: item.code || item.subjectCode,
+              facultyCode: item.facultyCode || item.faculty || null,
+              faculty: item.faculty || null,
+              room: item.room || null,
+              isLab: item.isLab === true,
+              duration: item.duration || 1,
+              group: item.group || null,
+              sessionId: item.sessionId || null,
+              electiveType: item.electiveType || null,
+              basket: item.basket || null,
+              isReservedEmpty: item.isReservedEmpty === true
+            });
           });
         });
       });
@@ -167,12 +223,29 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Prepare allocation items
-  const allocationItems = useMemo(() => {
+  // Separate normal subjects, labs, and elective baskets
+  const compulsorySubjects = useMemo(() => {
     if (!currentSection) return [];
-    const subjects = currentSection.subjects.map(s => ({ ...s, isLab: false }));
-    const labs = currentSection.labs.map(l => ({ ...l, isLab: true }));
-    return [...subjects, ...labs];
+    return (currentSection.subjects || []).map(s => ({ ...s, isLab: false }));
+  }, [currentSection]);
+
+  const labCourses = useMemo(() => {
+    if (!currentSection) return [];
+    return (currentSection.labs || []).map(l => ({ ...l, isLab: true }));
+  }, [currentSection]);
+
+  const electiveBaskets = useMemo(() => {
+    if (!currentSection || !currentSection.electives || currentSection.electives.length === 0) return [];
+    const map = new Map();
+    currentSection.electives.forEach(e => {
+      const bName = e.basket || (e.electiveType === 'OE' ? 'Open Elective' : 'Discipline Elective');
+      if (!map.has(bName)) map.set(bName, []);
+      map.get(bName).push(e);
+    });
+    return Array.from(map.entries()).map(([basketName, subjects]) => ({
+      basketName,
+      subjects
+    }));
   }, [currentSection]);
 
   return (
@@ -183,7 +256,7 @@ export default function ScheduleBuilder({ onShowToast }) {
           <div className="page-heading">
             <h1>Academic Timetable Builder</h1>
             <p className="page-subheading">
-              Department of Computer Science &amp; Engineering &mdash; Allocate faculty and generate conflict-free schedules.
+              Department of Computer Science &amp; Engineering &mdash; Allocate authoritative faculty and generate conflict-free schedules.
             </p>
           </div>
           <div className="toolbar-actions">
@@ -204,8 +277,8 @@ export default function ScheduleBuilder({ onShowToast }) {
           </div>
         </div>
 
-        <div className="toolbar-row-bottom">
-          <div className="toolbar-controls-left">
+        <div className="toolbar-row-bottom" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div className="toolbar-controls-left" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {/* Year Selector */}
             <div className="control-field">
               <label htmlFor="yearSelect" className="control-label">Academic Year</label>
@@ -216,9 +289,15 @@ export default function ScheduleBuilder({ onShowToast }) {
                 onChange={handleYearChange}
               >
                 <option value="">&mdash; Select Year &mdash;</option>
-                {years.map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
+                {years.map(y => {
+                  let displayName = y;
+                  if (y === '2nd Year') displayName = 'Second Year (2nd Year)';
+                  else if (y === '3rd Year') displayName = 'Third Year (3rd Year)';
+                  else if (y === '4th Year') displayName = 'Fourth Year (4th Year)';
+                  else if (y === '5th Year') displayName = 'Fifth Year / Dual Degree (5th Year)';
+                  else if (y === 'M.Tech 1st Year') displayName = 'M.Tech (1st Year)';
+                  return <option key={y} value={y}>{displayName}</option>;
+                })}
               </select>
             </div>
 
@@ -250,16 +329,46 @@ export default function ScheduleBuilder({ onShowToast }) {
                 disabled={!selectedSem}
               >
                 <option value="">&mdash; Select Section &mdash;</option>
-                {sections.map(s => (
-                  <option key={s.name} value={s.name}>{s.name}</option>
-                ))}
+                {sections.map(s => {
+                  let secLabel = s.name;
+                  if (s.name === 'CD5') secLabel = 'CD5 (Dual Degree)';
+                  else if (s.name === 'MT1') secLabel = 'MT1 (M.Tech CSE)';
+                  else if (s.name === 'MA1') secLabel = 'MA1 (M.Tech AI)';
+                  return <option key={s.name} value={s.name}>{secLabel}</option>;
+                })}
               </select>
+            </div>
+          </div>
+
+          {/* Shared 4 Theory Rooms Selector Panel */}
+          <div className="shared-rooms-panel" style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>
+              Configured Shared Theory Rooms (Sections CS2, CD2, CS3, CD3, CS4, CD4 share these 4 classrooms):
+            </div>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              {[0, 1, 2, 3].map(slotIdx => (
+                <div key={slotIdx} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Room {slotIdx + 1}:</span>
+                  <select
+                    className="form-control form-control-sm"
+                    style={{ width: '85px', fontWeight: 600 }}
+                    value={selectedRooms[slotIdx]}
+                    onChange={(e) => handleRoomSlotChange(slotIdx, e.target.value)}
+                  >
+                    {CANDIDATE_THEORY_ROOMS.map(r => (
+                      <option key={r} value={r} disabled={selectedRooms.includes(r) && selectedRooms[slotIdx] !== r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Faculty Allocation Table */}
+      {/* Faculty Allocation Section */}
       {currentSection && (
         <section className="panel-card" aria-label="Faculty Allocation Matrix">
           <div className="panel-header">
@@ -284,6 +393,13 @@ export default function ScheduleBuilder({ onShowToast }) {
           </div>
 
           <div className="panel-body">
+            {/* Compulsory Theory & Lab Courses Header */}
+            <div className="alloc-section-header">
+              <span className="alloc-section-title">
+                Compulsory Subjects &amp; Practical Laboratories
+              </span>
+            </div>
+
             <table className="alloc-table">
               <thead>
                 <tr>
@@ -291,52 +407,129 @@ export default function ScheduleBuilder({ onShowToast }) {
                   <th style={{ width: '110px' }}>Course Code</th>
                   <th>Course Title</th>
                   <th style={{ width: '80px', textAlign: 'center' }}>Credits</th>
-                  <th style={{ width: '260px' }}>Assigned Faculty</th>
+                  <th style={{ width: '300px' }}>Assigned Faculty (Full Name)</th>
                 </tr>
               </thead>
               <tbody>
-                {allocationItems.map(item => {
-                  const pool = item.isLab ? currentSection.labs : currentSection.subjects;
-                  const assignedSet = new Set(
-                    pool.filter(i => i.code !== item.code && i.faculty).map(i => i.faculty)
-                  );
-                  const availableFaculty = FACULTY_ROSTER.filter(
-                    f => !assignedSet.has(f) || item.faculty === f
-                  );
-
-                  return (
-                    <tr key={item.code}>
-                      <td>
-                        <span className={`type-badge ${item.isLab ? 'type-badge-lab' : 'type-badge-theory'}`}>
-                          {item.isLab ? 'Lab' : 'Theory'}
-                        </span>
-                      </td>
-                      <td className="code-cell">{item.code}</td>
-                      <td className="name-cell">{item.name}</td>
-                      <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.credits}</td>
-                      <td>
-                        <select
-                          className="form-control form-control-sm"
-                          value={item.faculty || ''}
-                          onChange={(e) => handleFacultyChange(item.code, item.isLab, e.target.value)}
-                          aria-label={`Faculty for ${item.code}`}
-                        >
-                          <option value="">&mdash; Auto-Assign / Unassigned &mdash;</option>
-                          {availableFaculty.map(f => (
-                            <option key={f} value={f}>{f}</option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {[...compulsorySubjects, ...labCourses].map(item => (
+                  <tr key={item.code}>
+                    <td>
+                      <span className={`type-badge ${item.isLab ? 'type-badge-lab' : 'type-badge-theory'}`}>
+                        {item.isLab ? 'Lab' : 'Theory'}
+                      </span>
+                    </td>
+                    <td className="code-cell">{item.code}</td>
+                    <td className="name-cell">{item.name}</td>
+                    <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.credits}</td>
+                    <td>
+                      {/* Allocator displays FULL FACULTY NAME, retaining code internally */}
+                      <select
+                        className="form-control form-control-sm"
+                        value={item.faculty || ''}
+                        onChange={(e) => handleFacultyChange(item.code, item.isLab, e.target.value, false)}
+                        aria-label={`Faculty for ${item.code}`}
+                      >
+                        <option value="">&mdash; Auto-Assign / Default &mdash;</option>
+                        {FACULTY_ROSTER.map(f => (
+                          <option key={f.code} value={f.code}>
+                            {f.name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
+
+            {/* Elective Baskets Section */}
+            {electiveBaskets.length > 0 && (
+              <div className="alloc-elective-block">
+                <div className="alloc-section-header alloc-section-header-elective">
+                  <span className="alloc-section-title">
+                    Elective Course Baskets
+                  </span>
+                  <span className="alloc-section-hint">
+                    Assign faculty to <strong>offer</strong> an elective subject. Unassigned subjects are not scheduled.
+                  </span>
+                </div>
+
+                {electiveBaskets.map(({ basketName, subjects }) => {
+                  const offeredCount = subjects.filter(s => s.faculty).length;
+                  return (
+                    <div key={basketName} className="alloc-basket-group">
+                      <div className="alloc-basket-header">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span className="type-badge" style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                            Elective Basket
+                          </span>
+                          <strong style={{ fontSize: '0.85rem', color: '#1e293b' }}>{basketName}</strong>
+                        </div>
+                        <span style={{ fontSize: '0.78rem', color: offeredCount > 0 ? '#166534' : '#64748b', fontWeight: 600 }}>
+                          {offeredCount > 0 ? `${offeredCount} of ${subjects.length} Offered (Parallel Groups)` : 'None Offered (Assign faculty below to activate)'}
+                        </span>
+                      </div>
+
+                      <table className="alloc-table">
+                        <thead>
+                          <tr>
+                            <th style={{ width: '90px' }}>Status</th>
+                            <th style={{ width: '110px' }}>Course Code</th>
+                            <th>Course Title</th>
+                            <th style={{ width: '80px', textAlign: 'center' }}>Credits</th>
+                            <th style={{ width: '300px' }}>Assigned Faculty (Full Name)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subjects.map(item => {
+                            const isOffered = Boolean(item.faculty);
+                            return (
+                              <tr key={item.code} style={{ background: isOffered ? '#f0fdf4' : 'transparent' }}>
+                                <td>
+                                  <span
+                                    className={`type-badge ${isOffered ? 'type-badge-theory' : ''}`}
+                                    style={{
+                                      background: isOffered ? '#dcfce7' : '#f1f5f9',
+                                      color: isOffered ? '#166534' : '#94a3b8'
+                                    }}
+                                  >
+                                    {isOffered ? 'Offered' : 'Inactive'}
+                                  </span>
+                                </td>
+                                <td className="code-cell" style={{ fontWeight: isOffered ? 700 : 500 }}>{item.code}</td>
+                                <td className="name-cell">{item.name}</td>
+                                <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.credits}</td>
+                                <td>
+                                  <select
+                                    className="form-control form-control-sm"
+                                    value={item.faculty || ''}
+                                    onChange={(e) => handleFacultyChange(item.code, false, e.target.value, true)}
+                                    aria-label={`Faculty for ${item.code}`}
+                                    style={{ borderColor: isOffered ? '#22c55e' : '#cbd5e1' }}
+                                  >
+                                    <option value="">&mdash; Not Offered / Unassigned &mdash;</option>
+                                    {FACULTY_ROSTER.map(f => (
+                                      <option key={f.code} value={f.code}>
+                                        {f.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </section>
       )}
 
-      {/* Timetable Grid View (Styled exactly like TT_TRACKER reference) */}
+      {/* Timetable Grid View */}
       {currentSection && currentGrid && (
         <section className="panel-card" aria-label="Generated Timetable Grid">
           <div className="panel-header">
@@ -354,7 +547,7 @@ export default function ScheduleBuilder({ onShowToast }) {
           </div>
 
           <div className="panel-body panel-grid-body">
-            <TimetableGrid grid={currentGrid} />
+            <TimetableGrid grid={currentGrid} section={currentSection} />
           </div>
         </section>
       )}

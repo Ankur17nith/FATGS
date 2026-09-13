@@ -2,87 +2,81 @@ import React from 'react';
 
 /**
  * TimetableCard Component
- * Matches the exact visual styling of TT_TRACKER timetable cards:
- * - Clean white background with soft shadow & rounded corners
- * - 3px top accent border (Navy for Theory, Emerald Green for Lab)
- * - Lab badges (LAB in green, Group in peach/orange)
- * - Bold course code
- * - Section line with purple users icon
- * - Room / Faculty line with rose location pin icon
+ * Compact, academic institutional presentation modeled on TT_TRACKER:
+ * - Theory: Code on line 1, Room • Faculty Code on line 2. No groups.
+ * - Lab: LAB badge + G1/G2 badge, Code, Room • Faculty Code.
+ * - Electives (DE/OE): Compact elective badge, Code, Room • Faculty Code.
+ * - Reserved (SA-201): Compact RESERVED badge, Code.
+ * - Parallel entries (simultaneous G1/G2 labs or DEs): Compact stack with subtle hairline divider.
  */
 export default function TimetableCard({ cell }) {
   if (!cell) return null;
 
-  const isLab = Boolean(
-    cell.isLab ||
-    (cell.room && cell.room.toUpperCase().includes('LAB')) ||
-    (cell.code && (cell.code.endsWith('7') || cell.code.endsWith('8') || cell.code.endsWith('9'))) ||
-    (cell.subjectCode && (cell.subjectCode.endsWith('7') || cell.subjectCode.endsWith('8') || cell.subjectCode.endsWith('9')))
-  );
+  if (Array.isArray(cell)) {
+    if (cell.length === 0) return null;
+    return (
+      <div className="tt-card-stack">
+        {cell.map((entry, idx) => (
+          <React.Fragment key={entry.sessionId ? `${entry.sessionId}_${idx}` : idx}>
+            {idx > 0 && <div className="tt-stack-divider" />}
+            <SingleEntry entry={entry} isStacked={cell.length > 1} />
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }
 
-  const subjectCode = cell.code || cell.subjectCode || '—';
-  const faculty = cell.faculty || '';
-  const room = cell.room || 'TBA';
-  const section = cell.section ? (cell.year ? `${cell.section}` : cell.section) : '';
-  const groupLabel = cell.group || (isLab ? (subjectCode.endsWith('7') ? 'G1' : 'G2') : null);
+  return <SingleEntry entry={cell} isStacked={false} />;
+}
+
+function SingleEntry({ entry, isStacked }) {
+  if (!entry) return null;
+
+  const subjectCode = entry.code || entry.subjectCode || '—';
+  const faculty = entry.faculty || entry.facultyCode || '';
+  const room = entry.room || (entry.isReservedEmpty ? '—' : 'TBA');
+  const isLab = entry.isLab === true;
+  const isDE = entry.electiveType === 'DE' || entry.electiveType === 'SE' || entry.electiveType === 'SC' || (entry.basket && !entry.basket.includes('Open'));
+  const isOE = entry.electiveType === 'OE' || (entry.basket && entry.basket.includes('Open'));
+  const isReserved = entry.isReservedEmpty === true;
+  // Groups must ONLY appear on labs or actual group-based classes, NEVER on theory
+  const groupLabel = isLab || isDE || isOE ? entry.group : null;
+
+  if (isReserved) {
+    return (
+      <div className="tt-entry tt-entry-reserved" title={`${subjectCode} | Reserved Activity Slot`}>
+        <div className="tt-tag-row">
+          <span className="tt-tag tt-tag-reserved">RESERVED</span>
+        </div>
+        <div className="tt-entry-code">{subjectCode}</div>
+      </div>
+    );
+  }
+
+  const typeClass = isLab ? 'tt-type-lab' : (isDE ? 'tt-type-de' : (isOE ? 'tt-type-oe' : 'tt-type-theory'));
 
   return (
     <div
-      className={`tt-class-card ${isLab ? 'tt-card-lab' : 'tt-card-theory'}`}
-      title={`${subjectCode} | ${faculty} | Room: ${room}`}
+      className={`tt-entry ${typeClass} ${isStacked ? 'tt-entry-compact' : ''}`}
+      title={`${subjectCode} | ${room} | Faculty: ${faculty || 'None'}${groupLabel ? ` | Group: ${groupLabel}` : ''}${entry.basket ? ` | Basket: ${entry.basket}` : ''}`}
     >
-      {/* Top badges for lab */}
-      {isLab && (
-        <div className="tt-badge-row">
-          <span className="tt-badge tt-badge-lab">LAB</span>
-          {groupLabel && (
-            <span className="tt-badge tt-badge-group">{groupLabel}</span>
-          )}
+      {/* Indicator tag row: Only for Lab or Electives, never for standard theory */}
+      {(isLab || isDE || isOE) && (
+        <div className="tt-tag-row">
+          {isLab && <span className="tt-tag tt-tag-lab">LAB</span>}
+          {isDE && <span className="tt-tag tt-tag-de">{entry.electiveType || (entry.basket && entry.basket.includes('Stream Core') ? 'SC' : (entry.basket && entry.basket.includes('Stream Elective') ? 'SE' : 'DE'))}</span>}
+          {isOE && <span className="tt-tag tt-tag-oe">OE</span>}
+          {groupLabel && <span className="tt-tag tt-tag-grp">{groupLabel}</span>}
         </div>
       )}
 
       {/* Course Code */}
-      <div className="tt-course-code">{subjectCode}</div>
+      <div className="tt-entry-code">{subjectCode}</div>
 
-      {/* Section / Batch Info with People Icon */}
-      {section && (
-        <div className="tt-meta-row tt-meta-section">
-          <svg
-            className="tt-meta-icon tt-icon-people"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span className="tt-meta-text">{section}</span>
-        </div>
-      )}
-
-      {/* Room & Faculty with Pin Icon */}
-      <div className="tt-meta-row tt-meta-room">
-        <svg
-          className="tt-meta-icon tt-icon-pin"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-        <span className="tt-meta-text" title={faculty ? `${room} (${faculty})` : room}>
-          {room}
-          {faculty && <span className="tt-faculty-inline"> · {faculty}</span>}
-        </span>
+      {/* Room and Faculty Code */}
+      <div className="tt-entry-meta">
+        <span className="tt-meta-room">{room}</span>
+        {faculty && <span className="tt-meta-faculty">&bull; {faculty}</span>}
       </div>
     </div>
   );

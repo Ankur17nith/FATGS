@@ -21,10 +21,10 @@ export default function Footer() {
           <div className="footer-col">
             <h4 className="footer-heading">System Modules</h4>
             <div className="footer-link-list">
-              <a href="#builder">Interactive Schedule Builder</a>
-              <a href="#generation">Conflict-Free Timetable Generator</a>
-              <a href="#faculty">Faculty Allocation Engine</a>
-              <a href="#rooms">Laboratory &amp; Classroom Registry</a>
+              <span>Interactive Schedule Builder</span>
+              <span>Conflict-Free Timetable Generator</span>
+              <span>Faculty Allocation Engine</span>
+              <span>Laboratory &amp; Classroom Registry</span>
             </div>
           </div>
 

@@ -365,9 +365,12 @@ select.form-control:focus, .section-picker-select:focus {
 }
 
 select.form-control-sm {
-  padding: 6px 10px;
+  padding: 5px 8px;
   font-size: 12px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Buttons */
@@ -416,13 +419,15 @@ select.form-control-sm {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--slate-50);
 }
@@ -467,12 +472,75 @@ select.form-control-sm {
 
 .panel-body {
   padding: 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
+  background: #ffffff;
 }
 
 .panel-grid-body {
   padding: 16px;
   background: var(--bg-surface);
+}
+
+/* ============================================================
+   FACULTY ALLOCATION MATRIX SECTION HEADERS & BASKETS
+   ============================================================ */
+.alloc-section-header {
+  background: #f8fafc;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.alloc-section-header-elective {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.alloc-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--institutional-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alloc-section-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.alloc-elective-block {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.alloc-basket-group {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.alloc-basket-header {
+  background: #fdfefe;
+  padding: 8px 20px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ============================================================
@@ -482,22 +550,24 @@ select.form-control-sm {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .alloc-table th {
-  background: var(--slate-50);
-  color: var(--institutional-navy);
+  background: #ffffff;
+  color: var(--slate-700);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 11.5px;
-  letter-spacing: 0.05em;
-  padding: 10px 16px;
-  border-bottom: 2px solid var(--border-subtle);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border-subtle);
   text-align: left;
 }
 
 .alloc-table td {
-  padding: 10px 16px;
+  padding: 8px 20px;
   border-bottom: 1px solid var(--slate-100);
   vertical-align: middle;
 }
