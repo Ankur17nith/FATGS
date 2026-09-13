@@ -7,5 +7,11 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_BACKEND_URL || 'http://localhost:5001',
+        changeOrigin: true
+      }
+    }
   },
 });

@@ -19,6 +19,7 @@ const {
   generateBaseTimetable,
   toFlatSlotList
 } = require('./entities/baseTimetableGenerator.js');
+const server = require('./server.js');
 
 module.exports = {
   funcs,
@@ -32,7 +33,12 @@ module.exports = {
   DEFAULT_THEORY_ROOMS,
   ALL_LAB_ROOMS,
   generateBaseTimetable,
-  toFlatSlotList
+  toFlatSlotList,
+  server,
+  startServer: server.startServer,
+  createServer: server.createServer,
+  validateSemesterPackage: server.validateSemesterPackage,
+  handoffToTTTracker: server.handoffToTTTracker
 };
 
 if (require.main === module) {
