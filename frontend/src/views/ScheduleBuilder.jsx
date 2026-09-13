@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import {
-  RAW_SECTIONS,
   FACULTY_ROSTER,
   CANDIDATE_THEORY_ROOMS,
   DEFAULT_THEORY_ROOMS,
@@ -80,7 +79,9 @@ export default function ScheduleBuilder({ onShowToast }) {
   // Handle theory room selection (exactly 4 rooms, no duplicates)
   const handleRoomSlotChange = (index, newRoom) => {
     if (selectedRooms.includes(newRoom) && selectedRooms[index] !== newRoom) {
-      alert(`Room ${newRoom} is already selected in another slot. Duplicate room selection is not allowed.`);
+      if (onShowToast) {
+        onShowToast(`Room ${newRoom} is already selected in another slot.`);
+      }
       return;
     }
     const updated = [...selectedRooms];
@@ -149,7 +150,9 @@ export default function ScheduleBuilder({ onShowToast }) {
   // Run generation algorithm
   const handleGenerate = () => {
     if (!currentSection) {
-      alert('Please select Year, Semester, and Section first.');
+      if (onShowToast) {
+        onShowToast('Please select Year, Semester, and Section first.');
+      }
       return;
     }
 
@@ -207,7 +210,9 @@ export default function ScheduleBuilder({ onShowToast }) {
     });
 
     if (flatData.length === 0) {
-      alert('No timetables have been generated yet to export.');
+      if (onShowToast) {
+        onShowToast('No timetables have been generated yet to export.');
+      }
       return;
     }
 
@@ -277,8 +282,8 @@ export default function ScheduleBuilder({ onShowToast }) {
           </div>
         </div>
 
-        <div className="toolbar-row-bottom" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div className="toolbar-controls-left" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+        <div className="toolbar-row-bottom">
+          <div className="toolbar-controls-left">
             {/* Year Selector */}
             <div className="control-field">
               <label htmlFor="yearSelect" className="control-label">Academic Year</label>
@@ -341,17 +346,16 @@ export default function ScheduleBuilder({ onShowToast }) {
           </div>
 
           {/* Shared 4 Theory Rooms Selector Panel */}
-          <div className="shared-rooms-panel" style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>
+          <div className="shared-rooms-panel">
+            <div className="shared-rooms-title">
               Configured Shared Theory Rooms (Sections CS2, CD2, CS3, CD3, CS4, CD4 share these 4 classrooms):
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div className="shared-rooms-slots">
               {[0, 1, 2, 3].map(slotIdx => (
-                <div key={slotIdx} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Room {slotIdx + 1}:</span>
+                <div key={slotIdx} className="shared-room-slot">
+                  <span className="shared-room-label">Room {slotIdx + 1}:</span>
                   <select
-                    className="form-control form-control-sm"
-                    style={{ width: '85px', fontWeight: 600 }}
+                    className="form-control form-control-sm shared-room-select"
                     value={selectedRooms[slotIdx]}
                     onChange={(e) => handleRoomSlotChange(slotIdx, e.target.value)}
                   >
@@ -403,11 +407,11 @@ export default function ScheduleBuilder({ onShowToast }) {
             <table className="alloc-table">
               <thead>
                 <tr>
-                  <th style={{ width: '90px' }}>Type</th>
-                  <th style={{ width: '110px' }}>Course Code</th>
+                  <th className="col-type">Type</th>
+                  <th className="col-code">Course Code</th>
                   <th>Course Title</th>
-                  <th style={{ width: '80px', textAlign: 'center' }}>Credits</th>
-                  <th style={{ width: '300px' }}>Assigned Faculty (Full Name)</th>
+                  <th className="col-credits">Credits</th>
+                  <th className="col-faculty">Assigned Faculty (Full Name)</th>
                 </tr>
               </thead>
               <tbody>
@@ -420,7 +424,7 @@ export default function ScheduleBuilder({ onShowToast }) {
                     </td>
                     <td className="code-cell">{item.code}</td>
                     <td className="name-cell">{item.name}</td>
-                    <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.credits}</td>
+                    <td className="text-center text-bold">{item.credits}</td>
                     <td>
                       {/* Allocator displays FULL FACULTY NAME, retaining code internally */}
                       <select
@@ -459,13 +463,13 @@ export default function ScheduleBuilder({ onShowToast }) {
                   return (
                     <div key={basketName} className="alloc-basket-group">
                       <div className="alloc-basket-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span className="type-badge" style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                        <div className="alloc-basket-title-group">
+                          <span className="type-badge type-badge-basket">
                             Elective Basket
                           </span>
-                          <strong style={{ fontSize: '0.85rem', color: '#1e293b' }}>{basketName}</strong>
+                          <strong className="alloc-basket-name">{basketName}</strong>
                         </div>
-                        <span style={{ fontSize: '0.78rem', color: offeredCount > 0 ? '#166534' : '#64748b', fontWeight: 600 }}>
+                        <span className={`alloc-basket-count ${offeredCount > 0 ? 'active' : ''}`}>
                           {offeredCount > 0 ? `${offeredCount} of ${subjects.length} Offered (Parallel Groups)` : 'None Offered (Assign faculty below to activate)'}
                         </span>
                       </div>
@@ -473,39 +477,32 @@ export default function ScheduleBuilder({ onShowToast }) {
                       <table className="alloc-table">
                         <thead>
                           <tr>
-                            <th style={{ width: '90px' }}>Status</th>
-                            <th style={{ width: '110px' }}>Course Code</th>
+                            <th className="col-type">Status</th>
+                            <th className="col-code">Course Code</th>
                             <th>Course Title</th>
-                            <th style={{ width: '80px', textAlign: 'center' }}>Credits</th>
-                            <th style={{ width: '300px' }}>Assigned Faculty (Full Name)</th>
+                            <th className="col-credits">Credits</th>
+                            <th className="col-faculty">Assigned Faculty (Full Name)</th>
                           </tr>
                         </thead>
                         <tbody>
                           {subjects.map(item => {
                             const isOffered = Boolean(item.faculty);
                             return (
-                              <tr key={item.code} style={{ background: isOffered ? '#f0fdf4' : 'transparent' }}>
+                              <tr key={item.code} className={isOffered ? 'tr-offered' : ''}>
                                 <td>
-                                  <span
-                                    className={`type-badge ${isOffered ? 'type-badge-theory' : ''}`}
-                                    style={{
-                                      background: isOffered ? '#dcfce7' : '#f1f5f9',
-                                      color: isOffered ? '#166534' : '#94a3b8'
-                                    }}
-                                  >
+                                  <span className={`type-badge ${isOffered ? 'badge-offered' : 'badge-inactive'}`}>
                                     {isOffered ? 'Offered' : 'Inactive'}
                                   </span>
                                 </td>
-                                <td className="code-cell" style={{ fontWeight: isOffered ? 700 : 500 }}>{item.code}</td>
+                                <td className="code-cell">{item.code}</td>
                                 <td className="name-cell">{item.name}</td>
-                                <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.credits}</td>
+                                <td className="text-center text-bold">{item.credits}</td>
                                 <td>
                                   <select
-                                    className="form-control form-control-sm"
+                                    className={`form-control form-control-sm ${isOffered ? 'select-offered' : ''}`}
                                     value={item.faculty || ''}
                                     onChange={(e) => handleFacultyChange(item.code, false, e.target.value, true)}
                                     aria-label={`Faculty for ${item.code}`}
-                                    style={{ borderColor: isOffered ? '#22c55e' : '#cbd5e1' }}
                                   >
                                     <option value="">&mdash; Not Offered / Unassigned &mdash;</option>
                                     {FACULTY_ROSTER.map(f => (

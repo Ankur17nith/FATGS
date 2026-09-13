@@ -886,7 +886,7 @@ export function generateTimetableForSection({
           if (!validBlock) continue;
 
           const fac = sub.faculty || 'RK';
-          // STEP 1 & 2: Candidate room must be free across ALL consecutive periods of the session
+          // Candidate room must be available across all consecutive periods of the session
           const freeRooms = theoryRooms.filter(r => {
             for (let k = p; k < p + dur; k++) {
               if (!isAvailable(fac, r, day, k)) return false;
@@ -894,7 +894,7 @@ export function generateTimetableForSection({
             return true;
           });
 
-          // STEP 3 & 4: Rank free rooms using room-stability score to minimize student movement
+          // Rank available rooms by stability score to minimize room changes between consecutive classes
           if (freeRooms.length > 0) {
             freeRooms.sort((a, b) => {
               const scoreA = getRoomStabilityScore(day, p, dur, a);

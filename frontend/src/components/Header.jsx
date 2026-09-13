@@ -30,7 +30,7 @@ export default function Header() {
           </div>
 
           <div className="header-right-meta">
-            <span className="app-title-badge">FATGS — Timetable Studio</span>
+            <span className="app-title-badge">FATGS &mdash; Timetable Studio</span>
           </div>
         </div>
       </div>

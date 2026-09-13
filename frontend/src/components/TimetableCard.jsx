@@ -2,10 +2,10 @@ import React from 'react';
 
 /**
  * TimetableCard Component
- * Compact, academic institutional presentation modeled on TT_TRACKER:
- * - Theory: Code on line 1, Room • Faculty Code on line 2. No groups.
- * - Lab: LAB badge + G1/G2 badge, Code, Room • Faculty Code.
- * - Electives (DE/OE): Compact elective badge, Code, Room • Faculty Code.
+ * Compact, academic institutional presentation:
+ * - Theory: Code on line 1, Room & Faculty Code on line 2. No groups.
+ * - Lab: LAB badge + G1/G2 badge, Code, Room & Faculty Code.
+ * - Electives (DE/OE): Compact elective badge, Code, Room & Faculty Code.
  * - Reserved (SA-201): Compact RESERVED badge, Code.
  * - Parallel entries (simultaneous G1/G2 labs or DEs): Compact stack with subtle hairline divider.
  */
@@ -32,9 +32,9 @@ export default function TimetableCard({ cell }) {
 function SingleEntry({ entry, isStacked }) {
   if (!entry) return null;
 
-  const subjectCode = entry.code || entry.subjectCode || '—';
+  const subjectCode = entry.code || entry.subjectCode || '-';
   const faculty = entry.faculty || entry.facultyCode || '';
-  const room = entry.room || (entry.isReservedEmpty ? '—' : 'TBA');
+  const room = entry.room || (entry.isReservedEmpty ? '-' : 'TBA');
   const isLab = entry.isLab === true;
   const isDE = entry.electiveType === 'DE' || entry.electiveType === 'SE' || entry.electiveType === 'SC' || (entry.basket && !entry.basket.includes('Open'));
   const isOE = entry.electiveType === 'OE' || (entry.basket && entry.basket.includes('Open'));

@@ -8,7 +8,7 @@ import TimetableCard from './TimetableCard';
  * - Solid 1px borders between all cells
  * - Top header row with time intervals (09:00 - 10:00, etc.)
  * - Left column with day names (Monday - Friday)
- * - Section-specific institutional lunch break (12:00-13:00 for 2nd Year, 13:00-14:00 for 3rd/4th/5th/M.Tech)
+ * - Section-specific institutional lunch break (13:00-14:00 for 2nd/4th/5th/M.Tech, 12:00-13:00 for 3rd Year)
  * - Ultra-compact cell height (~52px-56px) allowing the entire Monday-Friday week to be viewed on desktop without scrolling
  */
 export default function TimetableGrid({

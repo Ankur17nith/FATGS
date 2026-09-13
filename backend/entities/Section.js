@@ -1,5 +1,3 @@
-const { Subject, Lab, Elective } = require('./Subject.js');
-
 class Section {
     constructor(name, year, semester) {
         this.name = name;
@@ -17,7 +15,7 @@ class Section {
         // Year-specific lunch timings:
         // 2nd Year: Lunch = 13:00 - 14:00 (period 4)
         // 3rd Year: Lunch = 12:00 - 13:00 (period 3)
-        // Final Year: Lunch = 13:00 - 14:00 (period 4)
+        // Final Year & M.Tech: Lunch = 13:00 - 14:00 (period 4)
         const isThirdYear = (year && year.includes('3rd')) ||
             (name && (name === 'CS3' || name === 'CD3')) ||
             (semester && (semester.includes('5th') || semester.includes('6th')));

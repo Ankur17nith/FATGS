@@ -9,7 +9,7 @@
  *  - 4 Shared Theory Rooms for CS2, CD2, CS3, CD3, CS4, CD4 (configurable).
  *  - CD5 uses CSE-III room.
  *  - Lab rooms: P1..P6, B1, B2 (configured as Lab).
- *  - Year-specific lunch: 2nd Year (12:00-13:00), 3rd/4th/5th Year (13:00-14:00).
+ *  - Year-specific lunch: 2nd Year (13:00-14:00), 3rd Year (12:00-13:00), 4th/5th/M.Tech (13:00-14:00).
  *  - Labs: Contiguous 2-hour practicals (P=2).
  *    Priority 1: G1 and G2 scheduled at SAME TIME in different lab rooms.
  *    Priority 2: Different-time fallback.
@@ -113,7 +113,7 @@ function placeLabs(sections, labRooms, facultyBookings, roomBookings) {
         const isThirdYear = section.name === 'CS3' || section.name === 'CD3' || (section.year && section.year.includes('3rd'));
         const preLunchLimit = isThirdYear ? 3 : 4;
 
-        // PRIORITY 1: Try to pair unplaced G1 and G2 at the SAME TIME
+        // Attempt simultaneous scheduling for G1 and G2 across separate lab rooms
         for (let i = unplacedG1.length - 1; i >= 0; i--) {
             const task1 = unplacedG1[i];
             let paired = false;
@@ -220,7 +220,7 @@ function placeLabs(sections, labRooms, facultyBookings, roomBookings) {
             }
         }
 
-        // PRIORITY 2: Fallback to schedule remaining G1 / G2 tasks at different valid times
+        // Fallback: Schedule remaining lab groups in distinct non-overlapping slots
         const remainingTasks = [...unplacedG1, ...unplacedG2];
         for (const task of remainingTasks) {
             const comboAttempts = [];
@@ -422,7 +422,7 @@ function placeDisciplineElectives(sections, classRooms, facultyBookings, roomBoo
             let placedCount = 0;
             const days = [0, 1, 2, 3, 4].sort(() => Math.random() - 0.5);
 
-            // Phase 1: Try common synchronized slot across paired cohort sections
+            // Attempt common synchronized slot across paired cohort sections
             for (const day of days) {
                 if (placedCount >= dePeriodsNeeded) break;
 
@@ -480,7 +480,7 @@ function placeDisciplineElectives(sections, classRooms, facultyBookings, roomBoo
                 }
             }
 
-            // Phase 2: If common cohort placement could not place all needed periods, fallback flexibly per section
+            // Fallback: Place remaining periods flexibly per section if synchronized slot was unavailable
             if (placedCount < dePeriodsNeeded) {
                 secGroup.forEach(sec => {
                     const existingCount = sec.slots.flat().filter(sl => sl.booked && sl.entries && sl.entries.some(e => e.basket === bName)).length;
@@ -734,7 +734,7 @@ function placeTheorySubjects(sections, classRooms, facultyBookings, roomBookings
                         }
                         if (!validBlock) continue;
 
-                        // STEP 1 & 2: Candidate rooms must be free across ALL consecutive periods of the session
+                        // Verify candidate room is unbooked across all periods of the multi-hour block
                         const freeRooms = allowedRooms.filter(r => {
                             for (let k = p; k < p + dur; k++) {
                                 if (!isFree(roomBookings, r.roomno, day, k)) return false;
@@ -742,7 +742,7 @@ function placeTheorySubjects(sections, classRooms, facultyBookings, roomBookings
                             return true;
                         });
 
-                        // STEP 3 & 4: Rank free rooms using room-stability score to minimize student movement
+                        // Rank free rooms by room-stability score to minimize student relocation
                         if (freeRooms.length > 0) {
                             freeRooms.sort((a, b) => {
                                 const scoreA = getRoomStabilityScore(section, day, p, dur, a.roomno, allowedRooms, roomBookings);

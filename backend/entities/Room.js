@@ -1,13 +1,9 @@
-class Room{
-    constructor(roomno,type,building){
-        this.roomno = roomno;// eg"B4"
-        this.type = type;// only do types class or lab
-        this.building = building;//vvk etc
-
-        //place holder
-        this.table= new Map();
+class Room {
+    constructor(roomno, type, building) {
+        this.roomno = roomno;
+        this.type = type; // 'Class' or 'Lab'
+        this.building = building;
     }
-    
 }
 
-module.exports=Room;
+module.exports = Room;
