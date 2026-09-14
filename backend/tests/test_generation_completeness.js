@@ -276,10 +276,12 @@ async function runTests() {
   // Verify Odd Semester Export Content
   const oddExport = await makeRequest(port, '/api/timetable/export?semester=Odd%20Semester');
   assert.strictEqual(oddExport.statusCode, 200);
-  assert.strictEqual(oddExport.body.semester, 'Odd Semester');
+  assert.strictEqual(oddExport.body.semester, 'Odd');
+  assert.strictEqual(oddExport.body.semesterType, 'Odd');
   assert.strictEqual(oddExport.body.sections.length, 9);
-  assert.ok(oddExport.body.sections.includes('MT1'));
-  assert.ok(oddExport.body.sections.includes('MA1'));
+  const oddSecNames = oddExport.body.sections.map(s => typeof s === 'string' ? s : (s.originalSection || s.section));
+  assert.ok(oddSecNames.includes('MT1'));
+  assert.ok(oddSecNames.includes('MA1'));
   assert.ok(oddExport.body.timetable.some(s => s.section === 'MT1' && s.room === 'Seminar Hall - Block A'));
   assert.ok(oddExport.body.timetable.some(s => s.section === 'MA1' && s.room === 'Conference Hall - Block B'));
   console.log('[PASS] TEST 7B: Odd export package includes all 9 sections and preserves distinct MT1 & MA1 data.');
@@ -289,7 +291,8 @@ async function runTests() {
   // Switch to Even Semester: Odd records must NOT count toward Even Semester!
   const evenStatus = await makeRequest(port, '/api/timetable/generation-status?semester=Even%20Semester');
   assert.strictEqual(evenStatus.statusCode, 200);
-  assert.strictEqual(evenStatus.body.semester, 'Even Semester');
+  assert.strictEqual(evenStatus.body.semester, 'Even');
+  assert.strictEqual(evenStatus.body.semesterType, 'Even');
   assert.strictEqual(evenStatus.body.totalRequired, 6);
   assert.strictEqual(evenStatus.body.totalGenerated, 0); // None of the Even sections have been generated!
   assert.strictEqual(evenStatus.body.allRequiredGenerated, false);
@@ -326,20 +329,24 @@ async function runTests() {
   const evenStatusFull = await makeRequest(port, '/api/timetable/generation-status?semester=Even%20Semester');
   assert.strictEqual(evenStatusFull.body.totalRequired, 6);
   assert.strictEqual(evenStatusFull.body.totalGenerated, 6);
+  assert.strictEqual(evenStatusFull.body.semester, 'Even');
+  assert.strictEqual(evenStatusFull.body.semesterType, 'Even');
   assert.strictEqual(evenStatusFull.body.exportAllowed, true);
   console.log('[PASS] TEST 8C: All 6 Even Semester sections generated -> Even Export JSON ENABLED.');
 
   // Export Even Semester: package must contain ONLY Even Semester data!
   const evenExport = await makeRequest(port, '/api/timetable/export?semester=Even%20Semester');
   assert.strictEqual(evenExport.statusCode, 200);
-  assert.strictEqual(evenExport.body.semester, 'Even Semester');
+  assert.strictEqual(evenExport.body.semester, 'Even');
+  assert.strictEqual(evenExport.body.semesterType, 'Even');
   assert.strictEqual(evenExport.body.sections.length, 6);
   assert.strictEqual(evenExport.body.totalSlots, 6);
   // Zero Odd semester slots in Even export!
   assert.ok(evenExport.body.timetable.every(s => s.semester.includes('4th') || s.semester.includes('6th') || s.semester.includes('8th')));
-  assert.ok(!evenExport.body.sections.includes('CD5'));
-  assert.ok(!evenExport.body.sections.includes('MT1'));
-  assert.ok(!evenExport.body.sections.includes('MA1'));
+  const evenSecNames = evenExport.body.sections.map(s => typeof s === 'string' ? s : (s.originalSection || s.section));
+  assert.ok(!evenSecNames.includes('CD5'));
+  assert.ok(!evenSecNames.includes('MT1'));
+  assert.ok(!evenSecNames.includes('MA1'));
   console.log('[PASS] TEST 8D: Even Semester export contains ONLY Even Semester data (zero Odd slots, zero M.Tech slots).');
 
   // Switch BACK to Odd Semester: verify previous Odd Semester generation state is preserved!
@@ -348,6 +355,8 @@ async function runTests() {
   assert.strictEqual(switchBackOdd.body.totalGenerated, 9);
   assert.strictEqual(switchBackOdd.body.allRequiredGenerated, true);
   assert.strictEqual(switchBackOdd.body.exportAllowed, true);
+  assert.strictEqual(switchBackOdd.body.semester, 'Odd');
+  assert.strictEqual(switchBackOdd.body.semesterType, 'Odd');
   console.log('[PASS] TEST 8E: Switch back to Odd Semester: All 9 Odd Semester records PRESERVED intact.');
 
   // --- 9. RE-GENERATION OF M.TECH SECTION PRESERVES DISTINCT STATE ---

@@ -68,7 +68,7 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
 
   // Semester handoff state
-  const [targetSemester, setTargetSemester] = useState('Odd Semester');
+  const [targetSemester, setTargetSemester] = useState('Odd');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isHandoffLoading, setIsHandoffLoading] = useState(false);
 
@@ -300,41 +300,15 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Export JSON using existing generated base timetable data (no re-running generator)
-  const handleExportJson = async () => {
+  // Export JSON workflow: verifies completeness and opens confirmation modal
+  const handleExportJson = () => {
     if (!isExportAllowed) {
       if (onShowToast) {
-        onShowToast('Export JSON unavailable: All required sections with classes must first be generated.');
+        onShowToast(`Export JSON unavailable: All required sections with classes for ${targetSemester} Semester must first be generated.`);
       }
       return;
     }
-
-    try {
-      const res = await fetch(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}`);
-      const exportData = await res.json();
-
-      if (!res.ok || !exportData.timetable) {
-        if (onShowToast) {
-          onShowToast(`Export rejected: ${exportData.error || 'Unknown error'}`);
-        }
-        return;
-      }
-
-      const blob = new Blob([JSON.stringify(exportData.timetable, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `base_timetable_${targetSemester.replace(/\s+/g, '_').toLowerCase()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      if (onShowToast) {
-        onShowToast(`Exported ${exportData.totalSlots} scheduled slots for ${targetSemester} (${exportData.sections.length} sections)`);
-      }
-    } catch (err) {
-      if (onShowToast) {
-        onShowToast(`Export error: ${err.message}`);
-      }
-    }
+    setIsConfirmModalOpen(true);
   };
 
   // Export JSON for the currently viewed section specifically
@@ -378,12 +352,12 @@ export default function ScheduleBuilder({ onShowToast }) {
   // Dynamically determine fallback required sections for selected semester cycle
   const requiredSections = useMemo(() => {
     return store.filter(sec => {
-      if (targetSemester === 'Odd Semester') {
+      if (targetSemester === 'Odd' || targetSemester === 'Odd Semester') {
         const isOdd = sec.semester.includes('1st') || sec.semester.includes('3rd') ||
                       sec.semester.includes('5th') || sec.semester.includes('7th') ||
                       sec.semester.includes('9th');
         if (!isOdd) return false;
-      } else if (targetSemester === 'Even Semester') {
+      } else if (targetSemester === 'Even' || targetSemester === 'Even Semester') {
         const isEven = sec.semester.includes('2nd') || sec.semester.includes('4th') ||
                        sec.semester.includes('6th') || sec.semester.includes('8th') ||
                        sec.semester.includes('10th');
@@ -423,61 +397,66 @@ export default function ScheduleBuilder({ onShowToast }) {
 
   const isReadyForHandoff = isExportAllowed;
 
-  // Handoff timetable package to TT_TRACKER backend using verified generated data
-  const handleGenerateTimetableHandoff = async () => {
-    if (!isReadyForHandoff) {
-      if (onShowToast) {
-        onShowToast('Cannot generate timetable: Not all required sections have generated base timetables.');
-      }
-      return;
-    }
-
+  // Confirmed export and TT_TRACKER handoff workflow
+  const handleConfirmExportAndHandoff = async () => {
     setIsHandoffLoading(true);
 
     try {
+      // 1. Fetch the already-generated complete timetable package for the selected semester
       const exportRes = await fetch(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}`);
       const exportData = await exportRes.json();
 
-      if (!exportRes.ok || !exportData.timetable) {
+      if (!exportRes.ok || (!exportData.slots && !exportData.timetable)) {
         setIsHandoffLoading(false);
         if (onShowToast) {
-          onShowToast(`Handoff blocked: ${exportData.error || 'Failed to retrieve complete timetable package'}`);
+          onShowToast(`Export blocked: ${exportData.error || 'Failed to retrieve complete timetable package'}`);
         }
         return;
       }
 
-      const completePackage = {
-        schemaVersion: '1.0.0',
-        source: 'FATGS',
-        semester: targetSemester,
-        academicYear: exportData.academicYear || '2025-2026',
-        exportedAt: exportData.exportedAt || new Date().toISOString(),
-        generationId: `pkg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        sections: exportData.sections,
-        totalSlots: exportData.totalSlots,
-        timetable: exportData.timetable
-      };
-
+      // 2. Perform authenticated server-to-server handoff via FATGS backend
       const res = await fetch('/api/handoff-timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ package: completePackage })
+        body: JSON.stringify({
+          semester: targetSemester,
+          package: exportData
+        })
       });
 
       const data = await res.json();
+      setIsHandoffLoading(false);
+
       if (res.ok && data.success) {
-        setIsHandoffLoading(false);
         setIsConfirmModalOpen(false);
-        if (onShowToast) {
-          onShowToast('Timetable successfully handed off to TT_TRACKER. Redirecting...');
+
+        // 3. Local JSON download of the verified base timetable package
+        try {
+          const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `base_timetable_${targetSemester.replace(/\s+/g, '_').toLowerCase()}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (dlErr) {
+          console.warn('[FATGS] Local download note:', dlErr);
         }
-        setTimeout(() => {
-          window.location.href = data.redirectUrl || 'http://localhost:5000/timetable';
-        }, 800);
-      } else {
-        setIsHandoffLoading(false);
+
+        // 4. Report success
         if (onShowToast) {
-          onShowToast(`TT_TRACKER handoff error: ${data.error || 'Request rejected'}`);
+          onShowToast('✓ Timetable successfully imported and activated in TT_TRACKER! Opening TT_TRACKER...');
+        }
+
+        // 5. Open/redirect to TT_TRACKER only AFTER successful handoff
+        const redirectTarget = data.redirectUrl || 'http://localhost:3000/timetable';
+        setTimeout(() => {
+          window.location.href = redirectTarget;
+        }, 1200);
+      } else {
+        // Report exact failure reason from TT_TRACKER (never redirect on failure)
+        if (onShowToast) {
+          onShowToast(data.error || 'TT_TRACKER import failed: Timetable was rejected.');
         }
       }
     } catch (err) {
@@ -532,8 +511,8 @@ export default function ScheduleBuilder({ onShowToast }) {
               onClick={handleExportJson}
               title={
                 isExportAllowed
-                  ? `Export JSON for ${targetSemester}`
-                  : `Export JSON is disabled: All required sections for ${targetSemester} must generate base timetables first.`
+                  ? `Export JSON for ${targetSemester} Semester`
+                  : `Export JSON is disabled: All required sections for ${targetSemester} Semester must generate base timetables first.`
               }
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -686,8 +665,8 @@ export default function ScheduleBuilder({ onShowToast }) {
                 fetchBackendStatus(newSem);
               }}
             >
-              <option value="Odd Semester">Odd Semester (1st, 3rd, 5th, 7th, 9th Sem)</option>
-              <option value="Even Semester">Even Semester (4th, 6th, 8th Sem)</option>
+              <option value="Odd">Odd Semester (1st, 3rd, 5th, 7th, 9th Sem)</option>
+              <option value="Even">Even Semester (4th, 6th, 8th Sem)</option>
             </select>
           </div>
         </div>
@@ -747,12 +726,12 @@ export default function ScheduleBuilder({ onShowToast }) {
             <button
               type="button"
               className="btn-studio btn-export"
-              disabled={!isExportAllowed}
+              disabled={!isExportAllowed || isHandoffLoading}
               onClick={handleExportJson}
               title={
                 isExportAllowed
-                  ? `Export JSON for ${targetSemester}`
-                  : `Export JSON is disabled: All required sections for ${targetSemester} must generate base timetables first.`
+                  ? `Export JSON for ${targetSemester} Semester and handoff to TT_TRACKER`
+                  : `Export JSON is disabled: All required sections for ${targetSemester} Semester must generate base timetables first.`
               }
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -760,25 +739,7 @@ export default function ScheduleBuilder({ onShowToast }) {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Export JSON
-            </button>
-
-            <button
-              type="button"
-              className="btn-generate-timetable"
-              disabled={!isReadyForHandoff || isHandoffLoading}
-              onClick={() => setIsConfirmModalOpen(true)}
-              title={
-                isReadyForHandoff
-                  ? 'Initiate timetable handoff to TT_TRACKER'
-                  : 'Handoff disabled until all required sections have generated base timetables.'
-              }
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-              Generate Timetable
+              Export JSON {isExportAllowed ? `(${backendStatus?.totalRequired || 0} Sections)` : ''}
             </button>
           </div>
         </div>
@@ -985,7 +946,7 @@ export default function ScheduleBuilder({ onShowToast }) {
         cancelText="Cancel"
         isLoading={isHandoffLoading}
         loadingMessage="Sending timetable to TT_TRACKER..."
-        onConfirm={handleGenerateTimetableHandoff}
+        onConfirm={handleConfirmExportAndHandoff}
         onCancel={() => {
           if (!isHandoffLoading) setIsConfirmModalOpen(false);
         }}

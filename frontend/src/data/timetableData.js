@@ -968,7 +968,8 @@ export function generateTimetableForSection({
             const prevCell = grid[day][p - 1];
             const prevEntry = Array.isArray(prevCell) ? prevCell.find(e => e.code === sub.code) : (prevCell.code === sub.code ? prevCell : null);
             if (prevEntry && prevEntry.room) requiredSameSubjectRoom = prevEntry.room;
-          } else if (p < 7 && grid[day][p + 1]) {
+          }
+          if (!requiredSameSubjectRoom && p < 7 && grid[day][p + 1]) {
             const nextCell = grid[day][p + 1];
             const nextEntry = Array.isArray(nextCell) ? nextCell.find(e => e.code === sub.code) : (nextCell.code === sub.code ? nextCell : null);
             if (nextEntry && nextEntry.room) requiredSameSubjectRoom = nextEntry.room;
@@ -1025,16 +1026,37 @@ export function generateTimetableForSection({
             const fac = sub.faculty || 'RK';
             if (!isAvailable(fac, null, day, p)) continue;
 
-            const freeRooms = theoryRooms.filter(r => isAvailable(fac, r, day, p));
-            if (freeRooms.length === 0) continue;
+            let requiredSameSubjectRoom = null;
+            if (p > 0 && grid[day][p - 1]) {
+              const prevCell = grid[day][p - 1];
+              const prevEntry = Array.isArray(prevCell) ? prevCell.find(e => e.code === sub.code) : (prevCell.code === sub.code ? prevCell : null);
+              if (prevEntry && prevEntry.room) requiredSameSubjectRoom = prevEntry.room;
+            }
+            if (!requiredSameSubjectRoom && p < 7 && grid[day][p + 1]) {
+              const nextCell = grid[day][p + 1];
+              const nextEntry = Array.isArray(nextCell) ? nextCell.find(e => e.code === sub.code) : (nextCell.code === sub.code ? nextCell : null);
+              if (nextEntry && nextEntry.room) requiredSameSubjectRoom = nextEntry.room;
+            }
 
-            freeRooms.sort((a, b) => {
-              const scoreA = getRoomStabilityScore(day, p, 1, a);
-              const scoreB = getRoomStabilityScore(day, p, 1, b);
-              return scoreB - scoreA;
-            });
+            let chosenRoom = null;
+            if (requiredSameSubjectRoom) {
+              if (isAvailable(fac, requiredSameSubjectRoom, day, p)) {
+                chosenRoom = requiredSameSubjectRoom;
+              } else {
+                continue;
+              }
+            } else {
+              const freeRooms = theoryRooms.filter(r => isAvailable(fac, r, day, p));
+              if (freeRooms.length === 0) continue;
 
-            const chosenRoom = freeRooms[0];
+              freeRooms.sort((a, b) => {
+                const scoreA = getRoomStabilityScore(day, p, 1, a);
+                const scoreB = getRoomStabilityScore(day, p, 1, b);
+                return scoreB - scoreA;
+              });
+
+              chosenRoom = freeRooms[0];
+            }
 
             grid[day][p] = {
               code: sub.code,

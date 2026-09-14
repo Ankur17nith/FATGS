@@ -346,81 +346,194 @@ npm test
    - Audits frontend store, section taxonomy (verifying zero CS5), faculty short codes, theory group omissions, and continuous-class room stability.
 7. **`backend/tests/test_handoff_packaging.js`** (5/5 Passed):
    - Validates data-driven required section detection (Odd vs Even semesters), verifies that sections without classes in the selected semester (e.g. CD5 in Even semester) do not block readiness, validates stale export detection after regeneration, and validates semester package structure.
-8. **`backend/tests/test_handoff_server.js`** (9/9 Passed):
-   - Integration tests verifying health check, status endpoint secret hiding, package validation, error handling on unconfigured TT_TRACKER, authenticated handoff with mock TT_TRACKER, 400 validation rejection handling, 401 auth failure handling, 500 server error handling, and 502/504 network error handling.
+8. **`backend/tests/test_handoff_server.js`** (10/10 Passed):
+   - Comprehensive backend and TT_TRACKER integration test suite:
+     - Tests `/api/health` 200 OK.
+     - Tests `/api/tt-tracker/status` exposes configuration without leaking secret.
+     - Tests rejection of malformed or incomplete packages (HTTP 400).
+     - Tests missing environment configuration handling (HTTP 500).
+     - Tests authenticated server-to-server handoff to TT_TRACKER (`POST /api/timetable/import`) with headers `x-import-secret` and `Authorization: Bearer <secret>`.
+     - Tests payload envelope: `{ packageId, academicYear, semesterType, slots: [...] }`.
+     - Tests M.Tech section mapping (`MT1` -> `MTECH-CSE`, `MA1` -> `MTECH-AI`) and slot preservation (`sessionId`, `group`, `isLab`, `duration`).
+     - Tests TT_TRACKER validation rejection (422/400) caught cleanly with exact failure message and zero redirect.
+     - Tests TT_TRACKER 401 authentication rejection handling.
+     - Tests TT_TRACKER 500 internal server error handling.
+     - Tests network connection failure (502) handling.
+     - Tests semester-scoped handoff invocation from persisted backend state.
 
 ---
 
 ## 13. Timetable Generation & TT_TRACKER Handoff Workflow
 
-FATGS cleanly separates three operational concepts:
+FATGS cleanly coordinates timetable generation, local export, and production-grade handoff to the TT_TRACKER tracking and management platform:
 
 ```
 +-------------------------------------------------------------------------------+
 |  1. "Generate Base Timetable"                                                 |
 |     Action: Runs the scheduling algorithm inside FATGS for the section.      |
-|     Preserves existing scheduling logic and faculty allocations.              |
+|     Preserves authoritative scheduling rules, room stability, and faculty allocations.|
 +---------------------------------------+---------------------------------------+
                                         |
                                         v
 +-------------------------------------------------------------------------------+
-|  2. "Export JSON"                                                             |
-|     Action: Exports section timetable data to JSON and downloads file.        |
-|     FATGS tracks which sections have been exported and monitors freshness.    |
+|  2. Semester Completeness Verification                                        |
+|     Backend evaluates completion across all required sections for the semester.|
+|     Odd Semester: 9 sections (CS2, CD2, CS3, CD3, CS4, CD4, CD5, MT1, MA1).   |
+|     Even Semester: 6 sections (CS2, CD2, CS3, CD3, CS4, CD4).                 |
 +---------------------------------------+---------------------------------------+
                                         |
                                         v
 +-------------------------------------------------------------------------------+
-|  3. "Generate Timetable" (Handoff)                                            |
-|     Action: Prepares complete semester package and sends to TT_TRACKER.        |
-|     Does NOT regenerate the schedule; verifies semester completeness, prompts |
-|     confirmation, sends via backend API, and redirects only on confirmed 200. |
+|  3. "Export JSON" (with Handoff Confirmation)                                 |
+|     Action: When all required sections are generated, click "Export JSON".   |
+|     Modal: "This will replace the current TT_TRACKER base timetable. Continue?"|
+|     - Cancel: Closes modal; zero side-effects.                                |
+|     - Continue: Executes authenticated server-to-server handoff.              |
++---------------------------------------+---------------------------------------+
+                                        |
+                                        v
++-------------------------------------------------------------------------------+
+|  4. Authenticated Server-to-Server Handoff                                    |
+|     FATGS Backend -> POST http://localhost:3000/api/timetable/import          |
+|     Headers: x-import-secret: <secret>, Authorization: Bearer <secret>        |
+|     Payload: { packageId, academicYear, semesterType, slots: [...] }          |
+|     - MT1 mapped to MTECH-CSE (Y1_S1_MTECH-CSE)                               |
+|     - MA1 mapped to MTECH-AI (Y1_S1_MTECH-AI)                                 |
+|     - sessionId, group, isLab, duration, faculty, and room preserved.         |
++---------------------------------------+---------------------------------------+
+                                        |
+                                        v
++-------------------------------------------------------------------------------+
+|  5. TT_TRACKER Verification & Atomic Activation                               |
+|     - TT_TRACKER validates all entities (faculty, rooms, subjects, sections). |
+|     - Atomically replaces base timetable slots in MongoDB.                   |
+|     - Clears stale overrides & hydrates tracking registry.                    |
+|     - Returns HTTP 200 { success: true, redirectUrl: "..." }                  |
++---------------------------------------+---------------------------------------+
+                                        |
+                                        v
++-------------------------------------------------------------------------------+
+|  6. Success Confirmation & Safe Navigation                                    |
+|     - FATGS triggers local download of base_timetable_<semester>.json.        |
+|     - FATGS displays success toast.                                           |
+|     - Redirects/opens TT_TRACKER (http://localhost:3000/timetable) after 1.2s.|
+|     - If rejected: Displays exact failure message, NO download, NO redirect. |
 +-------------------------------------------------------------------------------+
 ```
 
-### Complete Handoff Sequence:
-1. **Select Target Semester**: Select the semester term (e.g. `Odd Semester` or `Even Semester`).
-2. **Generate Base Timetable**: Generate schedules for the required sections.
-3. **Export JSON**: Export section timetables. FATGS records the export generation ID. If a section is regenerated, its export is marked as **Stale** until re-exported.
-4. **Semester Completeness Verification**:
-   - Required sections are detected dynamically from curriculum data.
-   - Sections with classes require export.
-   - Sections with zero classes in the selected semester (e.g., `CD5` in Even semester) do **not** block readiness.
-   - If any required section is unexported or stale, **`Generate Timetable` is disabled**.
-5. **Confirmation Dialog**:
-   - When all required sections are exported, **`Generate Timetable`** becomes enabled.
-   - Clicking opens the confirmation modal:
-     > *"This will replace the current TT_TRACKER base timetable. Continue?"*
-   - **Cancel**: Closes modal, no request is sent, no state is changed.
-   - **Continue**: Constructs the complete semester package and sends it to the FATGS backend.
-6. **Backend-to-Backend Authenticated Handoff**:
-   - FATGS backend verifies package structure and completeness.
-   - Sends authenticated POST to `${TT_TRACKER_URL}/api/timetable/import-base` with `x-tt-tracker-secret`.
-7. **Redirect on Success**:
-   - **Success (HTTP 200)**: TT_TRACKER replaces its base timetable and confirms success. FATGS redirects the user to TT_TRACKER.
-   - **Failure (rejection, network error, auth failure)**: **NO REDIRECT OCCURS**. FATGS displays an error toast and remains on the page.
+### Local Development Ports & Services
 
-1. **Initialization & Grid Clearing**:
-   - Initializes 5-day x 8-period matrices for all active sections.
-   - Clears room and faculty booking ledgers.
-2. **Lunch Reservation**:
-   - Hard-locks the year-specific lunch period for each section before any course placement.
-3. **Open Elective Scheduling**:
-   - Places `CS-301` into its designated 13:00–14:00 synchronized slots with assigned instructor `KK` and physical classrooms.
-4. **Discipline & Stream Electives**:
-   - Identifies active elective offerings within each basket.
-   - Schedules parallel courses into identical time slots across distinct classrooms.
-5. **Reserved Curricular Activities**:
-   - Reserves slots for co-curricular requirements (`SA-201 NSS/NCC`).
-6. **Laboratory Practicals**:
-   - Iterates practical labs requiring 2-hour contiguous blocks.
-   - Schedules G1 and G2 simultaneously across two distinct labs (`P1 - P6`); falls back to staggered slots if needed.
-7. **Theory Course Scheduling**:
-   - Allocates remaining weekly credit contact hours for compulsory theory subjects.
-   - Prefers morning hours before lunch.
-   - Applies room-stability scoring to minimize student room transitions between consecutive classes.
-8. **Export & Verification**:
-   - Flattens the schedule matrix into an array of slot objects and writes `backend/output/base_timetable.json`.
+| Service | Local URL | Description |
+|---|---|---|
+| **FATGS Backend** | `http://localhost:5001` | Express API server (`node backend/server.js`) |
+| **FATGS Frontend** | `http://localhost:5173` | React + Vite UI studio (`npm --prefix frontend run dev`) |
+| **TT_TRACKER Backend/App** | `http://localhost:3000` | Timetable tracking system (`npm start` in `TT_TRACKER`) |
+
+### Required Environment Configuration
+
+Configure the following variables in FATGS `.env`:
+
+```env
+# FATGS Server Port
+PORT=5001
+
+# TT_TRACKER Integration Configuration
+TT_TRACKER_URL=http://localhost:3000
+TT_TRACKER_IMPORT_ENDPOINT=/api/timetable/import
+TT_TRACKER_IMPORT_SECRET=local_tt_tracker_test_secret_key_2026
+```
+
+> [!IMPORTANT]
+> **Zero Secret Leakage to Frontend**: The import secret (`TT_TRACKER_IMPORT_SECRET`) is maintained strictly on the FATGS server side. It is **never** included in client API responses, frontend bundles, local storage, or browser environment variables. The frontend calls `/api/handoff-timetable` on the FATGS backend, which securely proxies the authenticated request to TT_TRACKER.
+
+### API Payload Contract
+
+The FATGS backend packages the verified, already-generated timetable into TT_TRACKER's required envelope:
+
+```json
+{
+  "packageId": "pkg_odd_1789334270799",
+  "academicYear": "2025-2026",
+  "semesterType": "Odd",
+  "slots": [
+    {
+      "section": "CS2",
+      "year": "2nd Year",
+      "semester": "3rd Semester",
+      "day": "Monday",
+      "start": "09:00",
+      "end": "10:00",
+      "subjectCode": "CS-214",
+      "facultyCode": "KD",
+      "faculty": "KD",
+      "room": "B4",
+      "isLab": false,
+      "duration": 1,
+      "group": null,
+      "sessionId": "CS2_CS-214_Mon_0900",
+      "isReservedEmpty": false
+    },
+    {
+      "section": "MTECH-CSE",
+      "sectionId": "Y1_S1_MTECH-CSE",
+      "originalSection": "MT1",
+      "year": "1st Year",
+      "semester": "1st Semester",
+      "day": "Monday",
+      "start": "10:00",
+      "end": "11:00",
+      "subjectCode": "CS-736",
+      "facultyCode": "RPS",
+      "faculty": "RPS",
+      "room": "Seminar Hall - Block A",
+      "isLab": false,
+      "duration": 1,
+      "group": null,
+      "sessionId": "RPS_Y1_S1_MTECH-CSE_CS-736_Monday_10:00",
+      "isReservedEmpty": false
+    }
+  ]
+}
+```
+
+### M.Tech Section Identification & Mapping
+
+FATGS supports M.Tech sections as first-class academic cohorts. To ensure full compatibility with TT_TRACKER's schema while preserving FATGS source identifiers, the backend applies the following centralized mapping:
+
+| FATGS Section | Academic Degree | TT_TRACKER Section | TT_TRACKER Section ID | Primary Lecture Facility |
+|---|---|---|---|---|
+| `MT1` | M.Tech CSE (1st Year, 1st Sem) | `MTECH-CSE` | `Y1_S1_MTECH-CSE` | `Seminar Hall - Block A` |
+| `MA1` | M.Tech AI (1st Year, 1st Sem) | `MTECH-AI` | `Y1_S1_MTECH-AI` | `Conference Hall - Block B` |
+
+- `MT1` and `MA1` are tracked independently in generation records.
+- Neither M.Tech section is ever normalized into ordinary B.Tech sections (no trailing digit stripping into `MT` or `MA`).
+- Both sections must be generated before Odd Semester export/handoff is permitted.
+
+### Step-by-Step End-to-End Handoff Guide
+
+1. **Start Services**:
+   - Start TT_TRACKER on port 3000 (`npm start` in `TT_TRACKER`).
+   - Start FATGS backend on port 5001 (`node backend/server.js`).
+   - Start FATGS frontend on port 5173 (`npm --prefix frontend run dev`).
+2. **Access FATGS Studio**:
+   - Open `http://localhost:5173` in a web browser.
+3. **Verify Target Semester**:
+   - In the "Semester Timetable Handoff & Completeness Status" panel, verify that the Target Semester is set to **Odd Semester** (or **Even Semester**).
+4. **Generate Base Timetables**:
+   - For each section listed in the completeness status grid, select the section and click **"Generate Base Timetable"**.
+   - Continue until the summary bar turns green:
+     `✓ All required sections generated (9/9 sections ready for Export JSON & TT_TRACKER handoff)`.
+5. **Trigger Export & Handoff**:
+   - Click the **"Export JSON"** button in the handoff panel.
+6. **Confirmation Modal**:
+   - A modal dialog appears:
+     > *"This will replace the current TT_TRACKER base timetable. Continue?"*
+   - Clicking **"Cancel"** aborts the operation with zero side effects.
+   - Clicking **"Continue"** initiates the authenticated handoff.
+7. **Execution & Confirmation**:
+   - The FATGS backend gathers the already-generated slots, maps M.Tech section identities, packages the envelope, and sends a secure POST to TT_TRACKER.
+   - On success (HTTP 200), the browser automatically downloads `base_timetable_<semester>.json`, displays a green success toast, and redirects to `http://localhost:3000/timetable`.
+   - If TT_TRACKER rejects the package, FATGS surfaces the exact rejection error message (e.g. `TT_TRACKER import failed: Slot #20: Unknown room "P6". Room must exist in TT_TRACKER room registry.`), aborts the download, and stays on the page without redirecting.
 
 ---
 
