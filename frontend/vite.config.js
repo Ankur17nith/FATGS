@@ -10,7 +10,18 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: process.env.VITE_BACKEND_URL || 'http://localhost:5001',
-        changeOrigin: true
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (err, req, res) => {
+            if (res && !res.headersSent && typeof res.writeHead === 'function') {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({
+                success: false,
+                error: 'FATGS backend server is starting up or unavailable on port 5001.'
+              }));
+            }
+          });
+        }
       }
     }
   },

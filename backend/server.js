@@ -409,18 +409,39 @@ function loadGenerationState(customStatePath, sessionId = null) {
   return SESSIONS.get(sId);
 }
 
+function safeWriteFileSync(targetPath, data) {
+  const dir = path.dirname(targetPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  const tempPath = `${targetPath}.tmp.${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  fs.writeFileSync(tempPath, data, 'utf8');
+  try {
+    if (fs.existsSync(targetPath)) {
+      try {
+        fs.unlinkSync(targetPath);
+      } catch (_) {}
+    }
+    fs.renameSync(tempPath, targetPath);
+  } catch (err) {
+    try {
+      fs.writeFileSync(targetPath, data, 'utf8');
+      if (fs.existsSync(tempPath)) {
+        try { fs.unlinkSync(tempPath); } catch (_) {}
+      }
+    } catch (writeErr) {
+      console.error(`[FATGS] Failed to write file ${targetPath}:`, writeErr.message);
+    }
+  }
+}
+
 /**
  * Saves generation state to disk atomically or into session.
  */
 function saveGenerationState(state, customStatePath, sessionId = null) {
+  const serialized = JSON.stringify(state, null, 2);
   if (customStatePath) {
-    const dir = path.dirname(customStatePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    const tempPath = `${customStatePath}.tmp.${Date.now()}`;
-    fs.writeFileSync(tempPath, JSON.stringify(state, null, 2), 'utf8');
-    fs.renameSync(tempPath, customStatePath);
+    safeWriteFileSync(customStatePath, serialized);
     return;
   }
 
@@ -429,13 +450,8 @@ function saveGenerationState(state, customStatePath, sessionId = null) {
   SESSIONS.set(sId, state);
 
   try {
-    if (!fs.existsSync(SESSIONS_DIR)) {
-      fs.mkdirSync(SESSIONS_DIR, { recursive: true });
-    }
     const sFile = path.join(SESSIONS_DIR, `${sId}.json`);
-    const tempPath = `${sFile}.tmp.${Date.now()}`;
-    fs.writeFileSync(tempPath, JSON.stringify(state, null, 2), 'utf8');
-    fs.renameSync(tempPath, sFile);
+    safeWriteFileSync(sFile, serialized);
   } catch (err) {
     console.error('[FATGS] Failed to write session state to disk:', err.message);
   }

@@ -292,9 +292,16 @@ FATGS supports deployment-independent environment configuration via `.env` (see 
 
 ## 11. Running the Project
 
-The workspace includes npm scripts for both backend batch operations and frontend interactive development:
+### Full Application (Backend + Frontend)
+```bash
+# Start both Backend (port 5001) and Frontend Studio (port 5173) simultaneously
+npm start
 
-### Backend Server (API & TT_TRACKER Handoff)
+# Or equivalently:
+npm run dev
+```
+
+### Backend Server Only (API & TT_TRACKER Handoff)
 ```bash
 # Start FATGS backend HTTP server (listens on port 5001)
 npm run server
@@ -303,22 +310,22 @@ npm run server
 npm run backend:dev
 ```
 
-### Backend Batch Generation (CLI)
+### Frontend Interactive Studio Only
 ```bash
-# Run standalone generator and write backend/output/base_timetable.json
-npm run generate
-```
-
-### Frontend Interactive Studio
-```bash
-# Start Vite development server locally (defaults to http://localhost:5173, proxies /api to port 5001)
-npm run dev
+# Start Vite development server alone (defaults to http://localhost:5173, proxies /api to port 5001)
+npm run frontend
 
 # Build production bundle for deployment (outputs to frontend/dist)
 npm run build
 
 # Preview production build locally
 npm run preview
+```
+
+### Backend Batch Generation (CLI)
+```bash
+# Run standalone generator and write backend/output/base_timetable.json
+npm run generate
 ```
 
 ---
