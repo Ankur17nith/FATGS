@@ -363,6 +363,10 @@ async function runTests() {
       });
     });
 
+    // Populate active session with generated timetable for Odd semester
+    const genRes = await makeRequest(fatgsPort, '/api/timetable/generate-all', 'POST', { semester: 'Odd' });
+    assert.strictEqual(genRes.statusCode, 200);
+
     process.env.TT_TRACKER_URL = `http://127.0.0.1:${mockTTSemester.port}`;
     const semHandoffRes = await makeRequest(fatgsPort, '/api/handoff-timetable', 'POST', {
       semester: 'Odd Semester'

@@ -83,22 +83,24 @@ function makeRequest(port, path, method = 'GET', body = null) {
   });
 }
 
-function mockSlot(secName, year, sem, subCode, room = 'B4') {
+function mockSlot(secName, year, sem, subCode, room = null, fac = null, day = 'Monday', start = '09:00', end = '10:00') {
+  const chosenRoom = room || (secName === 'CD5' ? 'CSE-III' : (secName === 'MT1' ? 'Seminar Hall - Block A' : (secName === 'MA1' ? 'Conference Hall - Block B' : `ROOM_${secName}`)));
+  const chosenFac = fac || `FAC_${secName}`;
   return {
     section: secName,
     year: year,
     semester: sem,
-    day: 'Monday',
-    start: '09:00',
-    end: '10:00',
+    day: day,
+    start: start,
+    end: end,
     subjectCode: subCode,
-    facultyCode: 'KD',
-    faculty: 'Dr Kamlesh Dutta',
-    room: room,
+    facultyCode: chosenFac,
+    faculty: chosenFac,
+    room: chosenRoom,
     isLab: false,
     duration: 1,
     group: null,
-    sessionId: `${secName}_${subCode}_0_0`,
+    sessionId: `${secName}_${subCode}_${day}_${start}`,
     electiveType: null,
     basket: null,
     isReservedEmpty: false
@@ -323,6 +325,9 @@ async function runTests() {
       generationId: `gen_${s.name}_even_v1`,
       slots: [mockSlot(s.name, s.year, s.sem, `EVEN-SUB-${s.name}`)]
     });
+    if (r.statusCode !== 200) {
+      console.error('[DEBUG EVEN RECORD ERROR]:', r.statusCode, r.body);
+    }
     assert.strictEqual(r.statusCode, 200);
   }
 
@@ -367,8 +372,8 @@ async function runTests() {
     semester: '1st Semester',
     generationId: 'gen_MT1_v2_REGENERATED',
     slots: [
-      mockSlot('MT1', 'M.Tech 1st Year', '1st Semester', 'CS-611', 'Seminar Hall - Block A'),
-      mockSlot('MT1', 'M.Tech 1st Year', '1st Semester', 'CS-612', 'Seminar Hall - Block A')
+      mockSlot('MT1', 'M.Tech 1st Year', '1st Semester', 'CS-611', 'Seminar Hall - Block A', 'FAC_MT1', 'Monday', '09:00', '10:00'),
+      mockSlot('MT1', 'M.Tech 1st Year', '1st Semester', 'CS-612', 'Seminar Hall - Block A', 'FAC_MT1', 'Monday', '10:00', '11:00')
     ]
   });
   assert.strictEqual(reGenMT1.statusCode, 200);

@@ -63,6 +63,13 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [exportedSections] = useState(() => new Map());
   const [exportVersion, setExportVersion] = useState(0);
 
+  // Generation session state (clean workspace per generation cycle)
+  const [sessionId, setSessionId] = useState(() => {
+    return sessionStorage.getItem('fatgs_session_id') || null;
+  });
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [isBatchGenerating, setIsBatchGenerating] = useState(false);
+
   // Backend generation completeness state (authoritative source of truth)
   const [backendStatus, setBackendStatus] = useState(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
@@ -77,14 +84,24 @@ export default function ScheduleBuilder({ onShowToast }) {
   const [cohortElectiveBookings] = useState(() => new Map());
   const [currentGrid, setCurrentGrid] = useState(null);
 
-  // Fetch generation status from authoritative backend
-  const fetchBackendStatus = async (semester = targetSemester) => {
+  // Fetch generation status and synchronize cross-section occupancy from backend
+  const fetchBackendStatus = async (semester = targetSemester, sId = sessionId) => {
     try {
       setIsLoadingStatus(true);
-      const res = await fetch(`/api/timetable/generation-status?semester=${encodeURIComponent(semester)}`);
+      const activeSess = sId || sessionStorage.getItem('fatgs_session_id');
+      const url = `/api/timetable/generation-status?semester=${encodeURIComponent(semester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+      const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
         setBackendStatus(data);
+
+        // Synchronize cross-section occupied bookings into client state
+        if (data.occupiedBookings) {
+          globalFacBookings.clear();
+          (data.occupiedBookings.facBookings || []).forEach(b => globalFacBookings.add(b));
+          globalRoomBookings.clear();
+          (data.occupiedBookings.roomBookings || []).forEach(b => globalRoomBookings.add(b));
+        }
       }
     } catch (err) {
       console.error('[FATGS] Failed to fetch backend generation status:', err);
@@ -93,8 +110,26 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
+  // Initialize session on load: if no session in sessionStorage, get or create one
   useEffect(() => {
-    fetchBackendStatus(targetSemester);
+    const initSession = async () => {
+      let currentSess = sessionStorage.getItem('fatgs_session_id');
+      if (!currentSess) {
+        try {
+          const res = await fetch('/api/timetable/session/current');
+          if (res.ok) {
+            const data = await res.json();
+            currentSess = data.sessionId;
+            sessionStorage.setItem('fatgs_session_id', currentSess);
+            setSessionId(currentSess);
+          }
+        } catch (e) {
+          console.error('[FATGS] Failed to obtain session:', e);
+        }
+      }
+      fetchBackendStatus(targetSemester, currentSess);
+    };
+    initSession();
   }, [targetSemester]);
 
   // Derived options directly from authoritative store
@@ -270,6 +305,7 @@ export default function ScheduleBuilder({ onShowToast }) {
 
     // Save generation record to backend source of truth
     try {
+      const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
       const res = await fetch('/api/timetable/record-generation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -277,6 +313,7 @@ export default function ScheduleBuilder({ onShowToast }) {
           section: currentSection.name,
           year: currentSection.year,
           semester: currentSection.semester,
+          sessionId: activeSess,
           generationId: genId,
           slots: secSlots
         })
@@ -284,13 +321,14 @@ export default function ScheduleBuilder({ onShowToast }) {
 
       const recData = await res.json();
       if (res.ok && recData.success) {
-        await fetchBackendStatus(targetSemester);
+        await fetchBackendStatus(targetSemester, activeSess);
         if (onShowToast) {
           onShowToast(`✓ Base timetable successfully generated & recorded for ${currentSection.name} (${currentSection.semester})`);
         }
       } else {
+        await fetchBackendStatus(targetSemester, activeSess);
         if (onShowToast) {
-          onShowToast(`Generated locally, but backend recording failed: ${recData.error || 'Server error'}`);
+          onShowToast(`Backend warning: ${recData.error || 'Cross-section check note'}`);
         }
       }
     } catch (netErr) {
@@ -300,11 +338,84 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
-  // Export JSON workflow: verifies completeness and opens confirmation modal
+  // Resets generated timetable state and begins a clean generation workspace
+  const handleStartNewCycle = async () => {
+    try {
+      setIsLoadingStatus(true);
+      const res = await fetch('/api/timetable/session/new', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        sessionStorage.setItem('fatgs_session_id', data.sessionId);
+        setSessionId(data.sessionId);
+        persistedGrids.clear();
+        gridGenerationIds.clear();
+        exportedSections.clear();
+        globalFacBookings.clear();
+        globalRoomBookings.clear();
+        cohortElectiveBookings.clear();
+        setCurrentGrid(null);
+        setExportVersion(v => v + 1);
+        setIsResetModalOpen(false);
+
+        await fetchBackendStatus(targetSemester, data.sessionId);
+        if (onShowToast) {
+          onShowToast('✓ Fresh generation cycle started. All sections reset to ungenerated.');
+        }
+      }
+    } catch (err) {
+      if (onShowToast) {
+        onShowToast(`Failed to start new cycle: ${err.message}`);
+      }
+    } finally {
+      setIsLoadingStatus(false);
+    }
+  };
+
+  // Deterministically generates all required sections with global conflict avoidance
+  const handleGenerateAll = async () => {
+    setIsBatchGenerating(true);
+    try {
+      const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
+      const res = await fetch('/api/timetable/generate-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          semester: targetSemester,
+          sessionId: activeSess,
+          selectedTheoryRooms: selectedRooms
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        await fetchBackendStatus(targetSemester, activeSess);
+        if (onShowToast) {
+          onShowToast(`✓ All ${data.totalGenerated} required sections generated conflict-free!`);
+        }
+      } else {
+        if (onShowToast) {
+          onShowToast(`Generation failed: ${data.error || 'Unable to generate all sections'}`);
+        }
+      }
+    } catch (err) {
+      if (onShowToast) {
+        onShowToast(`Network error: ${err.message}`);
+      }
+    } finally {
+      setIsBatchGenerating(false);
+    }
+  };
+
+  // Export JSON workflow: verifies completeness & global conflicts, then opens confirmation modal
   const handleExportJson = () => {
     if (!isExportAllowed) {
-      if (onShowToast) {
-        onShowToast(`Export JSON unavailable: All required sections with classes for ${targetSemester} Semester must first be generated.`);
+      if (backendStatus?.conflicts && backendStatus.conflicts.length > 0) {
+        if (onShowToast) {
+          onShowToast(`Export blocked: Timetable has ${backendStatus.conflicts.length} global conflict(s). First conflict: ${backendStatus.conflicts[0].message}`);
+        }
+      } else {
+        if (onShowToast) {
+          onShowToast(`Export JSON unavailable: All required sections for ${targetSemester} Semester must first be generated.`);
+        }
       }
       return;
     }
@@ -375,8 +486,12 @@ export default function ScheduleBuilder({ onShowToast }) {
     }));
   }, [store, targetSemester]);
 
-  // Authoritative status from backend (source of truth)
-  const isExportAllowed = Boolean(backendStatus && backendStatus.exportAllowed);
+  // Authoritative status from backend (source of truth): must be all generated AND globally conflict-free
+  const isExportAllowed = Boolean(
+    backendStatus &&
+    backendStatus.exportAllowed &&
+    (!backendStatus.conflicts || backendStatus.conflicts.length === 0)
+  );
 
   const displayedSections = useMemo(() => {
     if (backendStatus && Array.isArray(backendStatus.sections) && backendStatus.sections.length > 0) {
@@ -402,8 +517,10 @@ export default function ScheduleBuilder({ onShowToast }) {
     setIsHandoffLoading(true);
 
     try {
+      const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
       // 1. Fetch the already-generated complete timetable package for the selected semester
-      const exportRes = await fetch(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}`);
+      const exportUrl = `/api/timetable/export?semester=${encodeURIComponent(targetSemester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+      const exportRes = await fetch(exportUrl);
       const exportData = await exportRes.json();
 
       if (!exportRes.ok || (!exportData.slots && !exportData.timetable)) {
@@ -420,6 +537,7 @@ export default function ScheduleBuilder({ onShowToast }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           semester: targetSemester,
+          sessionId: activeSess,
           package: exportData
         })
       });
@@ -652,7 +770,7 @@ export default function ScheduleBuilder({ onShowToast }) {
             <span className="handoff-title">Semester Timetable Handoff &amp; Completeness Status</span>
           </div>
 
-          <div className="handoff-controls">
+          <div className="handoff-controls" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
             <label htmlFor="targetSemSelect" className="control-label">Target Semester:</label>
             <select
               id="targetSemSelect"
@@ -662,12 +780,42 @@ export default function ScheduleBuilder({ onShowToast }) {
                 const newSem = e.target.value;
                 setTargetSemester(newSem);
                 setBackendStatus(null);
-                fetchBackendStatus(newSem);
+                fetchBackendStatus(newSem, sessionId);
               }}
             >
               <option value="Odd">Odd Semester (1st, 3rd, 5th, 7th, 9th Sem)</option>
               <option value="Even">Even Semester (4th, 6th, 8th Sem)</option>
             </select>
+
+            <button
+              type="button"
+              className="btn-studio btn-secondary"
+              onClick={() => setIsResetModalOpen(true)}
+              title="Start a fresh semester generation cycle. Resets generated timetable without touching master data."
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                <path d="M3 21v-5h5" />
+              </svg>
+              Start New Generation Cycle
+            </button>
+
+            <button
+              type="button"
+              className="btn-studio btn-primary"
+              disabled={isBatchGenerating}
+              onClick={handleGenerateAll}
+              title="Generate base timetables for all required sections in one conflict-free pass"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              {isBatchGenerating ? 'Generating All Sections...' : '⚡ Generate All Required Sections'}
+            </button>
           </div>
         </div>
 
@@ -699,9 +847,47 @@ export default function ScheduleBuilder({ onShowToast }) {
           })}
         </div>
 
+        {/* Global Conflict Detection Display */}
+        {backendStatus?.conflicts && backendStatus.conflicts.length > 0 && (
+          <div
+            className="global-conflicts-card"
+            style={{
+              margin: '16px 0',
+              padding: '16px',
+              borderRadius: '8px',
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              color: '#f87171'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+              <strong style={{ fontSize: '0.95rem', color: '#ef4444' }}>
+                Global Cross-Section Conflicts Detected ({backendStatus.conflicts.length}) — Export Blocked
+              </strong>
+            </div>
+            <p style={{ margin: '0 0 10px 0', fontSize: '0.85rem', color: '#e5e7eb' }}>
+              The combined timetable has cross-section collisions. FATGS prevents exporting conflicting schedules to ensure TT_TRACKER handoff validity:
+            </p>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', lineHeight: '1.6', color: '#fca5a5' }}>
+              {backendStatus.conflicts.map((c, i) => (
+                <li key={i}>
+                  <strong>{c.type.replace(/_/g, ' ')}:</strong> {c.resource} on {c.day} {c.time}
+                  {c.section1 && c.section2 ? ` (Booked concurrently for ${c.section1} and ${c.section2})` : ''}
+                  {c.message ? ` — ${c.message}` : ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="handoff-footer">
-          <div className={`handoff-summary ${isExportAllowed ? 'summary-ready' : 'summary-incomplete'}`}>
-            {isExportAllowed ? (
+          <div className={`handoff-summary ${isExportAllowed ? 'summary-ready' : (backendStatus?.conflicts?.length > 0 ? 'summary-conflict' : 'summary-incomplete')}`}>
+            {backendStatus?.conflicts && backendStatus.conflicts.length > 0 ? (
+              <span style={{ color: '#ef4444', fontWeight: '500' }}>
+                ⚠️ {backendStatus.totalGenerated}/{backendStatus.totalRequired} sections generated — timetable has {backendStatus.conflicts.length} conflict(s) and is not ready for export.
+              </span>
+            ) : isExportAllowed ? (
               <span>✓ All required sections generated ({backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections ready for Export JSON &amp; TT_TRACKER handoff).</span>
             ) : (
               <span>
@@ -729,7 +915,9 @@ export default function ScheduleBuilder({ onShowToast }) {
               disabled={!isExportAllowed || isHandoffLoading}
               onClick={handleExportJson}
               title={
-                isExportAllowed
+                backendStatus?.conflicts && backendStatus.conflicts.length > 0
+                  ? `Export JSON disabled: Timetable contains ${backendStatus.conflicts.length} cross-section conflict(s). Resolve all conflicts before export.`
+                  : isExportAllowed
                   ? `Export JSON for ${targetSemester} Semester and handoff to TT_TRACKER`
                   : `Export JSON is disabled: All required sections for ${targetSemester} Semester must generate base timetables first.`
               }
@@ -949,6 +1137,21 @@ export default function ScheduleBuilder({ onShowToast }) {
         onConfirm={handleConfirmExportAndHandoff}
         onCancel={() => {
           if (!isHandoffLoading) setIsConfirmModalOpen(false);
+        }}
+      />
+
+      {/* Start New Generation Cycle Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isResetModalOpen}
+        title="Start New Timetable Generation Cycle"
+        message="This will start a fresh timetable generation workspace for a new academic timetable cycle. Master academic data (faculty, rooms, subjects, rules) will NOT be affected, but all generated section timetables will be reset to 0 sections generated. Continue?"
+        confirmText="Start Fresh Cycle"
+        cancelText="Cancel"
+        isLoading={isLoadingStatus}
+        loadingMessage="Resetting generation session..."
+        onConfirm={handleStartNewCycle}
+        onCancel={() => {
+          if (!isLoadingStatus) setIsResetModalOpen(false);
         }}
       />
     </main>

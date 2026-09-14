@@ -399,6 +399,22 @@ export const OFFICIAL_ALLOCATIONS = {
   },
   'CD5_9th Semester': {
     'CS-611': 'NC'
+  },
+  'MT1_1st Semester': {
+    'CS-611': 'KK',
+    'CS-612': 'TW',
+    'CS-613': 'APU',
+    'CS-736': 'PSH',
+    'CS-740': 'CF-VI',
+    'CS-614': 'PVE'
+  },
+  'MA1_1st Semester': {
+    'CS-621': 'APU',
+    'CS-631': 'PSH',
+    'CS-632': 'CF-VI',
+    'CS-633': 'KD',
+    'CS-754': 'PS',
+    'CS-634': 'CF-II'
   }
 };
 
@@ -511,8 +527,10 @@ export function generateTimetableForSection({
 
   // 2. Labs (Priority 1: G1 & G2 same time, Priority 2: fallback different times)
   const labBlocks = isThirdYear ? [[0, 1], [1, 2], [4, 5], [5, 6], [6, 7]] : [[0, 1], [1, 2], [2, 3], [5, 6], [6, 7]];
-  const g1Tasks = (section.labs || []).map(l => ({ ...l, group: 'G1' }));
-  const g2Tasks = (section.labs || []).map(l => ({ ...l, group: 'G2' }));
+  const isMTech = section.name === 'MT1' || section.name === 'MA1';
+  const g1Tasks = isMTech ? [] : (section.labs || []).map(l => ({ ...l, group: 'G1' }));
+  const g2Tasks = isMTech ? [] : (section.labs || []).map(l => ({ ...l, group: 'G2' }));
+  const singleLabs = isMTech ? (section.labs || []).map(l => ({ ...l, group: null })) : [];
 
   const unplacedG1 = shuffle(g1Tasks);
   const unplacedG2 = shuffle(g2Tasks);
@@ -573,8 +591,8 @@ export function generateTimetableForSection({
     }
   }
 
-  // Fallback single group labs
-  for (const task of [...unplacedG1, ...unplacedG2]) {
+  // Fallback single group labs (and M.Tech single cohort labs)
+  for (const task of [...unplacedG1, ...unplacedG2, ...singleLabs]) {
     const attempts = [];
     for (let d = 0; d < 5; d++) {
       for (const block of labBlocks) attempts.push({ day: d, block });
