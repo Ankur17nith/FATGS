@@ -1,54 +1,64 @@
-/*
-* This is the assignment-time logic — separate from baseTimetableGenerator.js,
-* which handles time-SLOT scheduling collisions.
-*
-* Rule:
-*  - A faculty can teach at most ONE subject (theory) per section.
-*  - A faculty can teach at most ONE lab per section.
-*  - These two are independent — subjects and labs don't affect each other's
-*    faculty availability.
-*
-* This module answers: "given this section and whether I'm assigning a
-* subject or a lab, which faculty from the roster are still valid choices?"
-* That's the list a GUI dropdown should be populated with, so an invalid
-* faculty never even appears as an option.
-*/
+const path = require('path');
+const fs = require('fs');
 
-// type: 'subject' | 'lab'
-const getAvailableFaculty = (facultyRoster, section, type) => {
-    const pool = type === 'lab' ? section.labs : section.subjects;
+const FACULTY_LIST = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../data/faculty.json'), 'utf8')
+);
+
+const CODE_TO_NAME = new Map(FACULTY_LIST.map(f => [f.code, f.name]));
+const NAME_TO_CODE = new Map(FACULTY_LIST.map(f => [f.name, f.code]));
+
+function getFacultyName(code) {
+    return CODE_TO_NAME.get(code) || code;
+}
+
+function getFacultyCode(nameOrCode) {
+    return NAME_TO_CODE.get(nameOrCode) || nameOrCode;
+}
+
+// type: 'subject' | 'lab' | 'elective'
+const getAvailableFaculty = (facultyRoster = FACULTY_LIST, section, type) => {
+    let pool = [];
+    if (type === 'lab') pool = section.labs || [];
+    else if (type === 'elective') pool = section.electives || [];
+    else pool = section.subjects || [];
 
     const alreadyAssigned = new Set(
         pool
             .map(item => item.faculty)
-            .filter(Boolean) // drop nulls/undefined — unassigned slots
+            .filter(Boolean)
     );
 
-    return facultyRoster.filter(name => !alreadyAssigned.has(name));
+    return facultyRoster.filter(f => {
+        const code = typeof f === 'string' ? getFacultyCode(f) : f.code;
+        return !alreadyAssigned.has(code);
+    });
 };
 
-// Call this when an assignment is actually made — a safety check behind
-// the filtered dropdown (in case of stale data / race conditions).
-const assignFaculty = (section, itemCode, type, facultyName) => {
-    const pool = type === 'lab' ? section.labs : section.subjects;
+const assignFaculty = (section, itemCode, type, facultyIdentifier) => {
+    let pool = [];
+    if (type === 'lab') pool = section.labs || [];
+    else if (type === 'elective') pool = section.electives || [];
+    else pool = section.subjects || [];
+
+    const facCode = getFacultyCode(facultyIdentifier);
+    const facName = getFacultyName(facCode);
 
     const alreadyAssigned = pool.some(
-        item => item.code !== itemCode && item.faculty === facultyName
+        item => item.code !== itemCode && item.faculty === facCode
     );
     if (alreadyAssigned) {
         return {
             ok: false,
-            reason: `${facultyName} is already teaching a ${type} for section ${section.name}`
+            reason: `${facName} (${facCode}) is already teaching a ${type} for section ${section.name}`
         };
     }
 
-    // subject_parse duplicates a Subject/Lab object once per credit hour, all
-    // sharing the same code — so every instance with this code needs updating,
-    // not just one.
     let updated = 0;
     for (const item of pool) {
         if (item.code === itemCode) {
-            item.faculty = facultyName;
+            item.faculty = facCode;
+            item.facultyName = facName;
             updated++;
         }
     }
@@ -57,7 +67,15 @@ const assignFaculty = (section, itemCode, type, facultyName) => {
         return { ok: false, reason: `No ${type} with code ${itemCode} found in section ${section.name}` };
     }
 
-    return { ok: true, updatedInstances: updated };
+    return { ok: true, updatedInstances: updated, facultyCode: facCode, facultyName: facName };
 };
 
-module.exports = { getAvailableFaculty, assignFaculty };
+module.exports = {
+    FACULTY_LIST,
+    CODE_TO_NAME,
+    NAME_TO_CODE,
+    getFacultyName,
+    getFacultyCode,
+    getAvailableFaculty,
+    assignFaculty
+};

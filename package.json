@@ -9,8 +9,11 @@
     "preview": "npm --prefix frontend run preview",
     "start": "npm --prefix frontend run dev",
     "generate": "node backend/entities/baseTimetableGenerator.js",
-    "backend": "node backend/index.js",
-    "backend:dev": "npx nodemon backend/index.js"
+    "backend": "node backend/server.js",
+    "backend:dev": "npx nodemon backend/server.js",
+    "server": "node backend/server.js",
+    "test": "node backend/tests/test_cs301_open_elective.js && node backend/tests/test_elective_rotation_and_slots.js && node backend/tests/test_year_specific_lunch.js && node backend/tests/validate_timetable.js && node backend/tests/verify_final_requirements.js && node frontend/tests/verify_frontend_ui.js && node backend/tests/test_handoff_packaging.js && node backend/tests/test_handoff_server.js && node backend/tests/test_generation_completeness.js && node backend/tests/test_lifecycle_and_global_conflicts.js",
+    "validate": "node backend/tests/validate_timetable.js"
   },
   "private": true,
   "devDependencies": {
