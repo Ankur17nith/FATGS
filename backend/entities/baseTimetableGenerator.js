@@ -27,6 +27,7 @@ const path = require('path');
 const funcs = require('./functions.js');
 const { FACULTY_LIST, getFacultyCode } = require('./facultyAllocation.js');
 const { assignPlaceholders } = require('./assignPlaceholderFaculty.js');
+const { forEachBlockedPeriod } = require('./facultyBlocks.js');
 
 const CANDIDATE_THEORY_ROOMS = [
     'B1', 'B2', 'B3', 'B4',
@@ -967,6 +968,14 @@ function generateBaseTimetable(subjectsJsonPath, roomsJsonPath, sectionFilterFn 
 
     const facultyBookings = createTracker();
     const roomBookings = createTracker();
+
+    // Faculty slot blocking: pre-book every blocked period so that no placement step
+    // (electives, labs, theory) can use those slots for the blocked faculty member.
+    if (Array.isArray(options.facultyBlocks) && options.facultyBlocks.length > 0) {
+        forEachBlockedPeriod(options.facultyBlocks, (facCode, day, period) => {
+            book(facultyBookings, facCode, day, period);
+        });
+    }
 
     // 1. Open Electives
     placeOpenElectives(sections, classRooms, facultyBookings, roomBookings);

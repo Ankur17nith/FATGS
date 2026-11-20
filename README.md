@@ -200,6 +200,17 @@ Lunch breaks are locked by academic year. No academic session may be scheduled d
 - No theory session may be scheduled in a dedicated laboratory room (`P1 - P6`).
 - No laboratory session may be scheduled in a classroom.
 
+### Faculty Time-Slot Blocking
+The timetable maker can close specific time slots for a faculty member (for example, first-year classes they teach elsewhere) **before generating**. Only the chosen slots are closed; the faculty member stays available for the rest of the week.
+
+- **Where**: the *Faculty Time-Slot Blocking* panel in the Semester Handoff & Completeness section. It first asks whether any slots should be blocked; choosing *Yes* shows a searchable faculty dropdown, a day, a *From*/*To* period range and an optional note.
+- **Periods**: numbered 1-8 from 09:00 (Period 1 = 09:00-10:00 ... Period 8 = 16:00-17:00). A single period has the same *From* and *To*. A reason is not required.
+- **Scope**: blocks belong to one semester type (Odd or Even), so a new semester starts with none. Overlapping ranges for the same faculty and day are merged into one.
+- **Enforcement**: blocked slots are pre-booked in the faculty tracker before any placement step, so electives, labs and theory all avoid them. The in-browser single-section generator uses the same blocks. The global validator additionally reports any class inside a blocked range as a `FACULTY_BLOCKED` conflict, which keeps the timetable from being exported until the section is regenerated or the block removed.
+- **Storage**: `backend/data/faculty_blocks.json` (`{ "Odd": [...], "Even": [...] }`).
+- **API**: `GET /api/faculty-blocks?semester=Odd`, `POST /api/faculty-blocks` (`semester`, `facultyCode`, `day`, `startPeriod`, `endPeriod?`, `note?`), `DELETE /api/faculty-blocks/:id?semester=Odd`, `GET /api/faculty-roster`. The generation status response also includes `facultyBlocks`.
+- **Limitation**: if blocks leave too few free periods for a faculty member's teaching load, the generator (as before for any unplaceable class) may leave some classes unscheduled without an error.
+
 ### Group Scheduling (G1 and G2)
 - Applicable Sections: `CS2, CD2, CS3, CD3, CS4, CD4`.
 - Labs are 2 hours long (`P = 2`).
@@ -360,6 +371,11 @@ npm test
      - Tests TT_TRACKER 500 internal server error handling.
      - Tests network connection failure (502) handling.
      - Tests semester-scoped handoff invocation from persisted backend state.
+9. **`backend/tests/test_faculty_blocking.js`** (32/32 Passed):
+   - Faculty slot blocking: input validation, per-semester storage and range merging, generator never schedules a blocked faculty member in a blocked range (random runs, range blocks and 2-hour labs), `FACULTY_BLOCKED` validator conflicts, export gate on late blocks, and the HTTP API.
+10. **`frontend/tests/test_blocked_slots_frontend.js`** (13/13 Passed):
+   - Verifies the in-browser section generator also honours blocked ranges.
+
 
 ---
 

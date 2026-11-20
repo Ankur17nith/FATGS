@@ -1310,3 +1310,243 @@ footer.institutional-footer {
   to   { opacity: 1; transform: scale(1); }
 }
 
+
+/* ============================================================
+   FACULTY TIME-SLOT BLOCKING PANEL
+   ============================================================ */
+.block-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin: 14px 0;
+  box-shadow: var(--shadow-card);
+}
+
+.block-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.block-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--institutional-navy);
+}
+
+.block-panel-semester {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.block-panel-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--institutional-navy);
+  background: var(--gold-light);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+}
+
+.block-panel-text {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.block-panel-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.block-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.block-form .control-field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+}
+
+.block-form .form-control {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+}
+
+.block-form select.form-control {
+  min-width: 0;
+}
+
+.block-form .form-control:focus {
+  outline: none;
+  border-color: var(--institutional-navy);
+  box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.1);
+}
+
+.block-field-faculty {
+  position: relative;
+  flex: 2 1 240px;
+}
+
+.block-field-note {
+  flex: 2 1 200px;
+}
+
+.block-form .control-field:not(.block-field-faculty):not(.block-field-note):not(.block-field-submit) {
+  flex: 1 1 190px;
+}
+
+.block-combo-list {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.block-combo-item,
+.block-combo-empty {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.block-combo-item {
+  cursor: pointer;
+}
+
+.block-combo-item.is-active {
+  background: var(--gold-light);
+}
+
+.block-combo-empty {
+  color: var(--text-muted);
+}
+
+.block-combo-code {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.block-error {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--error-red);
+  background: var(--error-bg);
+  border-radius: var(--radius-md);
+}
+
+.block-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.block-list-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+.block-list-faculty {
+  font-weight: 600;
+  color: var(--text-main);
+  min-width: 200px;
+}
+
+.block-list-when {
+  color: var(--text-main);
+}
+
+.block-list-note {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.block-remove {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--error-red);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.block-remove:hover:not(:disabled) {
+  background: var(--error-bg);
+  border-color: var(--error-red);
+}
+
+.block-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.block-empty {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.block-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .block-field-faculty,
+  .block-field-note {
+    flex-basis: 100%;
+  }
+  .block-remove {
+    margin-left: 0;
+  }
+}

@@ -6,10 +6,12 @@ import {
   DAYS,
   INTERVALS,
   createInitialStore,
-  generateTimetableForSection
+  generateTimetableForSection,
+  buildBlockedFacultyKeys
 } from '../data/timetableData';
 import TimetableGrid from '../components/TimetableGrid';
 import ConfirmationModal from '../components/ConfirmationModal';
+import FacultyBlockingPanel from '../components/FacultyBlockingPanel';
 
 /**
  * Extracts flat timetable slot records from a 5-day x 8-period grid.
@@ -270,7 +272,8 @@ export default function ScheduleBuilder({ onShowToast }) {
         globalFacBookings,
         globalRoomBookings,
         persistedGrids,
-        cohortElectiveBookings
+        cohortElectiveBookings,
+        blockedFacultyKeys: buildBlockedFacultyKeys(backendStatus?.facultyBlocks)
       });
     } catch (err) {
       if (onShowToast) {
@@ -818,6 +821,15 @@ export default function ScheduleBuilder({ onShowToast }) {
             </button>
           </div>
         </div>
+
+        {/* Faculty slot blocking (asked before generating) */}
+        <FacultyBlockingPanel
+          semester={targetSemester}
+          blocks={backendStatus?.facultyBlocks || []}
+          roster={FACULTY_ROSTER}
+          onChanged={() => fetchBackendStatus(targetSemester, sessionId)}
+          onShowToast={onShowToast}
+        />
 
         {/* Status Grid of participating sections */}
         <div className="handoff-grid">

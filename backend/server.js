@@ -11,6 +11,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const facultyBlocks = require('./entities/facultyBlocks.js');
 
 // Simple .env parser to avoid third-party dependencies
 function loadEnv() {
@@ -208,12 +209,16 @@ function intervalsOverlap(s1, e1, s2, e2) {
  * Validates cross-section faculty conflicts, room conflicts, section overlaps,
  * lab group rules, and dedicated lab room usage.
  */
-function validateGlobalTimetable(slots, semesterType = 'Odd') {
+function validateGlobalTimetable(slots, semesterType = 'Odd', blocks = []) {
   if (!Array.isArray(slots) || slots.length === 0) {
     return { valid: true, conflicts: [] };
   }
 
   const conflicts = [];
+
+  // 0. Faculty slot blocking: no class may fall inside a blocked range for its faculty
+  conflicts.push(...facultyBlocks.findBlockViolations(slots, blocks));
+
   const DEDICATED_LAB_ROOMS = new Set(['P1', 'P2', 'P3', 'P4', 'P5', 'P6']);
 
   const normSlots = slots.map((s, idx) => ({
@@ -489,7 +494,8 @@ function getGenerationStatus(semesterTerm = 'Odd', customOptions = {}) {
   }
 
   // Global validation check across complete set of currently generated slots
-  const validation = validateGlobalTimetable(allSlots, canonical);
+  const blocks = facultyBlocks.listBlocks(canonical, { filePath: customOptions.blocksPath });
+  const validation = validateGlobalTimetable(allSlots, canonical, blocks);
   const occupiedBookings = getOccupiedBookings(allSlots);
   const isGloballyValid = validation.valid;
   const exportAllowed = allRequiredGenerated && isGloballyValid;
@@ -507,6 +513,7 @@ function getGenerationStatus(semesterTerm = 'Odd', customOptions = {}) {
     isGloballyValid,
     conflicts: validation.conflicts,
     occupiedBookings,
+    facultyBlocks: blocks,
     exportAllowed
   };
 }
@@ -565,7 +572,8 @@ function recordSectionGeneration(payload, customOptions = {}) {
   }
 
   const combinedSlots = [...otherSlots, ...slots];
-  const validation = validateGlobalTimetable(combinedSlots, secCanonicalSem);
+  const blocks = facultyBlocks.listBlocks(secCanonicalSem, { filePath: customOptions.blocksPath });
+  const validation = validateGlobalTimetable(combinedSlots, secCanonicalSem, blocks);
   const secConflicts = validation.conflicts.filter(c => c.section1 === section || c.section2 === section);
 
   if (secConflicts.length > 0) {
@@ -644,6 +652,7 @@ function generateAllRequiredSections(semesterTerm = 'Odd', customOptions = {}) {
   const selectedRooms = customOptions.selectedTheoryRooms || ['B4', 'F4', 'G5', 'S2'];
 
   const { generateBaseTimetable, toFlatSlotList } = require('./entities/baseTimetableGenerator');
+  const blocks = facultyBlocks.listBlocks(canonical, { filePath: customOptions.blocksPath });
 
   const filterFn = s => {
     if (canonical === 'Odd') {
@@ -664,12 +673,13 @@ function generateAllRequiredSections(semesterTerm = 'Odd', customOptions = {}) {
     {
       includeMTech: true,
       usePlaceholderFaculty: true,
-      selectedTheoryRooms: selectedRooms
+      selectedTheoryRooms: selectedRooms,
+      facultyBlocks: blocks
     }
   );
 
   const flatSlots = toFlatSlotList(sections);
-  const validation = validateGlobalTimetable(flatSlots, canonical);
+  const validation = validateGlobalTimetable(flatSlots, canonical, blocks);
 
   // Group slots by section and record in state
   const state = loadGenerationState(customOptions.statePath, customOptions.sessionId);
@@ -1153,7 +1163,7 @@ function sendJson(res, statusCode, data) {
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(json),
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-tt-tracker-secret'
   });
   res.end(json);
@@ -1165,7 +1175,7 @@ function createServer(customOptions = {}) {
     if (req.method === 'OPTIONS') {
       res.writeHead(204, {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-tt-tracker-secret'
       });
       res.end();
@@ -1174,6 +1184,56 @@ function createServer(customOptions = {}) {
 
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const pathname = parsedUrl.pathname;
+
+    // ---- Faculty slot blocking ----
+    // GET /api/faculty-blocks?semester=Odd
+    if (req.method === 'GET' && pathname === '/api/faculty-blocks') {
+      const semester = normalizeSemesterType(parsedUrl.searchParams.get('semester') || 'Odd');
+      sendJson(res, 200, {
+        success: true,
+        semester,
+        blocks: facultyBlocks.listBlocks(semester, { filePath: customOptions.blocksPath })
+      });
+      return;
+    }
+
+    // POST /api/faculty-blocks  { semester, facultyCode, day, startPeriod, endPeriod?, note? }
+    if (req.method === 'POST' && pathname === '/api/faculty-blocks') {
+      let bodyStr = '';
+      req.on('data', chunk => {
+        bodyStr += chunk;
+        if (bodyStr.length > 64 * 1024) req.destroy();
+      });
+      req.on('end', () => {
+        let payload;
+        try { payload = JSON.parse(bodyStr || '{}'); } catch (e) {
+          sendJson(res, 400, { success: false, error: 'Request body must be valid JSON.' });
+          return;
+        }
+        const semester = normalizeSemesterType(payload.semester || 'Odd');
+        const result = facultyBlocks.addBlock(semester, payload, { filePath: customOptions.blocksPath });
+        sendJson(res, result.success ? 201 : 400, { ...result, semester });
+      });
+      return;
+    }
+
+    // DELETE /api/faculty-blocks/:id?semester=Odd
+    if (req.method === 'DELETE' && pathname.startsWith('/api/faculty-blocks/')) {
+      const id = decodeURIComponent(pathname.slice('/api/faculty-blocks/'.length));
+      const semester = normalizeSemesterType(parsedUrl.searchParams.get('semester') || 'Odd');
+      const result = facultyBlocks.removeBlock(semester, id, { filePath: customOptions.blocksPath });
+      sendJson(res, result.success ? 200 : 404, { ...result, semester });
+      return;
+    }
+
+    // GET /api/faculty-roster  (for the searchable faculty dropdown)
+    if (req.method === 'GET' && pathname === '/api/faculty-roster') {
+      sendJson(res, 200, {
+        success: true,
+        faculty: getFacultyData().map(f => ({ code: f.code, name: f.name }))
+      });
+      return;
+    }
 
     // GET /api/health
     if (req.method === 'GET' && pathname === '/api/health') {
@@ -1377,7 +1437,7 @@ function createServer(customOptions = {}) {
           const rawSem = pkg.semesterType || pkg.semester || 'Odd';
           const sem = normalizeSemesterType(rawSem);
           const pkgSlots = Array.isArray(pkg.slots) ? pkg.slots : (Array.isArray(pkg.timetable) ? pkg.timetable : []);
-          const globalVal = validateGlobalTimetable(pkgSlots, sem);
+          const globalVal = validateGlobalTimetable(pkgSlots, sem, facultyBlocks.listBlocks(sem, { filePath: customOptions.blocksPath }));
 
           if (!globalVal.valid) {
             sendJson(res, 400, {

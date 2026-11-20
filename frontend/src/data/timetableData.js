@@ -349,6 +349,23 @@ export const RAW_SECTIONS = [
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
+/**
+ * Faculty slot blocking: converts blocks ({ facultyCode, day, startPeriod, endPeriod })
+ * into a Set of "CODE_dayIndex_periodIndex" keys, matching the key format used by
+ * globalFacBookings. Periods in blocks are 1-8; period indexes in keys are 0-7.
+ */
+export function buildBlockedFacultyKeys(blocks) {
+  const keys = new Set();
+  for (const b of blocks || []) {
+    const dayIdx = DAYS.indexOf(b.day);
+    if (dayIdx < 0) continue;
+    for (let p = b.startPeriod; p <= b.endPeriod; p++) {
+      keys.add(`${b.facultyCode}_${dayIdx}_${p - 1}`);
+    }
+  }
+  return keys;
+}
+
 export const INTERVALS = [
   { start: '09:00', end: '10:00', label: '09:00 - 10:00', isLunch: false },
   { start: '10:00', end: '11:00', label: '10:00 - 11:00', isLunch: false },
@@ -447,7 +464,8 @@ export function generateTimetableForSection({
   globalFacBookings,
   globalRoomBookings,
   persistedGrids,
-  cohortElectiveBookings = new Map()
+  cohortElectiveBookings = new Map(),
+  blockedFacultyKeys = new Set()
 }) {
   const secKey = `${section.name}_${section.year}_${section.semester}`;
   const cohortKey = `${section.year}_${section.semester}`;
@@ -500,6 +518,7 @@ export function generateTimetableForSection({
     if (!allowLunch && p === lunchPeriodIdx) return false;
     if (room && globalRoomBookings.has(`${room}_${day}_${p}`)) return false;
     if (fac && globalFacBookings.has(`${fac}_${day}_${p}`)) return false;
+    if (fac && blockedFacultyKeys.has(`${fac}_${day}_${p}`)) return false;
     return true;
   }
 
