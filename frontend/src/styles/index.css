@@ -1073,6 +1073,30 @@ footer.institutional-footer {
   border-color: #bbf7d0;
 }
 
+/* Generated section cards open that section's timetable */
+button.handoff-item-link {
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+}
+
+button.handoff-item-link:hover {
+  border-color: #4ade80;
+  box-shadow: var(--shadow-card);
+}
+
+button.handoff-item-link:focus-visible {
+  outline: 2px solid var(--institutional-navy);
+  outline-offset: 2px;
+}
+
+button.handoff-item-link.is-open {
+  border-color: var(--institutional-navy);
+  box-shadow: 0 0 0 2px var(--institutional-navy);
+}
+
 .handoff-item.item-exported {
   background: #f0fdf4;
   border-color: #bbf7d0;

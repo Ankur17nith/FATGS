@@ -350,6 +350,37 @@ export const RAW_SECTIONS = [
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 /**
+ * Rebuilds a section's 5x8 grid from stored flat slot records (the inverse of the
+ * slot extraction done when a generated grid is recorded). A cell holds one entry,
+ * or an array when several run in parallel (G1/G2 labs, elective choices).
+ */
+export function slotsToGrid(slots) {
+  const grid = Array.from({ length: DAYS.length }, () => Array.from({ length: INTERVALS.length }, () => null));
+  for (const s of slots || []) {
+    const d = DAYS.indexOf(s.day);
+    const p = INTERVALS.findIndex(i => i.start === s.start);
+    if (d < 0 || p < 0) continue;
+    const entry = {
+      code: s.subjectCode,
+      subjectCode: s.subjectCode,
+      faculty: s.faculty || s.facultyCode || null,
+      facultyCode: s.facultyCode || s.faculty || null,
+      room: s.room || null,
+      isLab: s.isLab === true,
+      duration: s.duration || 1,
+      group: s.group || null,
+      sessionId: s.sessionId || null,
+      electiveType: s.electiveType || null,
+      basket: s.basket || null,
+      isReservedEmpty: s.isReservedEmpty === true
+    };
+    const cell = grid[d][p];
+    grid[d][p] = cell === null ? entry : (Array.isArray(cell) ? [...cell, entry] : [cell, entry]);
+  }
+  return grid;
+}
+
+/**
  * Faculty slot blocking: converts blocks ({ facultyCode, day, startPeriod, endPeriod })
  * into a Set of "CODE_dayIndex_periodIndex" keys, matching the key format used by
  * globalFacBookings. Periods in blocks are 1-8; period indexes in keys are 0-7.

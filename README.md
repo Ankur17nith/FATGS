@@ -332,6 +332,8 @@ npm run build
 npm run preview
 ```
 
+**Opening a generated section.** In the Semester Handoff & Completeness panel, each section whose base timetable is generated shows as a green card. Click it (or focus it and press Enter) to switch the year, semester and section selectors to that section and open its timetable, including sections produced by *Generate All*. The open section's card is outlined. Sections that are not generated yet are not clickable. The slots come from `GET /api/timetable/section-slots?semester=Odd&secKey=CS3_3rd%20Year_5th%20Semester` (optional `sessionId`), which returns `404` for a section that is not generated in that semester.
+
 ---
 
 ## 12. Testing
@@ -375,6 +377,11 @@ npm test
    - Faculty slot blocking: input validation, per-semester storage and range merging, generator never schedules a blocked faculty member in a blocked range (random runs, range blocks and 2-hour labs), `FACULTY_BLOCKED` validator conflicts, export gate on late blocks, and the HTTP API.
 10. **`frontend/tests/test_blocked_slots_frontend.js`** (13/13 Passed):
    - Verifies the in-browser section generator also honours blocked ranges.
+
+11. **`backend/tests/test_section_view.js`** (9/9 Passed):
+   - Opening a generated section: slots returned for sections made by *Generate All* (Odd and Even), 404 for unknown, missing, wrong-semester or never-generated sections, and the HTTP route.
+12. **`frontend/tests/test_slots_to_grid.js`** (10/10 Passed):
+   - Rebuilding a section grid from stored slots: right cell for every slot (442/442 on a full generation), parallel entries kept together, 2-hour labs in consecutive periods, bad input ignored.
 
 
 ---
@@ -538,7 +545,7 @@ FATGS supports M.Tech sections as first-class academic cohorts. To ensure full c
 4. **Generate Base Timetables**:
    - For each section listed in the completeness status grid, select the section and click **"Generate Base Timetable"**.
    - Continue until the summary bar turns green:
-     `✓ All required sections generated (9/9 sections ready for Export JSON & TT_TRACKER handoff)`.
+     `All required sections generated (9/9 sections ready for Export JSON & TT_TRACKER handoff)`.
 5. **Trigger Export & Handoff**:
    - Click the **"Export JSON"** button in the handoff panel.
 6. **Confirmation Modal**:

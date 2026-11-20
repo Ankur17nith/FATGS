@@ -519,6 +519,43 @@ function getGenerationStatus(semesterTerm = 'Odd', customOptions = {}) {
 }
 
 /**
+ * Returns the stored slots of one generated section, so the UI can open any
+ * generated section's timetable (including ones produced by "Generate All").
+ */
+function getSectionSlots(semesterTerm, secKey, customOptions = {}) {
+  const canonical = normalizeSemesterType(semesterTerm);
+  const state = loadGenerationState(customOptions.statePath, customOptions.sessionId);
+  const rec = state.records && secKey ? state.records[secKey] : null;
+
+  // Records store ordinal names ("5th Semester"); odd numbers belong to the Odd term.
+  const semNumber = rec ? parseInt(String(rec.semester).match(/\d+/)?.[0], 10) : NaN;
+  const recTerm = Number.isInteger(semNumber) ? (semNumber % 2 === 1 ? 'Odd' : 'Even') : normalizeSemesterType(rec && rec.semester);
+
+  if (
+    !rec ||
+    rec.generated !== true ||
+    !Array.isArray(rec.slots) ||
+    recTerm !== canonical
+  ) {
+    return {
+      success: false,
+      statusCode: 404,
+      error: `No generated timetable found for ${secKey || 'this section'} in ${canonical} Semester.`
+    };
+  }
+
+  return {
+    success: true,
+    secKey,
+    section: rec.section,
+    year: rec.year,
+    semester: rec.semester,
+    generatedAt: rec.generatedAt || null,
+    slots: rec.slots
+  };
+}
+
+/**
  * Persists a successful base timetable generation record for a section,
  * strictly validating against cross-section conflicts with already generated sections.
  */
@@ -1306,6 +1343,16 @@ function createServer(customOptions = {}) {
       return;
     }
 
+    // GET /api/timetable/section-slots?semester=Odd&secKey=CS3_3rd Year_5th Semester
+    if (req.method === 'GET' && pathname === '/api/timetable/section-slots') {
+      const semester = parsedUrl.searchParams.get('semester') || 'Odd';
+      const secKey = parsedUrl.searchParams.get('secKey') || '';
+      const sessionId = parsedUrl.searchParams.get('sessionId') || null;
+      const result = getSectionSlots(semester, secKey, { ...customOptions, ...(sessionId ? { sessionId } : {}) });
+      sendJson(res, result.success ? 200 : result.statusCode, result);
+      return;
+    }
+
     // GET /api/timetable/generation-status
     if (req.method === 'GET' && pathname === '/api/timetable/generation-status') {
       const rawSemester = parsedUrl.searchParams.get('semester') || 'Odd';
@@ -1488,6 +1535,7 @@ module.exports = {
   loadGenerationState,
   saveGenerationState,
   getGenerationStatus,
+  getSectionSlots,
   recordSectionGeneration,
   resetGeneration,
   generateAllRequiredSections,

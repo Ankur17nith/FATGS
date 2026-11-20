@@ -7,7 +7,8 @@ import {
   INTERVALS,
   createInitialStore,
   generateTimetableForSection,
-  buildBlockedFacultyKeys
+  buildBlockedFacultyKeys,
+  slotsToGrid
 } from '../data/timetableData';
 import TimetableGrid from '../components/TimetableGrid';
 import ConfirmationModal from '../components/ConfirmationModal';
@@ -184,6 +185,45 @@ export default function ScheduleBuilder({ onShowToast }) {
     }
   };
 
+  // Open a generated section's timetable from its green status card. Sections made by
+  // "Generate All" only exist on the backend, so their grid is rebuilt from the stored slots.
+  const openSection = async (sec) => {
+    const name = sec.name || sec.section;
+    const target = store.find(s => s.name === name && s.year === sec.year && s.semester === sec.semester)
+      || store.find(s => s.name === name && s.semester === sec.semester);
+    if (!target) return;
+
+    const secKey = `${target.name}_${target.year}_${target.semester}`;
+    let grid = persistedGrids.get(secKey);
+
+    if (!grid) {
+      try {
+        const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
+        const url = `/api/timetable/section-slots?semester=${encodeURIComponent(targetSemester)}&secKey=${encodeURIComponent(sec.secKey || secKey)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          if (onShowToast) onShowToast(data.error || `Could not load the timetable for ${name}.`);
+          return;
+        }
+        grid = slotsToGrid(data.slots);
+        persistedGrids.set(secKey, grid);
+      } catch (err) {
+        if (onShowToast) onShowToast(`Could not load the timetable for ${name}.`);
+        return;
+      }
+    }
+
+    setSelectedYear(target.year);
+    setSelectedSem(target.semester);
+    setSelectedSec(target.name);
+    setCurrentGrid(grid);
+    setTimeout(() => {
+      const el = document.getElementById('section-timetable');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  };
+
   // Handle theory room selection (exactly 4 rooms, no duplicates)
   const handleRoomSlotChange = (index, newRoom) => {
     if (selectedRooms.includes(newRoom) && selectedRooms[index] !== newRoom) {
@@ -326,7 +366,7 @@ export default function ScheduleBuilder({ onShowToast }) {
       if (res.ok && recData.success) {
         await fetchBackendStatus(targetSemester, activeSess);
         if (onShowToast) {
-          onShowToast(`✓ Base timetable successfully generated & recorded for ${currentSection.name} (${currentSection.semester})`);
+          onShowToast(`Base timetable generated and recorded for ${currentSection.name} (${currentSection.semester})`);
         }
       } else {
         await fetchBackendStatus(targetSemester, activeSess);
@@ -362,7 +402,7 @@ export default function ScheduleBuilder({ onShowToast }) {
 
         await fetchBackendStatus(targetSemester, data.sessionId);
         if (onShowToast) {
-          onShowToast('✓ Fresh generation cycle started. All sections reset to ungenerated.');
+          onShowToast('Fresh generation cycle started. All sections reset to ungenerated.');
         }
       }
     } catch (err) {
@@ -392,7 +432,7 @@ export default function ScheduleBuilder({ onShowToast }) {
       if (res.ok && data.success) {
         await fetchBackendStatus(targetSemester, activeSess);
         if (onShowToast) {
-          onShowToast(`✓ All ${data.totalGenerated} required sections generated conflict-free!`);
+          onShowToast(`All ${data.totalGenerated} required sections generated without conflicts.`);
         }
       } else {
         if (onShowToast) {
@@ -566,7 +606,7 @@ export default function ScheduleBuilder({ onShowToast }) {
 
         // 4. Report success
         if (onShowToast) {
-          onShowToast('✓ Timetable successfully imported and activated in TT_TRACKER! Opening TT_TRACKER...');
+          onShowToast('Timetable imported and activated in TT_TRACKER. Opening TT_TRACKER...');
         }
 
         // 5. Open/redirect to TT_TRACKER only AFTER successful handoff
@@ -814,10 +854,7 @@ export default function ScheduleBuilder({ onShowToast }) {
               title="Generate base timetables for all required sections in one conflict-free pass"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-              {isBatchGenerating ? 'Generating All Sections...' : '⚡ Generate All Required Sections'}
+              {isBatchGenerating ? 'Generating All Sections...' : 'Generate All Required Sections'}
             </button>
           </div>
         </div>
@@ -842,18 +879,37 @@ export default function ScheduleBuilder({ onShowToast }) {
             else if (secIdentifier === 'MA1') displaySecName = 'MA1 (M.Tech AI)';
             else if (secIdentifier === 'CD5') displaySecName = 'CD5 (Dual Degree)';
 
-            return (
-              <div
-                key={s.secKey || `${secIdentifier}_${s.year}_${s.semester}`}
-                className={`handoff-item ${isGenerated ? 'item-generated' : 'item-missing'}`}
-              >
+            const isOpen = Boolean(currentSection) &&
+              currentSection.name === secIdentifier &&
+              currentSection.year === s.year &&
+              currentSection.semester === s.semester;
+            const cardKey = s.secKey || `${secIdentifier}_${s.year}_${s.semester}`;
+            const cardBody = (
+              <>
                 <div className="handoff-sec-header">
                   <span className="handoff-sec-name">{displaySecName}</span>
                   <span className="handoff-sec-sem">{semDisplay} Semester</span>
                 </div>
                 <span className={`handoff-status-tag ${isGenerated ? 'status-generated' : 'status-missing'}`}>
-                  {isGenerated ? '✓ Base Timetable Generated' : '× Base Timetable Not Generated'}
+                  {isGenerated ? 'Base Timetable Generated' : 'Base Timetable Not Generated'}
                 </span>
+              </>
+            );
+
+            return isGenerated ? (
+              <button
+                key={cardKey}
+                type="button"
+                className={`handoff-item item-generated handoff-item-link${isOpen ? ' is-open' : ''}`}
+                onClick={() => openSection(s)}
+                aria-pressed={isOpen}
+                title={`View the ${displaySecName} timetable`}
+              >
+                {cardBody}
+              </button>
+            ) : (
+              <div key={cardKey} className="handoff-item item-missing">
+                {cardBody}
               </div>
             );
           })}
@@ -873,7 +929,6 @@ export default function ScheduleBuilder({ onShowToast }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ fontSize: '1.2rem' }}>⚠️</span>
               <strong style={{ fontSize: '0.95rem', color: '#ef4444' }}>
                 Global Cross-Section Conflicts Detected ({backendStatus.conflicts.length}) — Export Blocked
               </strong>
@@ -897,10 +952,10 @@ export default function ScheduleBuilder({ onShowToast }) {
           <div className={`handoff-summary ${isExportAllowed ? 'summary-ready' : (backendStatus?.conflicts?.length > 0 ? 'summary-conflict' : 'summary-incomplete')}`}>
             {backendStatus?.conflicts && backendStatus.conflicts.length > 0 ? (
               <span style={{ color: '#ef4444', fontWeight: '500' }}>
-                ⚠️ {backendStatus.totalGenerated}/{backendStatus.totalRequired} sections generated — timetable has {backendStatus.conflicts.length} conflict(s) and is not ready for export.
+                {backendStatus.totalGenerated}/{backendStatus.totalRequired} sections generated — timetable has {backendStatus.conflicts.length} conflict(s) and is not ready for export.
               </span>
             ) : isExportAllowed ? (
-              <span>✓ All required sections generated ({backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections ready for Export JSON &amp; TT_TRACKER handoff).</span>
+              <span>All required sections generated ({backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections ready for Export JSON &amp; TT_TRACKER handoff).</span>
             ) : (
               <span>
                 Generation Incomplete: {backendStatus?.totalGenerated || 0}/{backendStatus?.totalRequired || 0} sections generated.
@@ -1116,7 +1171,7 @@ export default function ScheduleBuilder({ onShowToast }) {
 
       {/* Timetable Grid View */}
       {currentSection && currentGrid && (
-        <section className="panel-card" aria-label="Generated Timetable Grid">
+        <section id="section-timetable" className="panel-card" aria-label="Generated Timetable Grid">
           <div className="panel-header">
             <div className="panel-header-left">
               <span className="panel-title">Generated Timetable</span>
