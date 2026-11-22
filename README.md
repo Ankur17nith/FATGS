@@ -383,6 +383,11 @@ npm test
 12. **`frontend/tests/test_slots_to_grid.js`** (10/10 Passed):
    - Rebuilding a section grid from stored slots: right cell for every slot (442/442 on a full generation), parallel entries kept together, 2-hour labs in consecutive periods, bad input ignored.
 
+13. **`backend/tests/test_production_config.js`** (21/21 Passed):
+   - Production settings: CORS allowlist over HTTP (including preflight), safe response headers, startup warnings for unsafe settings, state stored under `FATGS_DATA_DIR`, clean shutdown on SIGTERM, and the deployment files (`npm start`, `render.yaml` holds no secrets).
+14. **`frontend/tests/test_api_url.js`** (6/6 Passed):
+   - The API address helper keeps relative paths in development and prefixes `VITE_API_BASE_URL` in production.
+
 
 ---
 
@@ -662,6 +667,44 @@ The generated schedule is exported as an array of normalized slot objects:
 
 ---
 
-## 18. Project Status
+## 18. Deployment
+
+FATGS deploys as two pieces: the **API** (Node, `backend/server.js`) and the **frontend** (a static site built from `frontend/`). `render.yaml` describes both for [Render](https://render.com); any host that can run Node and serve static files works the same way.
+
+| Piece | Build | Start / publish | Health check |
+|---|---|---|---|
+| API | `npm ci --omit=dev` | `node backend/server.js` (the same as `npm start`) | `GET /api/health` |
+| Frontend | `npm --prefix frontend ci --include=dev && npm --prefix frontend run build` | publish `frontend/dist`, rewrite every path to `/index.html` | |
+
+### Settings
+
+Set these in the host's environment settings, never in git. Examples are in `.env.example` and `frontend/.env.example`.
+
+| Where | Variable | Purpose |
+|---|---|---|
+| API | `NODE_ENV=production` | Prints startup warnings for unsafe settings |
+| API | `TT_TRACKER_URL` | Public address of the deployed TT_TRACKER |
+| API | `TT_TRACKER_IMPORT_SECRET` | Shared secret; must equal the value on TT_TRACKER. Use a long random value |
+| API | `CORS_ORIGIN` | The frontend's address (comma separated for several). Unset allows any website to call the API |
+| API | `FATGS_DATA_DIR` | Directory for generation sessions (`sessions/`) and faculty blocks (`faculty_blocks.json`). Point it at a persistent disk |
+| Frontend (build time) | `VITE_API_BASE_URL` | Public address of the API, no trailing slash |
+
+### Steps (Render)
+
+1. Create the TT_TRACKER service first and note its address.
+2. In Render choose **New > Blueprint** and pick this repository. It creates `fatgs-api` and `fatgs-web`.
+3. When asked, enter `TT_TRACKER_URL` and `TT_TRACKER_IMPORT_SECRET` for the API. Leave `CORS_ORIGIN` and `VITE_API_BASE_URL` empty for now.
+4. After the first deploy, copy each service's address: set `CORS_ORIGIN` on `fatgs-api` to the `fatgs-web` address, and `VITE_API_BASE_URL` on `fatgs-web` to the `fatgs-api` address, then redeploy `fatgs-web` (the address is baked in at build time).
+5. Check `https://<fatgs-api>/api/health`, open the `fatgs-web` address, press **Generate All Required Sections**, then publish to TT_TRACKER.
+
+### Things to know
+
+- **Free plan**: services sleep when idle (the first visit then takes about a minute) and the disk is temporary, so generated sections and faculty blocks reset on restart or redeploy. For state that survives, use a paid plan with a disk and set `FATGS_DATA_DIR` (see the commented lines in `render.yaml`).
+- **No login**: anyone who knows the address can generate timetables, change faculty blocks and publish to TT_TRACKER. Treat a public deployment as a demo, or put access control in front of it.
+- **Waking up before publishing**: if TT_TRACKER is asleep the publish can time out. Open it first.
+
+---
+
+## 19. Project Status
 
 FATGS is **functionally complete, production-tested, and mathematically verified**. All hard constraints (0 faculty collisions, 0 room collisions, 0 group collisions, year-specific lunch rules, continuous class room stability, and paired-section elective synchronization) pass 100% of automated tests across all B.Tech and M.Tech sections.

@@ -12,6 +12,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const facultyBlocks = require('./entities/facultyBlocks.js');
+const runtimeConfig = require('./entities/runtimeConfig.js');
 
 // Simple .env parser to avoid third-party dependencies
 function loadEnv() {
@@ -47,7 +48,11 @@ function loadEnv() {
 loadEnv();
 
 const STATE_FILE_PATH = path.join(__dirname, 'output/generation_state.json');
-const SESSIONS_DIR = path.join(__dirname, 'output/sessions');
+// Resolved per call so FATGS_DATA_DIR (a persistent disk in production) is honoured.
+function getSessionsDir() {
+  const dataDir = runtimeConfig.getDataDir();
+  return dataDir ? path.join(dataDir, 'sessions') : path.join(__dirname, 'output/sessions');
+}
 const SESSIONS = new Map();
 let activeSessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
@@ -396,7 +401,7 @@ function loadGenerationState(customStatePath, sessionId = null) {
   const sId = sessionId || activeSessionId;
   if (!SESSIONS.has(sId)) {
     // Check if session file exists on disk
-    const sFile = path.join(SESSIONS_DIR, `${sId}.json`);
+    const sFile = path.join(getSessionsDir(), `${sId}.json`);
     if (fs.existsSync(sFile)) {
       try {
         const parsed = JSON.parse(fs.readFileSync(sFile, 'utf8'));
@@ -434,10 +439,10 @@ function saveGenerationState(state, customStatePath, sessionId = null) {
   SESSIONS.set(sId, state);
 
   try {
-    if (!fs.existsSync(SESSIONS_DIR)) {
-      fs.mkdirSync(SESSIONS_DIR, { recursive: true });
+    if (!fs.existsSync(getSessionsDir())) {
+      fs.mkdirSync(getSessionsDir(), { recursive: true });
     }
-    const sFile = path.join(SESSIONS_DIR, `${sId}.json`);
+    const sFile = path.join(getSessionsDir(), `${sId}.json`);
     const tempPath = `${sFile}.tmp.${Date.now()}`;
     fs.writeFileSync(tempPath, JSON.stringify(state, null, 2), 'utf8');
     fs.renameSync(tempPath, sFile);
@@ -1199,22 +1204,26 @@ function sendJson(res, statusCode, data) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(json),
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-tt-tracker-secret'
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff'
   });
   res.end(json);
 }
 
 function createServer(customOptions = {}) {
   return http.createServer(async (req, res) => {
+    // CORS: any origin by default; restricted to CORS_ORIGIN when it is set.
+    const cors = runtimeConfig.resolveCors(req.headers.origin);
+    if (cors.allowOrigin) {
+      res.setHeader('Access-Control-Allow-Origin', cors.allowOrigin);
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tt-tracker-secret');
+    }
+    if (cors.vary) res.setHeader('Vary', 'Origin');
+
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
-      res.writeHead(204, {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-tt-tracker-secret'
-      });
+      res.writeHead(204);
       res.end();
       return;
     }
@@ -1513,11 +1522,26 @@ function createServer(customOptions = {}) {
 function startServer(port = process.env.PORT || 5001) {
   const server = createServer();
   server.listen(port, () => {
-    console.log(`[FATGS] Backend server running on http://localhost:${port}`);
+    console.log(`[FATGS] Backend server running on port ${port}`);
     console.log(`[FATGS] Active generation session: ${activeSessionId}`);
     console.log(`[FATGS] TT_TRACKER target: ${process.env.TT_TRACKER_URL || 'Not Configured'}`);
     console.log(`[FATGS] TT_TRACKER endpoint: ${process.env.TT_TRACKER_IMPORT_ENDPOINT || '/api/timetable/import'}`);
+    runtimeConfig.productionWarnings().forEach(w => console.warn(`[FATGS] WARNING: ${w}`));
   });
+
+  // Hosts stop a service with SIGTERM on every deploy: finish in-flight requests, then exit.
+  let stopping = false;
+  const shutdown = signal => {
+    if (stopping) return;
+    stopping = true;
+    console.log(`[FATGS] ${signal} received, shutting down...`);
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(1), 10000).unref();
+  };
+  process.once('SIGTERM', () => shutdown('SIGTERM'));
+  process.once('SIGINT', () => shutdown('SIGINT'));
+  process.on('unhandledRejection', err => console.error('[FATGS] Unhandled promise rejection:', err));
+
   return server;
 }
 

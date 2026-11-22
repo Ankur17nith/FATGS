@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { DAYS } from '../data/timetableData';
+import { apiUrl } from '../api';
 
 const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -116,7 +117,7 @@ export default function FacultyBlockingPanel({ semester, blocks, roster, onChang
     setBusy(true);
     setError('');
     try {
-      const res = await fetch('/api/faculty-blocks', {
+      const res = await fetch(apiUrl('/api/faculty-blocks'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -150,7 +151,7 @@ export default function FacultyBlockingPanel({ semester, blocks, roster, onChang
     setBusy(true);
     try {
       const res = await fetch(
-        `/api/faculty-blocks/${encodeURIComponent(block.id)}?semester=${encodeURIComponent(semester)}`,
+        apiUrl(`/api/faculty-blocks/${encodeURIComponent(block.id)}?semester=${encodeURIComponent(semester)}`),
         { method: 'DELETE' }
       );
       const data = await res.json();

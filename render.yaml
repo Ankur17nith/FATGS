@@ -1,0 +1,51 @@
+# Render Blueprint for FATGS: the API (Node) and the frontend (static site).
+# Create it from the Render dashboard: New > Blueprint > pick this repository.
+# Values marked "sync: false" are asked for in the dashboard and are never stored in git.
+services:
+  # ---- Backend API -------------------------------------------------------
+  - type: web
+    name: fatgs-api
+    runtime: node
+    region: singapore
+    plan: free            # free services sleep when idle; use "starter" for an always-on demo
+    buildCommand: npm ci --omit=dev
+    startCommand: node backend/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Public address of the deployed TT_TRACKER, e.g. https://tt-tracker.onrender.com
+      - key: TT_TRACKER_URL
+        sync: false
+      # Must equal TT_TRACKER_IMPORT_SECRET on the TT_TRACKER service. Use a long random value.
+      - key: TT_TRACKER_IMPORT_SECRET
+        sync: false
+      # Public address of the frontend below, e.g. https://fatgs-web.onrender.com
+      - key: CORS_ORIGIN
+        sync: false
+      # Generation sessions and faculty blocks live here. On the free plan the disk is
+      # temporary, so they reset on restart or redeploy. To keep them, use a paid plan,
+      # add a disk mounted at /var/data and uncomment FATGS_DATA_DIR:
+      #   disk:
+      #     name: fatgs-data
+      #     mountPath: /var/data
+      #     sizeGB: 1
+      # - key: FATGS_DATA_DIR
+      #   value: /var/data/fatgs
+
+  # ---- Frontend (static site) -------------------------------------------
+  - type: web
+    name: fatgs-web
+    runtime: static
+    region: singapore
+    # --include=dev: Vite is a dev dependency and is needed to build, even if NODE_ENV=production
+    buildCommand: npm --prefix frontend ci --include=dev && npm --prefix frontend run build
+    staticPublishPath: frontend/dist
+    envVars:
+      # Public address of the API service above, e.g. https://fatgs-api.onrender.com
+      - key: VITE_API_BASE_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

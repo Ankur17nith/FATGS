@@ -13,6 +13,7 @@ import {
 import TimetableGrid from '../components/TimetableGrid';
 import ConfirmationModal from '../components/ConfirmationModal';
 import FacultyBlockingPanel from '../components/FacultyBlockingPanel';
+import { apiUrl } from '../api';
 
 /**
  * Extracts flat timetable slot records from a 5-day x 8-period grid.
@@ -92,7 +93,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     try {
       setIsLoadingStatus(true);
       const activeSess = sId || sessionStorage.getItem('fatgs_session_id');
-      const url = `/api/timetable/generation-status?semester=${encodeURIComponent(semester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+      const url = apiUrl(`/api/timetable/generation-status?semester=${encodeURIComponent(semester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`);
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -119,7 +120,7 @@ export default function ScheduleBuilder({ onShowToast }) {
       let currentSess = sessionStorage.getItem('fatgs_session_id');
       if (!currentSess) {
         try {
-          const res = await fetch('/api/timetable/session/current');
+          const res = await fetch(apiUrl('/api/timetable/session/current'));
           if (res.ok) {
             const data = await res.json();
             currentSess = data.sessionId;
@@ -199,7 +200,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     if (!grid) {
       try {
         const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
-        const url = `/api/timetable/section-slots?semester=${encodeURIComponent(targetSemester)}&secKey=${encodeURIComponent(sec.secKey || secKey)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+        const url = apiUrl(`/api/timetable/section-slots?semester=${encodeURIComponent(targetSemester)}&secKey=${encodeURIComponent(sec.secKey || secKey)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`);
         const res = await fetch(url);
         const data = await res.json();
         if (!res.ok || !data.success) {
@@ -349,7 +350,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     // Save generation record to backend source of truth
     try {
       const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
-      const res = await fetch('/api/timetable/record-generation', {
+      const res = await fetch(apiUrl('/api/timetable/record-generation'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -385,7 +386,7 @@ export default function ScheduleBuilder({ onShowToast }) {
   const handleStartNewCycle = async () => {
     try {
       setIsLoadingStatus(true);
-      const res = await fetch('/api/timetable/session/new', { method: 'POST' });
+      const res = await fetch(apiUrl('/api/timetable/session/new'), { method: 'POST' });
       const data = await res.json();
       if (res.ok && data.success) {
         sessionStorage.setItem('fatgs_session_id', data.sessionId);
@@ -419,7 +420,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     setIsBatchGenerating(true);
     try {
       const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
-      const res = await fetch('/api/timetable/generate-all', {
+      const res = await fetch(apiUrl('/api/timetable/generate-all'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -562,7 +563,7 @@ export default function ScheduleBuilder({ onShowToast }) {
     try {
       const activeSess = sessionId || sessionStorage.getItem('fatgs_session_id');
       // 1. Fetch the already-generated complete timetable package for the selected semester
-      const exportUrl = `/api/timetable/export?semester=${encodeURIComponent(targetSemester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`;
+      const exportUrl = apiUrl(`/api/timetable/export?semester=${encodeURIComponent(targetSemester)}${activeSess ? `&sessionId=${encodeURIComponent(activeSess)}` : ''}`);
       const exportRes = await fetch(exportUrl);
       const exportData = await exportRes.json();
 
@@ -575,7 +576,7 @@ export default function ScheduleBuilder({ onShowToast }) {
       }
 
       // 2. Perform authenticated server-to-server handoff via FATGS backend
-      const res = await fetch('/api/handoff-timetable', {
+      const res = await fetch(apiUrl('/api/handoff-timetable'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

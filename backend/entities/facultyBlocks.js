@@ -24,6 +24,12 @@ const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const PERIOD_COUNT = 8;
 const FIRST_PERIOD_HOUR = 9; // Period 1 starts at 09:00
 const DEFAULT_BLOCKS_PATH = path.join(__dirname, '../data/faculty_blocks.json');
+
+/** FATGS_DATA_DIR (a persistent disk in production) wins; otherwise the file in the repo. */
+function defaultBlocksPath() {
+  const dir = (process.env.FATGS_DATA_DIR || '').trim();
+  return dir ? path.join(path.resolve(dir), 'faculty_blocks.json') : DEFAULT_BLOCKS_PATH;
+}
 const FACULTY_PATH = path.join(__dirname, '../data/faculty.json');
 
 function normalizeSemester(sem) {
@@ -71,7 +77,7 @@ function emptyStore() {
   return { Odd: [], Even: [] };
 }
 
-function loadBlocks(filePath = DEFAULT_BLOCKS_PATH) {
+function loadBlocks(filePath = defaultBlocksPath()) {
   try {
     if (!fs.existsSync(filePath)) return emptyStore();
     const raw = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -85,7 +91,7 @@ function loadBlocks(filePath = DEFAULT_BLOCKS_PATH) {
 }
 
 /** Atomic write: write to a temp file, then rename over the target. */
-function saveBlocks(store, filePath = DEFAULT_BLOCKS_PATH) {
+function saveBlocks(store, filePath = defaultBlocksPath()) {
   const dir = path.dirname(filePath);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
